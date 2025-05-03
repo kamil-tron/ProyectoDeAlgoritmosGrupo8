@@ -127,7 +127,49 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Administrador.cpp" />
+    <ClCompile Include="AuthService.cpp" />
+    <ClCompile Include="JetSmartApp.cpp" />
+    <ClCompile Include="MenuAdministrador.cpp" />
+    <ClCompile Include="MenuInicio.cpp" />
+    <ClCompile Include="MenuUsuario.cpp" />
+    <ClCompile Include="Pago.cpp" />
     <ClCompile Include="ProyectoDeAlgoritmosGrupo8.cpp" />
+    <ClCompile Include="Reserva.cpp" />
+    <ClCompile Include="ServicioPagos.cpp" />
+    <ClCompile Include="ServicioReservas.cpp" />
+    <ClCompile Include="ServicioVuelos.cpp" />
+    <ClCompile Include="Usuario.cpp" />
+    <ClCompile Include="Vuelo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Administrador.h" />
+    <ClInclude Include="AuthService.h" />
+    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="JetSmartApp.h" />
+    <ClInclude Include="Lista.h" />
+    <ClInclude Include="MenuAdministrador.h" />
+    <ClInclude Include="MenuBase.h" />
+    <ClInclude Include="MenuInicio.h" />
+    <ClInclude Include="MenuOpcion.h" />
+    <ClInclude Include="MenuOpcionTexto.h" />
+    <ClInclude Include="MenuUsuario.h" />
+    <ClInclude Include="Nodo.h" />
+    <ClInclude Include="Pago.h" />
+    <ClInclude Include="RepoAdmins.h" />
+    <ClInclude Include="RepoPagos.h" />
+    <ClInclude Include="RepoReservas.h" />
+    <ClInclude Include="RepoUsuarios.h" />
+    <ClInclude Include="RepoVuelos.h" />
+    <ClInclude Include="Reserva.h" />
+    <ClInclude Include="Roles.h" />
+    <ClInclude Include="ServicioPagos.h" />
+    <ClInclude Include="ServicioReservas.h" />
+    <ClInclude Include="ServicioVuelos.h" />
+    <ClInclude Include="Sesion.h" />
+    <ClInclude Include="UserEntity.h" />
+    <ClInclude Include="Usuario.h" />
+    <ClInclude Include="Vuelo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
