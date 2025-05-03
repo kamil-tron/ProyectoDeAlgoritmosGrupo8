@@ -16,5 +16,5 @@ public:
         const string& pass,
         Sesion& s) const;
 
-    bool registerUser(const Usuario& u);
+    bool registrarUsuario(const Usuario& u);
 };

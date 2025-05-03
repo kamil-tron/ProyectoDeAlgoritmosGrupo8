@@ -19,7 +19,7 @@ bool AuthService::login(const string& correo,
 }
 
 
-bool AuthService::registerUser(const Usuario& u) {
+bool AuthService::registrarUsuario(const Usuario& u) {
     Usuario tmp;
     if (repoUsr.buscarPorDni(u.getDni(), tmp)
         || repoUsr.buscarPorCorreo(u.getCorreo(), tmp))

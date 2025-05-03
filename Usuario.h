@@ -11,7 +11,6 @@ private:
 public:
     Usuario() = default;
 
-    // Pasamos por const-referencia para evitar copias innecesarias
     Usuario(const string& dni,
         const string& nombre,
         const string& apellido,

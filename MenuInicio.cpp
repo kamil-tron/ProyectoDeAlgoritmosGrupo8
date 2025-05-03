@@ -14,7 +14,7 @@ void MenuInicio::mostrar() const {
     for (int i = 0; i < opciones_.longitud(); ++i) {
         cout << (i + 1) << ". " << opciones_.obtenerPos(i) << "\n";
     }
-    cout << "Seleccione opción: ";
+    cout << "Seleccione opcion: ";
 }
 
 void MenuInicio::ejecutar() {
@@ -41,14 +41,15 @@ void MenuInicio::ejecutar() {
 }
 
 void MenuInicio::opcionRegistrarse() {
-    string nombre, dni, correo, pass;
-    cout << "Ingrese nombre completo: "; getline(cin, nombre);
-    cout << "Ingrese DNI: ";            getline(cin, dni);
-    cout << "Ingrese correo: ";         getline(cin, correo);
-    cout << "Ingrese contrasena: ";     getline(cin, pass);
+    string nombre,apellido, dni, correo, pass;
+    cout << "Ingrese nombre: "; getline(cin, nombre);
+    cout << "Ingrese apellido: "; getline(cin, apellido);
+    cout << "Ingrese DNI: "; getline(cin, dni);
+    cout << "Ingrese correo: "; getline(cin, correo);
+    cout << "Ingrese contrasena: "; getline(cin, pass);
 
-    Usuario u(dni, nombre, "", correo, pass);
-    if (auth.registerUser(u))
+    Usuario u(dni, nombre, apellido, correo, pass);
+    if (auth.registrarUsuario(u))
         cout << "Registro exitoso.\n";
     else
         cout << "DNI o correo ya registrado.\n";

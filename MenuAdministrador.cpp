@@ -100,10 +100,10 @@ void MenuAdministrador::opcionVerUsuarios() {
     cout << "Usuarios registrados:\n";
     for (int i = 0; i < lista.longitud(); ++i) {
         auto u = lista.obtenerPos(i);
-        cout << (i + 1) << ". " << u.getNombre() << " - " << u.getCorreo() << "\n";
+        cout << (i + 1) << ". " << u.getNombre() << " " << u.getApellido() << " - " << u.getCorreo() << "\n";
     }
 }
 
 void MenuAdministrador::opcionCerrarSesion() {
-    cout << "Cerrando sesión...\n";
+    cout << "Cerrando sesion...\n";
 }
