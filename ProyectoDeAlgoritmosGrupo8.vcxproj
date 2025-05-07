@@ -146,6 +146,7 @@
     <ClInclude Include="Administrador.h" />
     <ClInclude Include="AuthService.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Pila.h" />
     <ClInclude Include="JetSmartApp.h" />
     <ClInclude Include="Lista.h" />
     <ClInclude Include="MenuAdministrador.h" />

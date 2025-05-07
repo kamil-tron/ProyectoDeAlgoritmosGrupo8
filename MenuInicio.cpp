@@ -16,8 +16,7 @@ void MenuInicio::mostrar() const {
 	}
 	cout << "Seleccione opcion: ";
 }
-//hola papus
-//Hola papus 2.0 aprendiendo a pullear
+
 void MenuInicio::ejecutar() {
 	int op = 0;
 	while (true) {
