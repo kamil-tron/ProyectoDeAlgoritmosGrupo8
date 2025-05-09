@@ -6,7 +6,7 @@ using namespace std;
 
 class MenuOpcion {
 public:
-    virtual ~MenuOpcion() = default;
-    virtual string getTexto() const = 0;
-    virtual void ejecutar() = 0;
+	virtual ~MenuOpcion() = default;
+	virtual string getTexto() const = 0;
+	virtual void ejecutar() = 0;
 };

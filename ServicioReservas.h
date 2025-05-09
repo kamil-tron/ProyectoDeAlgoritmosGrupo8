@@ -7,14 +7,14 @@
 
 class ServicioReservas {
 private:
-    RepoReservas repoReservas;
-    RepoVuelos  repoVuelos;
+	RepoReservas repoReservas;
+	RepoVuelos  repoVuelos;
 public:
-    ServicioReservas();
+	ServicioReservas();
 
-    Lista<Reserva> listarReservasUsuario(const string& email) const;
+	Lista<Reserva> listarReservasUsuario(const string& email) const;
 
-    bool crearReserva(const Reserva& r);
+	bool crearReserva(const Reserva& r);
 
-    bool cancelarReserva(const string& codigo);
+	bool cancelarReserva(const string& codigo);
 };

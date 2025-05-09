@@ -6,15 +6,15 @@
 
 class AuthService {
 private:
-    RepoAdmins   repoAdm;
-    RepoUsuarios repoUsr;
+	RepoAdmins   repoAdm;
+	RepoUsuarios repoUsr;
 
 public:
-    AuthService() = default;
+	AuthService() = default;
 
-    bool login(const string& correo,
-        const string& pass,
-        Sesion& s) const;
+	bool login(const string& correo,
+		const string& pass,
+		Sesion& s) const;
 
-    bool registrarUsuario(const Usuario& u);
+	bool registrarUsuario(const Usuario& u);
 };

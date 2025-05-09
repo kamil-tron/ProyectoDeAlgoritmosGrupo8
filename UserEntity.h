@@ -7,22 +7,23 @@ using namespace std;
 
 class UserEntity {
 protected:
-    string correo;
-    string contrasena;
+	string correo;
+	string contrasena;
 
-    UserEntity() = default;
+	UserEntity() = default;
 
-    UserEntity(const string& c, const string& p)
-        : correo(c), contrasena(p) {}
+	UserEntity(const string& c, const string& p)
+		: correo(c), contrasena(p) {
+	}
 
 public:
-    virtual ~UserEntity() = default;
+	virtual ~UserEntity() = default;
 
-    virtual RolEnum getRol() const = 0;
+	virtual RolEnum getRol() const = 0;
 
-    const string& getCorreo() const { return correo; }
+	const string& getCorreo() const { return correo; }
 
-    bool checkPassword(const string& pass) const { return contrasena == pass; }
+	bool checkPassword(const string& pass) const { return contrasena == pass; }
 
-    virtual void mostrarPerfil() const = 0;
+	virtual void mostrarPerfil() const = 0;
 };

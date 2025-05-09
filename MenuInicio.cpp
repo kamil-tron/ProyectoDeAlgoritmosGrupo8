@@ -1,5 +1,5 @@
 ﻿#include "MenuInicio.h"
-
+#include "MatrizColor.h"
 MenuInicio::MenuInicio() {
 	opciones_.agregaFinal("Registrarse");
 	opciones_.agregaFinal("Iniciar sesion");
@@ -7,10 +7,20 @@ MenuInicio::MenuInicio() {
 }
 
 void MenuInicio::mostrar() const {
-	cout << "-----------------------------------------------\n"
-		<< "         JETSMART - SISTEMA DE TICKETS\n"
-		<< "         Bienvenido al sistema JetSmart\n"
-		<< "-----------------------------------------------\n";
+	// Obtener el handle de salida estándar (consola)
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	generarmatriz();
+
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	cout << endl;
+	cout << "                SISTEMA DE TICKETS - AIR PACIFIC                 \n";
+
+	// Volver a verde
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	cout << "==================================================================\n";
+
+	// Menú de opciones en color blanco brillante
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	for (int i = 0; i < opciones_.longitud(); ++i) {
 		cout << (i + 1) << ". " << opciones_.obtenerPos(i) << "\n";
 	}

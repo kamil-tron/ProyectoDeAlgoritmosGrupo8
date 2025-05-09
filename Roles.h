@@ -1,4 +1,4 @@
 enum class RolEnum {
-    ADMIN,
-    USER
+	ADMIN,
+	USER
 };

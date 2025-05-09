@@ -6,12 +6,12 @@
 
 class ServicioPagos {
 private:
-    RepoPagos    repoPagos;
-    RepoReservas repoReservas;
+	RepoPagos    repoPagos;
+	RepoReservas repoReservas;
 public:
-    ServicioPagos();
+	ServicioPagos();
 
-    bool procesarPago(const Pago& p);
+	bool procesarPago(const Pago& p);
 
-    bool obtenerPagoPorReserva(int reservaId, Pago& p) const;
+	bool obtenerPagoPorReserva(int reservaId, Pago& p) const;
 };
