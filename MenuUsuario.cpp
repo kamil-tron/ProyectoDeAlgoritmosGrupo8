@@ -1,4 +1,4 @@
-﻿#include "MenuUsuario.h"
+#include "MenuUsuario.h"
 #include "Reserva.h"
 #include "Pago.h"
 #include <sstream>
