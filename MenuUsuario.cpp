@@ -1,6 +1,20 @@
 ﻿#include "MenuUsuario.h"
 #include "Reserva.h"
 #include "Pago.h"
+#include <sstream>
+#include <ctime>
+#include <iomanip>
+#include <Windows.h>
+#include <cctype>
+
+using namespace std;
+
+void cuentaRegresiva(int n) {
+    if (n < 1) return;
+    cout << n << endl;
+    Sleep(1000);
+    cuentaRegresiva(n - 1);
+}
 
 void MenuUsuario::opcionBuscarYReservar() {
     string origen, destino, fecha;
@@ -81,7 +95,7 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     }
     cout << '\n';
 
-    cout << "\n\nCantidad a reservar: ";
+    cout << "\nCantidad a reservar: ";
     int cant; cin >> cant;
     cin.ignore(10000, '\n');
 
@@ -98,7 +112,25 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     }
     cin.ignore(10000, '\n');
 
+    cout << "\nMetodo de pago:\n"
+        << "1. Tarjeta de credito\n"
+        << "2. Tarjeta de debito\n"
+        << "3. Yape/Plin\n"
+        << "Opcion: ";
+    int metodo; cin >> metodo;
+    cin.ignore(10000, '\n');
+
+    if (metodo == 1 || metodo == 2) {
+        string tarjeta, cvv;
+        cout << "Numero de tarjeta: "; getline(cin, tarjeta);
+        cout << "CVV: "; getline(cin, cvv);
+    }
+    else {
+        cout << "Abrir app Yape/Plin...\n";
+    }
+
     cout << "Procesando pago...\n";
+    cuentaRegresiva(5);
 
     ostringstream oss; oss << "R-" << time(nullptr);
     string codigo = oss.str();
@@ -111,6 +143,10 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
         cout << "No fue posible completar la reserva (verifique asientos).\n";
         return;
     }
+
+    double total = vuelo.getPrecio() * seleccion.longitud();
+    Pago pago(id, total, "COMPLETADO", fecha);
+    svcPagos.procesarPago(pago);
 
     cout << "Reserva exitosa. Codigo: " << codigo << '\n';
 }
@@ -161,7 +197,7 @@ void MenuUsuario::opcionVerPerfil() {
     for (int i = 0; i < lista.longitud(); ++i)
         if (!lista.obtenerPos(i).isCancelada()) ++activas;
 
-    cout << "Reservas activas: " << activas << "\n";
+    cout << "Reservas activas: " << activas << '\n';
 
     cout << "Desea actualizar datos? (1=Si, 2=No): ";
     int opc; cin >> opc;

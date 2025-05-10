@@ -35,7 +35,7 @@ public:
             [this] { opcionVerReservas(); }));
         agregarOpcion(new MenuOpcionTexto("Mi perfil",
             [this] { opcionVerPerfil(); }));
-        agregarOpcion(new MenuOpcionTexto("Cerrar sesión",
+        agregarOpcion(new MenuOpcionTexto("Cerrar sesion",
             [this] { opcionCerrarSesion(); }));
     }
 
