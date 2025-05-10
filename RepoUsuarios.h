@@ -41,4 +41,15 @@ public:
 		items.agregaFinal(u);
 		guardar(items);
 	}
+
+	void actualizar(const Usuario& u) {
+		auto items = cargarTodos();
+		for (int i = 0; i < items.longitud(); ++i) {
+			if (items.obtenerPos(i).getCorreo() == u.getCorreo()) {
+				items.modificarPos(u, i);
+				guardar(items);
+				break;
+			}
+		}
+	}
 };

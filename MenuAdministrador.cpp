@@ -59,7 +59,6 @@ void MenuAdministrador::opcionModificarVuelo() {
 
     v.setPrecio(nuevoPrecio);
     v.setCapacidad(nuevaCap);
-    // Los asientos se regeneran automáticamente en ServicioVuelos::modificarVuelo si lo requiere
 
     if (svcVuelos.modificarVuelo(v))
         cout << "Vuelo actualizado.\n";

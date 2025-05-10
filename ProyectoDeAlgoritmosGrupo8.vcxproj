@@ -147,6 +147,7 @@
     <ClInclude Include="Asiento.h" />
     <ClInclude Include="AuthService.h" />
     <ClInclude Include="Cola.h" />
+    <ClInclude Include="ContadorDeDias.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="MatrizColor.h" />
     <ClInclude Include="Pila.h" />

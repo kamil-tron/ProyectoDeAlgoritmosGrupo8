@@ -1,5 +1,7 @@
 ﻿#include "MenuInicio.h"
 #include "MatrizColor.h"
+#include "ContadorDeDias.h"
+
 MenuInicio::MenuInicio() {
 	opciones_.agregaFinal("Registrarse");
 	opciones_.agregaFinal("Iniciar sesion");
@@ -7,7 +9,6 @@ MenuInicio::MenuInicio() {
 }
 
 void MenuInicio::mostrar() const {
-	// Obtener el handle de salida estándar (consola)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	generarmatriz();
 
@@ -15,11 +16,9 @@ void MenuInicio::mostrar() const {
 	cout << endl;
 	cout << "                SISTEMA DE TICKETS - AIR PACIFIC                 \n";
 
-	// Volver a verde
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	cout << "==================================================================\n";
 
-	// Menú de opciones en color blanco brillante
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	for (int i = 0; i < opciones_.longitud(); ++i) {
 		cout << (i + 1) << ". " << opciones_.obtenerPos(i) << "\n";
@@ -74,9 +73,14 @@ void MenuInicio::opcionIniciarSesion() {
 	if (auth.login(correo, pass, *nueva)) {
 		cout << "Inicio de sesion exitoso.\n";
 		sesion = nueva;
+
+		ContadorDeDias::obtenerInstancia()->incrementarContador();
+		int diasTranscurridos = ContadorDeDias::obtenerInstancia()->obtenerDiasTranscurridos();
+		cout << "Día " << diasTranscurridos << " del simulador.\n";
+
 	}
 	else {
-		delete nueva;  // libero aquí si falla
+		delete nueva;
 		cout << "Credenciales invalidas.\n";
 	}
 }

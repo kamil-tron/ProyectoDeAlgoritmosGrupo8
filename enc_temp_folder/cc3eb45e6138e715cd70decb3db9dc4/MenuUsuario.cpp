@@ -450,9 +450,9 @@ void MenuUsuario::reporteVuelosBaratos(int k) {
 	for (int i = 0; i < precios.longitud() && i < k; ++i) {
 		PrecioReserva pr = precios.obtenerPos(i);
 		Vuelo v; svcVuelos.buscarVuelo(pr.res.getVueloId(), v);
-        cout << i + 1 << ") " << v.getOrigen() << "-" << v.getDestino()
-            << " (" << pr.res.getFecha() << ") - S/ "
-            << fixed << setprecision(2) << pr.precio << '\n';
+		cout << i + 1 << ") " << v.getOrigen() << "-" << v.getDestino()
+			<< " (" << pr.res.getFecha() << ") – S/ "
+			<< fixed << setprecision(2) << pr.precio << '\n';
 	}
 }
 

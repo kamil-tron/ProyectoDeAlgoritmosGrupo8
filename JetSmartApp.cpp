@@ -34,7 +34,7 @@ void JetSmartApp::run() {
 				cin >> op;
 				cin.ignore(10000, '\n');  // sin <limits>
 				menu.ejecutar(op);        // 6 = cerrar sesión
-			} while (op != 4);
+			} while (op != 5);
 		}
 
 		delete ses;

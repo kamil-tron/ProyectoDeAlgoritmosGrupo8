@@ -31,6 +31,8 @@ public:
 	void setDni(const string& d) { dni = d; }
 	void setNombre(const string& n) { nombre = n; }
 	void setApellido(const string& a) { apellido = a; }
+	void setPassword(const string& p) { contrasena = p; }
+
 
 	void mostrarPerfil() const override {
 		cout << "Nombre : " << nombre << ' ' << apellido << '\n'
