@@ -1,5 +1,3 @@
 70528151,Mauricio,Pajes,mpajes2006@gmail.com,Mlpl2006@
 323232,Kamil,Diaz,kamil@gmail.com,1234
-70713489,waldo,portal,waldo,231157
-,mpajes2006@gmail.com,323,32,32
-dsafd,mpajes2006@gmail.com,Mlpl2006@,afsd,fs
+
