@@ -64,50 +64,56 @@ double MenuUsuario::imprimirHistorialRec(const Lista<Reserva>& reservas, int i) 
 }
 
 void MenuUsuario::opcionBuscarYReservar() {
-    string origen, destino, fecha;
-    cout << "\nBUSCAR VUELOS\n"
-        << "Origen: "; getline(cin, origen);
-    cout << "Destino: "; getline(cin, destino);
-    cout << "Fecha (dd/mm/aaaa): "; getline(cin, fecha);
+        auto todos = svcVuelos.listarVuelos();
 
-    auto todos = svcVuelos.listarVuelos();
-    Lista<Vuelo> filtrados;
-    for (int i = 0; i < todos.longitud(); ++i) {
-        const Vuelo& v = todos.obtenerPos(i);
-        if (v.getOrigen() == origen && v.getDestino() == destino && v.getFecha() == fecha)
-            filtrados.agregaFinal(v);
-    }
-    if (filtrados.esVacia()) {
-        cout << "No hay vuelos para esa ruta/fecha.\n";
-        return;
-    }
-
-    for (int i = 0; i < filtrados.longitud(); ++i)
-        for (int j = 0; j + 1 < filtrados.longitud(); ++j) {
-            auto a = filtrados.obtenerPos(j);
-            auto b = filtrados.obtenerPos(j + 1);
-            if (a.getPrecio() > b.getPrecio()) {
-                filtrados.modificarPos(b, j);
-                filtrados.modificarPos(a, j + 1);
-            }
+        if (todos.esVacia()) {
+            cout << "No hay vuelos disponibles.\n";
+            return;
         }
 
-    cout << "\nID | Origen | Destino | Fecha       | Precio\n";
-    for (int i = 0; i < filtrados.longitud(); ++i) {
-        const Vuelo& v = filtrados.obtenerPos(i);
-        cout << setw(2) << v.getId() << " | "
-            << setw(6) << v.getOrigen() << " | "
-            << setw(7) << v.getDestino() << " | "
-            << setw(11) << v.getFecha() << " | S/ "
-            << fixed << setprecision(2) << v.getPrecio() << '\n';
+        // Ordenar por precio (burbuja)
+        for (int i = 0; i < todos.longitud(); ++i)
+            for (int j = 0; j < todos.longitud() - 1; ++j) {
+                auto a = todos.obtenerPos(j);
+                auto b = todos.obtenerPos(j + 1);
+                if (a.getPrecio() > b.getPrecio()) {
+                    todos.modificarPos(b, j);
+                    todos.modificarPos(a, j + 1);
+                }
+            }
+
+        // Mostrar vuelos disponibles
+        cout << "\nVUELOS DISPONIBLES\n";
+        cout << "ID | Origen | Destino | Fecha       | Precio\n";
+        for (int i = 0; i < todos.longitud(); ++i) {
+            const Vuelo& v = todos.obtenerPos(i);
+            cout << setw(2) << v.getId() << " | "
+                << setw(6) << v.getOrigen() << " | "
+                << setw(7) << v.getDestino() << " | "
+                << setw(11) << v.getFecha() << " | S/ "
+                << fixed << setprecision(2) << v.getPrecio() << '\n';
+        }
+
+        cout << "\nDesea reservar alguno de estos vuelos? (1=Si, 2=No): ";
+        int opc; cin >> opc;
+        cin.ignore(10000, '\n');
+        if (opc != 1) return;
+
+        cout << "Seleccione ID del vuelo: ";
+        int id; cin >> id;
+        cin.ignore(10000, '\n');
+
+        // Buscar el vuelo para obtener su fecha (ya que antes la recibías desde el input)
+        Vuelo v;
+        if (!svcVuelos.buscarVuelo(id, v)) {
+            cout << "Vuelo no encontrado.\n";
+            return;
+        }
+
+        reservarVuelo(id, v.getFecha());
     }
-    cout << "\nDesea reservar alguno de estos vuelos? (1=Si, 2=No): ";
-    int opc; cin >> opc; cin.ignore(10000, '\n');
-    if (opc != 1) return;
-    cout << "Seleccione ID del vuelo: ";
-    int id; cin >> id; cin.ignore(10000, '\n');
-    reservarVuelo(id, fecha);
-}
+
+
 
 void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     Vuelo vuelo;
@@ -169,6 +175,7 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
 
     // 3) Procesar pago y actualizar reserva
     cout << "Procesando pago...\n";
+    cuentaRegresiva(3);
     // Se elimina la llamada a cuentaRegresiva
     Pago pago(codigoRes, total, metodo, "COMPLETADO", fh);
     bool exito = svcPagos.procesarPago(pago);
