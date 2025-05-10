@@ -17,4 +17,6 @@ public:
 		Sesion& s) const;
 
 	bool registrarUsuario(const Usuario& u);
+
+	RepoUsuarios& getRepoUsuarios() { return repoUsr; }
 };

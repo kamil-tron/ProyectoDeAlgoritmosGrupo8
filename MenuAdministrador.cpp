@@ -7,13 +7,17 @@ using namespace std;
 void MenuAdministrador::opcionRegistrarVuelo() {
     string origen, destino, fecha;
     double precio;
-    int capacidad;
+    int capacidad=0;
     cout << "Origen: "; getline(cin, origen);
     cout << "Destino: "; getline(cin, destino);
     cout << "Fecha (dd/mm/aaaa): "; getline(cin, fecha);
     cout << "Precio: "; cin >> precio;
+while(capacidad>120||capacidad<1){
     cout << "Capacidad de asientos: "; cin >> capacidad;
     cin.ignore(10000, '\n');
+if(capacidad >120) cout<<"Capacidad excedida\n";
+if (capacidad <1) cout << "Capacidad insuficiente\n";
+}
 
     int id = svcVuelos.listarVuelos().longitud() + 1;
     Vuelo v(id, origen, destino, fecha, precio, capacidad);
@@ -59,7 +63,6 @@ void MenuAdministrador::opcionModificarVuelo() {
 
     v.setPrecio(nuevoPrecio);
     v.setCapacidad(nuevaCap);
-    // Los asientos se regeneran automáticamente en ServicioVuelos::modificarVuelo si lo requiere
 
     if (svcVuelos.modificarVuelo(v))
         cout << "Vuelo actualizado.\n";

@@ -7,14 +7,20 @@
 
 using namespace std;
 
+enum class EstadoReserva {
+    PENDIENTE,
+    CONFIRMADA,
+    CANCELADA
+};
+
 class Reserva {
 private:
-    string        codigo;
-    string        userEmail;
-    int           vueloId{};
-    string        fecha;
-    Lista<string> asientos;
-    bool          cancelada{};
+    string           codigo;
+    string           userEmail;
+    int              vueloId{};
+    string           fecha;
+    Lista<string>    asientos;
+    EstadoReserva    estado{ EstadoReserva::PENDIENTE };
 
 public:
     Reserva() = default;
@@ -29,19 +35,20 @@ public:
         , vueloId(vueloId)
         , fecha(fecha)
         , asientos(asientos)
-        , cancelada(false)
+        , estado(EstadoReserva::PENDIENTE)
     {}
 
     // Getters
     const string& getCodigo() const { return codigo; }
     const string& getUserEmail() const { return userEmail; }
-    int                getVueloId() const { return vueloId; }
+    int            getVueloId() const { return vueloId; }
     const string& getFecha() const { return fecha; }
     const Lista<string>& getAsientos() const { return asientos; }
-    bool               isCancelada() const { return cancelada; }
+    EstadoReserva  getEstado() const { return estado; }
 
-    // Marca la reserva como cancelada
-    void cancelar() { cancelada = true; }
+    // Transiciones de estado
+    void confirmar() { estado = EstadoReserva::CONFIRMADA; }
+    void cancelar() { estado = EstadoReserva::CANCELADA; }
 
     // Agrega un asiento a la reserva
     void agregarAsiento(const string& asiento) {
@@ -50,11 +57,17 @@ public:
 
     string serialize() const {
         ostringstream oss;
+        char flag;
+        switch (estado) {
+        case EstadoReserva::PENDIENTE: flag = 'P'; break;
+        case EstadoReserva::CONFIRMADA: flag = 'C'; break;
+        case EstadoReserva::CANCELADA:  flag = 'X'; break;
+        }
         oss << codigo << ','
             << userEmail << ','
             << vueloId << ','
             << fecha << ','
-            << (cancelada ? '1' : '0') << ','
+            << flag << ','
             << asientos.toPrint(";");
         return oss.str();
     }
@@ -65,17 +78,20 @@ public:
         char comma, flag;
         string seatsStr;
 
-        // Campos hasta cancelada
         getline(iss, r.codigo, ',');
         getline(iss, r.userEmail, ',');
-
         iss >> r.vueloId >> comma;
         getline(iss, r.fecha, ',');
-
         iss >> flag >> comma;
-        r.cancelada = (flag == '1');
+        // Interpretar estado
+        switch (flag) {
+        case 'P': r.estado = EstadoReserva::PENDIENTE; break;
+        case 'C': r.estado = EstadoReserva::CONFIRMADA; break;
+        case 'X': r.estado = EstadoReserva::CANCELADA; break;
+        default:  r.estado = EstadoReserva::PENDIENTE; break;
+        }
 
-        // Resto: lista de asientos separada por ';'
+        // Lista de asientos
         getline(iss, seatsStr);
         r.asientos = Lista<string>();
         istringstream ss(seatsStr);

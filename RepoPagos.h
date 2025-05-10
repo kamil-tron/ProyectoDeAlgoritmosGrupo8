@@ -8,23 +8,29 @@ using namespace std;
 
 class RepoPagos : public FileManager<Pago> {
 public:
-	RepoPagos() : FileManager("pagos.txt") {}
+    RepoPagos() : FileManager("pagos.txt") {}
 
-	bool buscarPorReservaId(int reservaId, Pago& p) const {
-		auto items = cargarTodos();
-		for (int i = 0; i < items.longitud(); ++i) {
-			Pago tmp = items.obtenerPos(i);
-			if (tmp.getReservaId() == reservaId) {
-				p = tmp;
-				return true;
-			}
-		}
-		return false;
-	}
+    bool buscarPorReservaCodigo(const string& codigoReserva, Pago& p) const {
+        auto items = cargarTodos();
+        for (int i = 0; i < items.longitud(); ++i) {
+            Pago tmp = items.obtenerPos(i);
+            if (tmp.getReservaCodigo() == codigoReserva) {
+                p = tmp;
+                return true;
+            }
+        }
+        return false;
+    }
 
-	void agregar(const Pago& p) {
-		auto items = cargarTodos();
-		items.agregaFinal(p);
-		guardar(items);
-	}
+    bool agregar(const Pago& p) {
+        auto items = cargarTodos();
+
+        for (int i = 0; i < items.longitud(); ++i)
+            if (items.obtenerPos(i).getReservaCodigo() == p.getReservaCodigo())
+                return false;
+
+        items.agregaFinal(p);
+        guardar(items);
+        return true;
+    }
 };

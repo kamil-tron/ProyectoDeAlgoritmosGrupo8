@@ -1,17 +1,22 @@
 #pragma once
-
 #include "RepoPagos.h"
 #include "RepoReservas.h"
 #include "Pago.h"
+#include "Reserva.h"
+#include "Lista.h"
+#include <string>
 
 class ServicioPagos {
 private:
-	RepoPagos    repoPagos;
-	RepoReservas repoReservas;
+    RepoPagos    repoPagos;
+    RepoReservas repoReservas;
+
 public:
-	ServicioPagos();
+    ServicioPagos();
 
-	bool procesarPago(const Pago& p);
+    bool procesarPago(const Pago& pago);
 
-	bool obtenerPagoPorReserva(int reservaId, Pago& p) const;
+    bool obtenerPagoPorReserva(const std::string& reservaCodigo, Pago& p) const;
+
+    Lista<Pago> listarPagosUsuario(const std::string& correo) const;
 };
