@@ -2,72 +2,89 @@
 
 #include <string>
 #include <sstream>
+#include "Asiento.h"
+#include "Lista.h"
+#include "RepoAsientos.h"
+
 using namespace std;
 
 class Vuelo {
 private:
-	int id_{};
-	string origen, destino, fecha;
-	double precio{};
-	int capacidad{};
-	int asientosDisponibles{};
+    int    id_{};
+    string origen, destino, fecha;
+    double precio_{};
+    int    capacidad_{};
 
 public:
-	Vuelo() = default;
+    Vuelo() = default;
 
-	Vuelo(int id, string origen, string destino, string fecha,
-		double precio, int capacidad)
-		: id_(id)
-		, origen(move(origen))
-		, destino(move(destino))
-		, fecha(move(fecha))
-		, precio(precio)
-		, capacidad(capacidad)
-		, asientosDisponibles(capacidad)
-	{
-	}
+    Vuelo(int id, string origen, string destino, string fecha,
+        double precio, int capacidad)
+        : id_(id)
+        , origen(move(origen))
+        , destino(move(destino))
+        , fecha(move(fecha))
+        , precio_(precio)
+        , capacidad_(capacidad)
+    {}
 
-	Vuelo(int id)
-		: id_(id)
-		, precio(0)
-		, capacidad(0)
-		, asientosDisponibles(0)
-	{
-	}
+    Vuelo(int id)
+        : id_(id)
+        , precio_(0)
+        , capacidad_(0)
+    {}
 
-	bool operator==(const Vuelo& other) const {
-		return id_ == other.id_;
-	}
+    bool operator==(const Vuelo& o) const { return id_ == o.id_; }
 
-	int getId() const { return id_; }
-	const string& getOrigen() const { return origen; }
-	const string& getDestino() const { return destino; }
-	const string& getFecha() const { return fecha; }
-	double getPrecio() const { return precio; }
-	int getCapacidad() const { return capacidad; }
-	int getAsientosDisponibles() const { return asientosDisponibles; }
+    // Getters
+    int getId() const { return id_; }
+    const string& getOrigen() const { return origen; }
+    const string& getDestino() const { return destino; }
+    const string& getFecha() const { return fecha; }
+    double getPrecio() const { return precio_; }
+    int getCapacidad() const { return capacidad_; }
 
-	void setPrecio(double p) { precio = p; }
-	void setCapacidad(int c) { capacidad = c; }
-	void setAsientosDisponibles(int n) { asientosDisponibles = n; }
+    // Setters
+    void setPrecio(double p) { precio_ = p; }
+    void setCapacidad(int c) { capacidad_ = c; }
 
-	string serialize() const {
-		ostringstream oss;
-		oss << id_ << ',' << origen << ',' << destino << ','
-			<< fecha << ',' << precio << ',' << capacidad << ','
-			<< asientosDisponibles;
-		return oss.str();
-	}
+    // Persistencia básica (solo cabecera)
+    string serialize() const {
+        ostringstream oss;
+        oss << id_ << ','
+            << origen << ','
+            << destino << ','
+            << fecha << ','
+            << precio_ << ','
+            << capacidad_;
+        return oss.str();
+    }
 
-	static Vuelo fromString(const string& s) {
-		istringstream iss(s);
-		Vuelo v;
-		char comma;
-		iss >> v.id_ >> comma;
-		getline(iss, v.origen, ',');
-		getline(iss, v.destino, ',');
-		getline(iss, v.fecha, ',');
-		iss >> v.precio >> comma >> v.capacidad >> comma >> v.asientosDisponibles;
-		return v;
-	}
+    static Vuelo fromString(const string& s) {
+        istringstream iss(s);
+        Vuelo v;
+        char comma;
+        iss >> v.id_ >> comma;
+        getline(iss, v.origen, ',');
+        getline(iss, v.destino, ',');
+        getline(iss, v.fecha, ',');
+        iss >> v.precio_ >> comma >> v.capacidad_;
+        return v;
+    }
+
+
+    Lista<Asiento> listarAsientos() const {
+        RepoAsientos repo;
+        return repo.listarPorVuelo(id_);
+    }
+
+    int contarAsientosDisponibles() const {
+        auto lista = listarAsientos();
+        int libres = 0;
+        for (int i = 0; i < lista.longitud(); ++i) {
+            if (!lista.obtenerPos(i).isOcupado())
+                ++libres;
+        }
+        return libres;
+    }
 };

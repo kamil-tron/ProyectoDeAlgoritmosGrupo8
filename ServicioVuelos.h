@@ -1,32 +1,34 @@
+// ServicioVuelos.h
 #pragma once
 
 #include "RepoVuelos.h"
+#include "RepoAsientos.h"
 #include "Lista.h"
+#include "Vuelo.h"
+#include "Asiento.h"
+
+using namespace std;
 
 class ServicioVuelos {
 private:
-	RepoVuelos repoVuelos;
+    RepoVuelos   repoVuelos;
+    RepoAsientos repoAsientos;
+
 public:
-	ServicioVuelos() = default;
+    ServicioVuelos() = default;
 
-	Lista<Vuelo> listarVuelos() const {
-		return repoVuelos.cargarTodos();
-	}
+    // Lista todos los vuelos
+    Lista<Vuelo> listarVuelos() const;
 
-	bool crearVuelo(const Vuelo& v) {
-		repoVuelos.agregar(v);
-		return true;
-	}
+    // Crea un vuelo y genera automáticamente sus asientos
+    bool crearVuelo(const Vuelo& v);
 
-	bool modificarVuelo(const Vuelo& v) {
-		return repoVuelos.actualizar(v);
-	}
+    // Modifica solo la cabecera del vuelo
+    bool modificarVuelo(const Vuelo& v);
 
-	bool eliminarVuelo(int id) {
-		return repoVuelos.eliminar(id);
-	}
+    // Elimina vuelo y todos sus asientos
+    bool eliminarVuelo(int id);
 
-	bool buscarVuelo(int id, Vuelo& v) const {
-		return repoVuelos.buscarPorId(id, v);
-	}
+    // Busca un vuelo por ID
+    bool buscarVuelo(int id, Vuelo& v) const;
 };

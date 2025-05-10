@@ -16,6 +16,25 @@ private:
 	using Comp = function<int(const T&, const T&)>;
 
 public:
+	Lista(const Lista& other) : ini(nullptr), lon(0) {          // 👉
+		Nodo<T>* aux = other.ini;
+		while (aux) {
+			agregaFinal(aux->get_Elem());
+			aux = aux->get_Sgte();
+		}
+	}
+
+	Lista& operator=(const Lista& other) {                      // 👉
+		if (this == &other) return *this;
+		while (!esVacia()) eliminaInicial();          // limpia actual
+		Nodo<T>* aux = other.ini;
+		while (aux) {
+			agregaFinal(aux->get_Elem());
+			aux = aux->get_Sgte();
+		}
+		return *this;
+	}
+
 	Lista() = default;
 	explicit Lista(Nodo<T>* pNodo) : ini(pNodo), lon(pNodo ? 1 : 0) {}
 	~Lista();
