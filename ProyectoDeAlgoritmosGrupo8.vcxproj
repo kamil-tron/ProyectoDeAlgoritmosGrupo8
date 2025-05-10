@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h" />
+    <ClInclude Include="Asiento.h" />
     <ClInclude Include="AuthService.h" />
     <ClInclude Include="Cola.h" />
     <ClInclude Include="FileManager.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="Pago.h" />
     <ClInclude Include="RepoAdmins.h" />
+    <ClInclude Include="RepoAsientos.h" />
     <ClInclude Include="RepoPagos.h" />
     <ClInclude Include="RepoReservas.h" />
     <ClInclude Include="RepoUsuarios.h" />
