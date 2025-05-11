@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Lista.h"
 #include "Vuelo.h"
 #include "Reserva.h"

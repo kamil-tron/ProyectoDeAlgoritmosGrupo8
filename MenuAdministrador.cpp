@@ -135,7 +135,7 @@ void MenuAdministrador::opcionVuelosMasCaros() {
         if (i >= ordenados.longitud()) return; // RECURSION base
         const auto& v = ordenados.obtenerPos(i);
         cout << v.getId() << " | " << v.getOrigen() << " | " << v.getDestino() << " | "
-            << v.getFecha() << " | S/ " << fixed << setprecision(2) << v.getPrecio() << " | "
+            << v.getFecha() << " | " << fixed << setprecision(2) << v.getPrecio() << " | "
             << v.getAsientosDisponibles() << "\n";
         imprimir(i + 1);                        // RECURSION
         };
@@ -153,7 +153,7 @@ void MenuAdministrador::opcionVuelosProximos() {
         if (i >= vuelos.longitud()) return;    // RECURSION base
         const auto& v = vuelos.obtenerPos(i);
         cout << v.getId() << " | " << v.getOrigen() << " | " << v.getDestino() << " | "
-            << v.getFecha() << " | S/ " << fixed << setprecision(2) << v.getPrecio() << " | "
+            << v.getFecha() << " | " << fixed << setprecision(2) << v.getPrecio() << " | "
             << v.getAsientosDisponibles() << "\n";
         imprimir(i + 1);                        // RECURSION
         };

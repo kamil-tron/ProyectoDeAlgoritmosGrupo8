@@ -1,4 +1,3 @@
-// MenuInicio.h
 #pragma once
 #include "AuthService.h"
 #include "Sesion.h"

@@ -5,11 +5,11 @@ using namespace std;
 
 class Pago {
 private:
-    string reservaCodigo;      // antes era int reservaId;
+    string reservaCodigo;
     double monto;
-    string metodo;             // ej. "TC", "TD", "YAPE"
-    string estado;             // "COMPLETADO" | "FALLIDO"
-    string fechaHora;          // timestamp completo
+    string metodo;
+    string estado;
+    string fechaHora;
 
 public:
     Pago() = default;
@@ -23,7 +23,7 @@ public:
     {}
 
     const string& getReservaCodigo() const { return reservaCodigo; }
-    double getMonto()        const { return monto; }
+    double getMonto() const { return monto; }
     const string& getMetodo() const { return metodo; }
     const string& getEstado() const { return estado; }
     const string& getFechaHora() const { return fechaHora; }

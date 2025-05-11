@@ -31,14 +31,14 @@ void MenuInicio::ejecutar() {
 	while (true) {
 		mostrar();
 		cin >> op;
-		cin.ignore(10000, '\n');   // sin usar <limits>
+		cin.ignore(10000, '\n');
 		switch (op) {
 		case 1:
 			opcionRegistrarse();
 			break;
 		case 2:
 			opcionIniciarSesion();
-			if (sesion) return;   // sesión iniciada, salgo al app
+			if (sesion) return;
 			break;
 		case 3:
 			opcionSalir();

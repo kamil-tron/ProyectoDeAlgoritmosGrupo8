@@ -1,4 +1,3 @@
-// ServicioVuelos.cpp
 #include "ServicioVuelos.h"
 
 Lista<Vuelo> ServicioVuelos::listarVuelos() const {
@@ -6,10 +5,8 @@ Lista<Vuelo> ServicioVuelos::listarVuelos() const {
 }
 
 bool ServicioVuelos::crearVuelo(const Vuelo& v) {
-    // 1) Guardar la cabecera del vuelo
     repoVuelos.agregar(v);
 
-    // 2) Generar asientos automáticamente según capacidad
     int total = v.getCapacidad();
     int count = 0;
     int fila = 1;
@@ -19,7 +16,6 @@ bool ServicioVuelos::crearVuelo(const Vuelo& v) {
 
     while (count < total) {
         for (char letra = inicio; letra <= fin && count < total; ++letra) {
-            // Cada asiento: (vueloId, fila, letra)
             repoAsientos.agregar(Asiento(v.getId(), fila, letra));
             ++count;
         }
@@ -30,15 +26,12 @@ bool ServicioVuelos::crearVuelo(const Vuelo& v) {
 }
 
 bool ServicioVuelos::modificarVuelo(const Vuelo& v) {
-    // Si cambias solo la cabecera (precio, fecha, etc.), no tocamos asientos
     return repoVuelos.actualizar(v);
 }
 
 bool ServicioVuelos::eliminarVuelo(int id) {
-    // 1) Eliminar vuelo
     bool ok = repoVuelos.eliminar(id);
     if (!ok) return false;
-    // 2) Eliminar todos los asientos asociados
     repoAsientos.eliminarPorVuelo(id);
     return true;
 }

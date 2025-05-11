@@ -6,7 +6,7 @@ private:
 	UserEntity* usuarioActual = nullptr;
 public:
 	Sesion() = default;
-	~Sesion() = default;      // Ya no hacemos delete aquí
+	~Sesion() = default;
 
 	Sesion(const Sesion&) = delete;
 	Sesion& operator=(const Sesion&) = delete;

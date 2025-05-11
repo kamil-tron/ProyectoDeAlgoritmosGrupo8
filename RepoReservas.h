@@ -11,7 +11,6 @@ class RepoReservas : public FileManager<Reserva> {
 public:
     RepoReservas() : FileManager("reservas.txt") {}
 
-    // 1) Crear una nueva reserva (evita duplicados por código)
     bool crearReserva(const Reserva& r) {
         auto items = cargarTodos();
         for (int i = 0; i < items.longitud(); ++i)
@@ -22,7 +21,6 @@ public:
         return true;
     }
 
-    // 2) Buscar por código
     bool buscarPorCodigo(const string& codigo, Reserva& out) const {
         auto items = cargarTodos();
         for (int i = 0; i < items.longitud(); ++i) {
@@ -35,8 +33,6 @@ public:
         return false;
     }
 
-    // 3) Listar todas las reservas de un usuario (por email)
-    //    Incluye pendientes, confirmadas y canceladas
     Lista<Reserva> listarReservasUsuario(const string& email) const {
         Lista<Reserva> result;
         auto items = cargarTodos();
@@ -48,7 +44,6 @@ public:
         return result;
     }
 
-    // 4) Actualizar una reserva existente (coincide por código)
     bool actualizar(const Reserva& r) {
         auto items = cargarTodos();
         for (int i = 0; i < items.longitud(); ++i) {
@@ -61,14 +56,13 @@ public:
         return false;
     }
 
-    // 5) Cancela una reserva (si no lo estaba) y persiste el nuevo estado
     bool cancelarReserva(const string& codigo) {
         Reserva r;
         if (!buscarPorCodigo(codigo, r))
             return false;
         if (r.getEstado() == EstadoReserva::CANCELADA)
             return false;
-        r.cancelar();              // pasa a EstadoReserva::CANCELADA
+        r.cancelar();
         return actualizar(r);
     }
 };

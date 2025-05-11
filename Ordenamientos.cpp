@@ -1,4 +1,4 @@
-﻿#include "Ordenamientos.h"
+#include "Ordenamientos.h"
 #include <string>
 void insertionSortPorPrecioAsc(Lista<Vuelo>& lista) {
     int n = lista.longitud();
