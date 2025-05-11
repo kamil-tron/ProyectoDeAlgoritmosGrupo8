@@ -40,7 +40,7 @@ public:
     }
 
     void mostrar() const override {
-        cout << "\n--- MENU DE ADMINISTRADOR ---\n";
+        cout << "\n--- MENU DE ADMINISTRADOR AIR PACIFIC---\n";
         MenuBase::mostrar();
     }
 };

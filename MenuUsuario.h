@@ -53,9 +53,9 @@ public:
     }
 
     void mostrar() const override {
-        cout << "-------------------------------\n"
-            << "     MENU DE USUARIO - JETSMART\n"
-            << "-------------------------------\n";
+        cout<< "--------------------------------------\n"
+            << "     MENU DE USUARIO - AIR  PACIFIC\n"
+            << "--------------------------------------\n";
         MenuBase::mostrar();
     }
 };
