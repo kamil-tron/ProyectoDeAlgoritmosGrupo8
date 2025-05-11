@@ -133,6 +133,7 @@
     <ClCompile Include="MenuAdministrador.cpp" />
     <ClCompile Include="MenuInicio.cpp" />
     <ClCompile Include="MenuUsuario.cpp" />
+    <ClCompile Include="Ordenamientos.cpp" />
     <ClCompile Include="Pago.cpp" />
     <ClCompile Include="ProyectoDeAlgoritmosGrupo8.cpp" />
     <ClCompile Include="Reserva.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="ContadorDeDias.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="MatrizColor.h" />
+    <ClInclude Include="Ordenamientos.h" />
     <ClInclude Include="Pila.h" />
     <ClInclude Include="JetSmartApp.h" />
     <ClInclude Include="Lista.h" />

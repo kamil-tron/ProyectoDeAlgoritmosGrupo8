@@ -34,7 +34,7 @@ public:
         agregarOpcion(new MenuOpcionTexto("Historial de reservas", [this] { opcionHistorialReservas(); }));
         agregarOpcion(new MenuOpcionTexto("Ver usuarios registrados", [this] { opcionVerUsuarios(); }));
         agregarOpcion(new MenuOpcionTexto("Vuelos mas caros (precio desc.)", [this] { opcionVuelosMasCaros(); }));
-        agregarOpcion(new MenuOpcionTexto("Vuelos proximos por fecha (FIFO)", [this] { opcionVuelosProximos(); }));
+        agregarOpcion(new MenuOpcionTexto("Vuelos proximos por fecha", [this] { opcionVuelosProximos(); }));
         agregarOpcion(new MenuOpcionTexto("Cerrar sesion", [this] { opcionCerrarSesion(); }));
     }
 

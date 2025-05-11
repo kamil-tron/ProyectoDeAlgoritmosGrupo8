@@ -9,6 +9,7 @@
 #include <iomanip>
 #include "Usuario.h"
 #include "AuthService.h"
+#include "Ordenamientos.h"
 
 using namespace std;
 
@@ -403,7 +404,6 @@ void MenuUsuario::reporteReservasCanceladas(int dias) {
 	if (!cont) cout << "No se encontraron.\n";
 }
 
-struct PrecioReserva { double precio; Reserva res; };
 
 void ordenarPorPrecio(Lista<PrecioReserva>& lst) {
 	for (int i = 0; i < lst.longitud(); ++i) {
@@ -419,48 +419,32 @@ void ordenarPorPrecio(Lista<PrecioReserva>& lst) {
 }
 
 void MenuUsuario::reporteVuelosBaratos(int k) {
-	auto reservas = svcReservas.listarReservasUsuario(
-		sesion.getUsuarioActual().getCorreo());
+    auto reservas = svcReservas.listarReservasUsuario(
+        sesion.getUsuarioActual().getCorreo());
 
-	auto esConfirmada = [](const Reserva& r) {
-		return r.getEstado() == EstadoReserva::CONFIRMADA;
-		};
+    Lista<PrecioReserva> precios;
+    for (int i = 0; i < reservas.longitud(); ++i) {
+        const Reserva& r = reservas.obtenerPos(i);
+        if (r.getEstado() != EstadoReserva::CONFIRMADA) continue;
+        Vuelo v;  svcVuelos.buscarVuelo(r.getVueloId(), v);
+        precios.agregaFinal({ v.getPrecio(), r });
+    }
 
-	Lista<PrecioReserva> precios;
-	for (int i = 0; i < reservas.longitud(); ++i) {
-		const Reserva& r = reservas.obtenerPos(i);
-		if (!esConfirmada(r)) continue;
-		Vuelo v; svcVuelos.buscarVuelo(r.getVueloId(), v);
-		precios.agregaFinal({ v.getPrecio(), r });
-	}
+    if (precios.esVacia()) {
+        cout << "\nNo hay reservas confirmadas.\n";
+        return;
+    }
 
-	if (precios.esVacia()) {
-		cout << "\nNo hay reservas confirmadas.\n";
-		return;
-	}
+    insertionSortPorPrecioAsc(precios);                    // ↑ precio
 
-	auto compararPrecio = [](const PrecioReserva& a, const PrecioReserva& b) {
-		return a.precio > b.precio;
-		};
-	for (int i = 0; i < precios.longitud(); ++i) {
-		for (int j = 0; j + 1 < precios.longitud(); ++j) {
-			auto a = precios.obtenerPos(j);
-			auto b = precios.obtenerPos(j + 1);
-			if (compararPrecio(a, b)) {
-				precios.modificarPos(b, j);
-				precios.modificarPos(a, j + 1);
-			}
-		}
-	}
-
-	cout << "\nTOP " << k << " VUELOS MaS BARATOS\n";
-	for (int i = 0; i < precios.longitud() && i < k; ++i) {
-		PrecioReserva pr = precios.obtenerPos(i);
-		Vuelo v; svcVuelos.buscarVuelo(pr.res.getVueloId(), v);
+    cout << "\nTOP " << k << " VUELOS MAS BARATOS\n";
+    for (int i = 0; i < precios.longitud() && i < k; ++i) {
+        const PrecioReserva& pr = precios.obtenerPos(i);
+        Vuelo v;  svcVuelos.buscarVuelo(pr.res.getVueloId(), v);
         cout << i + 1 << ") " << v.getOrigen() << "-" << v.getDestino()
             << " (" << pr.res.getFecha() << ") - S/ "
             << fixed << setprecision(2) << pr.precio << '\n';
-	}
+    }
 }
 
 struct DestinoCount { string destino; int cant; };

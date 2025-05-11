@@ -1,5 +1,6 @@
 ﻿#include "MenuAdministrador.h"
 #include "Pila.h"
+#include "Ordenamientos.h"
 #include <iostream>
 #include <iomanip>
 #include "Cola.h"
@@ -144,28 +145,13 @@ void MenuAdministrador::opcionVerUsuarios() {
 
 void MenuAdministrador::opcionVuelosMasCaros() {
     Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
-
-    for (int i = 0; i < ordenados.longitud(); ++i) {
-        for (int j = 0; j < ordenados.longitud() - 1; ++j) {
-            Vuelo a = ordenados.obtenerPos(j);
-            Vuelo b = ordenados.obtenerPos(j + 1);
-            if (a.getPrecio() > b.getPrecio()) {
-                ordenados.modificarPos(b, j);
-                ordenados.modificarPos(a, j + 1);
-            }
-        }
-    }
-
-    Pila<Vuelo> pila;
-    for (int i = 0; i < ordenados.longitud(); ++i)
-        pila.apilar(ordenados.obtenerPos(i));
+    selectionSortPorPrecioDesc(ordenados); // ↓ precio
 
     cout << "\nVUELOS MAS CAROS (precio descendente)\n"
         << "ID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
 
-    while (!pila.esVacia()) {
-        Vuelo v = pila.cima();
-        pila.desapilar();
+    for (int i = 0; i < ordenados.longitud(); ++i) {
+        Vuelo v = ordenados.obtenerPos(i);
         cout << v.getId() << " | "
             << v.getOrigen() << " | "
             << v.getDestino() << " | "
@@ -175,43 +161,20 @@ void MenuAdministrador::opcionVuelosMasCaros() {
     }
 }
 
-static int claveFecha(const std::string& f) {
-    int d = stoi(f.substr(0, 2));
-    int m = stoi(f.substr(3, 2));
-    int y = stoi(f.substr(6, 4));
-    return y * 10000 + m * 100 + d;
-}
-
 void MenuAdministrador::opcionVuelosProximos() {
     Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
-
-    for (int i = 0; i < vuelos.longitud(); ++i) {
-        for (int j = 0; j < vuelos.longitud() - 1; ++j) {
-            Vuelo a = vuelos.obtenerPos(j);
-            Vuelo b = vuelos.obtenerPos(j + 1);
-            if (claveFecha(a.getFecha()) > claveFecha(b.getFecha())) {
-                vuelos.modificarPos(b, j);
-                vuelos.modificarPos(a, j + 1);
-            }
-        }
-    }
-
-    Cola<Vuelo> cola;
-    for (int i = 0; i < vuelos.longitud(); ++i)
-        cola.encolar(vuelos.obtenerPos(i));
+    shellSortPorFechaAsc(vuelos); // ↑ fecha
 
     cout << "\nVUELOS PROXIMOS (orden cronologico)\n"
         << "ID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
 
-    while (!cola.estaVacia()) {
-        Vuelo v = cola.frente();
-        cola.desencolar();
+    for (int i = 0; i < vuelos.longitud(); ++i) {
+        Vuelo v = vuelos.obtenerPos(i);
         cout << v.getId() << " | "
             << v.getOrigen() << " | "
             << v.getDestino() << " | "
             << v.getFecha() << " | S/ "
-            << fixed << setprecision(2)
-            << v.getPrecio() << " | "
+            << fixed << setprecision(2) << v.getPrecio() << " | "
             << v.getAsientosDisponibles() << '\n';
     }
 }
