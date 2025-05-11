@@ -1,6 +1,18 @@
 ﻿#include "Ordenamientos.h"
 #include <string>
-
+void insertionSortPorPrecioAsc(Lista<Vuelo>& lista) {
+    int n = lista.longitud();
+    for (int i = 1; i < n; ++i) {
+        Vuelo aux = lista.obtenerPos(i);
+        int j = i - 1;
+        // mientras queden elementos y su precio sea mayor que aux.precio
+        while (j >= 0 && lista.obtenerPos(j).getPrecio() > aux.getPrecio()) {
+            lista.modificarPos(lista.obtenerPos(j), j + 1);
+            --j;
+        }
+        lista.modificarPos(aux, j + 1);
+    }
+}
 /* ───────── Selection Sort (precio ↓) ───────── */
 void selectionSortPorPrecioDesc(Lista<Vuelo>& lista) {
     int n = lista.longitud();

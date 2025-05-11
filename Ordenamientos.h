@@ -9,6 +9,7 @@ struct PrecioReserva {
 };
 
 /* ---------- prototipos ---------- */
+void insertionSortPorPrecioAsc(Lista<Vuelo>& lista);
 void selectionSortPorPrecioDesc(Lista<Vuelo>& lista);      // precio ↓
 void insertionSortPorPrecioAsc(Lista<PrecioReserva>& lista); // precio ↑
 int  claveFecha(const std::string& f);                     // dd/mm/yyyy → yyyymmdd

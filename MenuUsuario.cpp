@@ -77,15 +77,7 @@ void MenuUsuario::opcionBuscarYReservar() {
         }
 
         // Ordenar por precio (burbuja)
-        for (int i = 0; i < todos.longitud(); ++i)
-            for (int j = 0; j < todos.longitud() - 1; ++j) {
-                auto a = todos.obtenerPos(j);
-                auto b = todos.obtenerPos(j + 1);
-                if (a.getPrecio() > b.getPrecio()) {
-                    todos.modificarPos(b, j);
-                    todos.modificarPos(a, j + 1);
-                }
-            }
+        insertionSortPorPrecioAsc(todos);
 
         // Mostrar vuelos disponibles
         cout << "\nVUELOS DISPONIBLES\n";
