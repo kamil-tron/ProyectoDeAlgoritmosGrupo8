@@ -11,7 +11,7 @@ using namespace std;
 void MenuAdministrador::opcionRegistrarVuelo() {
     string origen, destino, fecha;
     double precio;
-    int capacidad = 0;
+    int capacidad = 0;  
 
     cout << "Origen: ";   getline(cin, origen);
     cout << "Destino: ";  getline(cin, destino);

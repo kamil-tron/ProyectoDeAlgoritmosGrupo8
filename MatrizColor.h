@@ -97,7 +97,7 @@ void generarmatriz() {
             if (matriz[f][c] == 0) aplicarColorPorOpcion(0);
             if (matriz[f][c] == 1) aplicarColorPorOpcion(10);
             if (matriz[f][c] == 2) aplicarColorPorOpcion(2);
-            if (matriz[f][c] == 3) aplicarColorPorOpcion(9);
+            if (matriz[f][c] == 3) aplicarColorPorOpcion(1);
             if (matriz[f][c] == 4) aplicarColorPorOpcion(6);
             if (matriz[f][c] == 5) aplicarColorPorOpcion(2);
             if (matriz[f][c] == 6) aplicarColorPorOpcion(11);
