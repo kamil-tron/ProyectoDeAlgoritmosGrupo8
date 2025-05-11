@@ -9,7 +9,7 @@
 
 class MenuAdministrador : public MenuBase {
 private:
-    ServicioVuelos svcVuelos;
+    ServicioVuelos   svcVuelos;
     ServicioReservas svcReservas;
 
     void opcionRegistrarVuelo();
@@ -23,11 +23,9 @@ private:
     void opcionVuelosMasCaros();
     void opcionVuelosProximos();
     void opcionCerrarSesion();
-  
 
 public:
-    explicit MenuAdministrador(Sesion& s)
-        : MenuBase(s) {
+    MenuAdministrador(Sesion& s) : MenuBase(s) {
         agregarOpcion(new MenuOpcionTexto("Registrar nuevo vuelo", [this] { opcionRegistrarVuelo(); }));
         agregarOpcion(new MenuOpcionTexto("Ver todos los vuelos", [this] { opcionVerTodosVuelos(); }));
         agregarOpcion(new MenuOpcionTexto("Modificar vuelo", [this] { opcionModificarVuelo(); }));

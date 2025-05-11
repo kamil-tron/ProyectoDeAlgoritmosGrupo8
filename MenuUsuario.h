@@ -39,7 +39,7 @@ private:
     void reporteFrecuenciaDestinos();
 
 public:
-    explicit MenuUsuario(Sesion& s) : MenuBase(s) {
+    MenuUsuario(Sesion& s) : MenuBase(s) {
         agregarOpcion(new MenuOpcionTexto("Buscar vuelos / Nueva reserva",
             [this] { opcionBuscarYReservar(); }));
         agregarOpcion(new MenuOpcionTexto("Mis reservas",
