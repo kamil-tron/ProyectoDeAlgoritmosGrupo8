@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <sstream>
@@ -48,7 +48,7 @@ public:
     void setPrecio(double p) { precio_ = p; }
     void setCapacidad(int c) { capacidad_ = c; }
 
-    // Persistencia b�sica (solo cabecera)
+    // Persistencia básica (solo cabecera)
     string serialize() const {
         ostringstream oss;
         oss << id_ << ','
@@ -86,5 +86,38 @@ public:
                 ++libres;
         }
         return libres;
+    }
+
+    int  getAsientosDisponibles() const { return contarAsientosDisponibles(); }
+
+    void setAsientosDisponibles(int nuevosLibres) {
+        RepoAsientos repo;
+        auto asientos = repo.listarPorVuelo(id_);
+        int libresActuales = contarAsientosDisponibles();
+        int diferencia = nuevosLibres - libresActuales;
+
+        // Si necesito restar ⇒ ocupo asientos libres
+        if (diferencia < 0) {
+            diferencia = -diferencia;
+            for (int i = 0; i < asientos.longitud() && diferencia; ++i) {
+                if (!asientos.obtenerPos(i).isOcupado()) {
+                    Asiento a = asientos.obtenerPos(i);
+                    a.setOcupado(true);
+                    repo.actualizar(a);
+                    --diferencia;
+                }
+            }
+        }
+        // Si necesito sumar ⇒ libero asientos ocupados
+        else if (diferencia > 0) {
+            for (int i = 0; i < asientos.longitud() && diferencia; ++i) {
+                if (asientos.obtenerPos(i).isOcupado()) {
+                    Asiento a = asientos.obtenerPos(i);
+                    a.setOcupado(false);
+                    repo.actualizar(a);
+                    --diferencia;
+                }
+            }
+        }
     }
 };

@@ -1,26 +1,30 @@
-// MenuAdministrador.cpp
-#include "MenuAdministrador.h"
+ï»¿#include "MenuAdministrador.h"
 #include "Pila.h"
 #include <iostream>
+#include <iomanip>
+#include "Cola.h"
 using namespace std;
 
 void MenuAdministrador::opcionRegistrarVuelo() {
     string origen, destino, fecha;
     double precio;
-    int capacidad=0;
-    cout << "Origen: "; getline(cin, origen);
+    int capacidad = 0;
+
+    cout << "Origen: ";  getline(cin, origen);
     cout << "Destino: "; getline(cin, destino);
     cout << "Fecha (dd/mm/aaaa): "; getline(cin, fecha);
     cout << "Precio: "; cin >> precio;
-while(capacidad>120||capacidad<1){
-    cout << "Capacidad de asientos: "; cin >> capacidad;
-    cin.ignore(10000, '\n');
-if(capacidad >120) cout<<"Capacidad excedida\n";
-if (capacidad <1) cout << "Capacidad insuficiente\n";
-}
+
+    while (capacidad > 120 || capacidad < 1) {
+        cout << "Capacidad de asientos: "; cin >> capacidad;
+        cin.ignore(10000, '\n');
+        if (capacidad > 120) cout << "Capacidad excedida\n";
+        if (capacidad < 1)   cout << "Capacidad insuficiente\n";
+    }
 
     int id = svcVuelos.listarVuelos().longitud() + 1;
     Vuelo v(id, origen, destino, fecha, precio, capacidad);
+
     if (svcVuelos.crearVuelo(v))
         cout << "Vuelo registrado exitosamente con ID: " << id << "\n";
     else
@@ -57,7 +61,7 @@ void MenuAdministrador::opcionModificarVuelo() {
 
     double nuevoPrecio;
     int nuevaCap;
-    cout << "Nuevo precio: "; cin >> nuevoPrecio;
+    cout << "Nuevo precio: ";   cin >> nuevoPrecio;
     cout << "Nueva capacidad: "; cin >> nuevaCap;
     cin.ignore(10000, '\n');
 
@@ -75,7 +79,7 @@ void MenuAdministrador::opcionEliminarVuelo() {
     cout << "Ingrese ID del vuelo a eliminar: "; cin >> id;
     cin.ignore(10000, '\n');
 
-    cout << "¿Seguro que desea eliminar este vuelo? (s/n): ";
+    cout << "Seguro que desea eliminar este vuelo? (s/n): ";
     char resp; cin >> resp;
     cin.ignore(10000, '\n');
 
@@ -100,14 +104,14 @@ void MenuAdministrador::opcionEliminarUlitimoVuelo() {
 
     Vuelo ultimo = pila.cima();
 
-    cout << "¿Seguro que desea eliminar el ultimo vuelo agregado (ID: "
+    cout << "Seguro que desea eliminar el ultimo vuelo agregado (ID: "
         << ultimo.getId() << ")? (s/n): ";
     char resp; cin >> resp;
     cin.ignore(10000, '\n');
 
     if (resp == 's' || resp == 'S') {
         if (svcVuelos.eliminarVuelo(ultimo.getId()))
-            cout << "Último vuelo eliminado exitosamente.\n";
+            cout << "Ultimo vuelo eliminado exitosamente.\n";
         else
             cout << "Error al eliminar el vuelo.\n";
     }
@@ -115,7 +119,7 @@ void MenuAdministrador::opcionEliminarUlitimoVuelo() {
 
 void MenuAdministrador::opcionHistorialReservas() {
     auto lista = svcReservas.listarReservasUsuario("");
-    cout << "Código | Usuario | Vuelo ID | Fecha | Asientos\n";
+    cout << "Codigo | Usuario | Vuelo ID | Fecha | Asientos\n";
     for (int i = 0; i < lista.longitud(); ++i) {
         auto r = lista.obtenerPos(i);
         cout << r.getCodigo() << " | "
@@ -133,8 +137,82 @@ void MenuAdministrador::opcionVerUsuarios() {
     for (int i = 0; i < lista.longitud(); ++i) {
         auto u = lista.obtenerPos(i);
         cout << (i + 1) << ". "
-            << u.getNombre() << " " << u.getApellido()
+            << u.getNombre() << ' ' << u.getApellido()
             << " - " << u.getCorreo() << "\n";
+    }
+}
+
+void MenuAdministrador::opcionVuelosMasCaros() {
+    Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
+
+    for (int i = 0; i < ordenados.longitud(); ++i) {
+        for (int j = 0; j < ordenados.longitud() - 1; ++j) {
+            Vuelo a = ordenados.obtenerPos(j);
+            Vuelo b = ordenados.obtenerPos(j + 1);
+            if (a.getPrecio() > b.getPrecio()) {
+                ordenados.modificarPos(b, j);
+                ordenados.modificarPos(a, j + 1);
+            }
+        }
+    }
+
+    Pila<Vuelo> pila;
+    for (int i = 0; i < ordenados.longitud(); ++i)
+        pila.apilar(ordenados.obtenerPos(i));
+
+    cout << "\nVUELOS MAS CAROS (precio descendente)\n"
+        << "ID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
+
+    while (!pila.esVacia()) {
+        Vuelo v = pila.cima();
+        pila.desapilar();
+        cout << v.getId() << " | "
+            << v.getOrigen() << " | "
+            << v.getDestino() << " | "
+            << v.getFecha() << " | S/ "
+            << fixed << setprecision(2) << v.getPrecio() << " | "
+            << v.getAsientosDisponibles() << '\n';
+    }
+}
+
+static int claveFecha(const std::string& f) {
+    int d = stoi(f.substr(0, 2));
+    int m = stoi(f.substr(3, 2));
+    int y = stoi(f.substr(6, 4));
+    return y * 10000 + m * 100 + d;
+}
+
+void MenuAdministrador::opcionVuelosProximos() {
+    Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
+
+    for (int i = 0; i < vuelos.longitud(); ++i) {
+        for (int j = 0; j < vuelos.longitud() - 1; ++j) {
+            Vuelo a = vuelos.obtenerPos(j);
+            Vuelo b = vuelos.obtenerPos(j + 1);
+            if (claveFecha(a.getFecha()) > claveFecha(b.getFecha())) {
+                vuelos.modificarPos(b, j);
+                vuelos.modificarPos(a, j + 1);
+            }
+        }
+    }
+
+    Cola<Vuelo> cola;
+    for (int i = 0; i < vuelos.longitud(); ++i)
+        cola.encolar(vuelos.obtenerPos(i));
+
+    cout << "\nVUELOS PROXIMOS (orden cronologico)\n"
+        << "ID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
+
+    while (!cola.estaVacia()) {
+        Vuelo v = cola.frente();
+        cola.desencolar();
+        cout << v.getId() << " | "
+            << v.getOrigen() << " | "
+            << v.getDestino() << " | "
+            << v.getFecha() << " | S/ "
+            << fixed << setprecision(2)
+            << v.getPrecio() << " | "
+            << v.getAsientosDisponibles() << '\n';
     }
 }
 

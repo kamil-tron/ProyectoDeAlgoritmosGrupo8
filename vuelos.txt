@@ -1,3 +1,1 @@
 6,Lima,Apurimac,20/09/2025,200,120
-3,Cajamarca,Iraq,20/20/2020,10,50
-

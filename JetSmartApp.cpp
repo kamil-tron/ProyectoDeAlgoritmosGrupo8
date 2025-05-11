@@ -1,20 +1,18 @@
-﻿// JetSmartApp.cpp
-#include "JetSmartApp.h"
+﻿#include "JetSmartApp.h"
 
 using namespace std;
 
 void JetSmartApp::run() {
 	while (true) {
 		MenuInicio inicio;
-		inicio.ejecutar();               // login / registro / salir
+		inicio.ejecutar();
 
 		Sesion* ses = inicio.getSesion();
-		if (!ses) {                      // usuario eligió «Salir»
+		if (!ses) {
 			cout << "Saliendo del sistema...\n";
 			break;
 		}
 
-		// ── menú según rol ──────────────────────────────────────
 		int op = 0;
 		if (ses->getRol() == RolEnum::ADMIN) {
 			MenuAdministrador menu(*ses);
@@ -22,9 +20,9 @@ void JetSmartApp::run() {
 				menu.mostrar();
 				cout << "\nIngrese una opcion: ";
 				cin >> op;
-				cin.ignore(10000, '\n');  // sin <limits>
-				menu.ejecutar(op);        // 7 = cerrar sesión
-			} while (op != 8);
+				cin.ignore(10000, '\n');
+				menu.ejecutar(op);
+			} while (op != 10);
 		}
 		else {
 			MenuUsuario menu(*ses);
@@ -32,8 +30,8 @@ void JetSmartApp::run() {
 				menu.mostrar();
 				cout << "\nIngrese una opcion: ";
 				cin >> op;
-				cin.ignore(10000, '\n');  // sin <limits>
-				menu.ejecutar(op);        // 6 = cerrar sesión
+				cin.ignore(10000, '\n');
+				menu.ejecutar(op);
 			} while (op != 5);
 		}
 
