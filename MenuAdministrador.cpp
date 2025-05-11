@@ -1,9 +1,10 @@
 ﻿#include "MenuAdministrador.h"
 #include "Pila.h"
+#include "Cola.h"
 #include "Ordenamientos.h"
 #include <iostream>
 #include <iomanip>
-#include "Cola.h"
+
 using namespace std;
 
 void MenuAdministrador::opcionRegistrarVuelo() {
@@ -176,6 +177,34 @@ void MenuAdministrador::opcionVuelosProximos() {
             << v.getFecha() << " | S/ "
             << fixed << setprecision(2) << v.getPrecio() << " | "
             << v.getAsientosDisponibles() << '\n';
+    }
+}
+void MenuAdministrador::opcionEliminarPrimerVuelo()
+{
+    auto lista = svcVuelos.listarVuelos();
+    if (lista.esVacia()) {
+        cout << "No hay vuelos registrados.\n";
+        return;
+    }
+
+    // 1) Construimos cola FIFO con el mismo orden de registro
+    Cola<Vuelo> cola;
+    for (int i = 0; i < lista.longitud(); ++i)
+        cola.encolar(lista.obtenerPos(i));
+
+    // 2) El primero en la cola es el primer vuelo creado
+    Vuelo primero = cola.frente();
+
+    cout << "Seguro que desea eliminar el PRIMER vuelo registrado (ID: "
+        << primero.getId() << ")? (s/n): ";
+    char resp; cin >> resp;
+    cin.ignore(10000, '\n');
+
+    if (resp == 's' || resp == 'S') {
+        if (svcVuelos.eliminarVuelo(primero.getId()))
+            cout << "Primer vuelo eliminado exitosamente.\n";
+        else
+            cout << "Error al eliminar el vuelo.\n";
     }
 }
 

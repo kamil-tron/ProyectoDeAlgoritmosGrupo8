@@ -16,12 +16,14 @@ private:
     void opcionVerTodosVuelos();
     void opcionModificarVuelo();
     void opcionEliminarVuelo();
+    void opcionEliminarPrimerVuelo();
     void opcionEliminarUlitimoVuelo();
     void opcionHistorialReservas();
     void opcionVerUsuarios();
     void opcionVuelosMasCaros();
     void opcionVuelosProximos();
     void opcionCerrarSesion();
+  
 
 public:
     explicit MenuAdministrador(Sesion& s)
@@ -31,6 +33,7 @@ public:
         agregarOpcion(new MenuOpcionTexto("Modificar vuelo", [this] { opcionModificarVuelo(); }));
         agregarOpcion(new MenuOpcionTexto("Eliminar vuelo", [this] { opcionEliminarVuelo(); }));
         agregarOpcion(new MenuOpcionTexto("Eliminar ultimo vuelo agregado", [this] { opcionEliminarUlitimoVuelo(); }));
+        agregarOpcion(new MenuOpcionTexto("Eliminar primer vuelo agregado", [this] { opcionEliminarPrimerVuelo(); }));
         agregarOpcion(new MenuOpcionTexto("Historial de reservas", [this] { opcionHistorialReservas(); }));
         agregarOpcion(new MenuOpcionTexto("Ver usuarios registrados", [this] { opcionVerUsuarios(); }));
         agregarOpcion(new MenuOpcionTexto("Vuelos mas caros (precio desc.)", [this] { opcionVuelosMasCaros(); }));
