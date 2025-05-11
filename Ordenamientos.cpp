@@ -6,13 +6,14 @@ void selectionSortPorPrecioDesc(Lista<Vuelo>& lista) {
     int n = lista.longitud();
     for (int i = 0; i < n - 1; ++i) {
         int pMayor = i;
-        for (int j = i + 1; j < n; ++j)
+        for (int j = i + 1; j < n; ++j) {
             if (lista.obtenerPos(j).getPrecio() > lista.obtenerPos(pMayor).getPrecio())
                 pMayor = j;
-
+        }
         if (pMayor != i) {
+            Vuelo tmp = lista.obtenerPos(i);
             lista.modificarPos(lista.obtenerPos(pMayor), i);
-            lista.modificarPos(lista.obtenerPos(i), pMayor);
+            lista.modificarPos(tmp, pMayor);
         }
     }
 }
