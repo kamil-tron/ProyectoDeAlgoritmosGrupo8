@@ -14,24 +14,21 @@ using namespace std;
 
 class MenuUsuario : public MenuBase {
 private:
-    ServicioVuelos   svcVuelos;
+    ServicioVuelos svcVuelos;
     ServicioReservas svcReservas;
-    ServicioPagos    svcPagos;
+    ServicioPagos svcPagos;
 
-    /*------------------ helpers ------------------*/
     void reservarVuelo(int vueloId, const string& fecha);
     void imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index);
     int contarConfirmadasRec(const Lista<Reserva>& lista, int i);
     double imprimirHistorialRec(const Lista<Reserva>& reservas, int i);
 
-    /*------------------ opciones de menú ------------------*/
     void opcionBuscarYReservar();
     void opcionVerReservas();
     void opcionVerPerfil();
-    void opcionReportes();                // nuevo
+    void opcionReportes();
     void opcionCerrarSesion();
 
-    /*------------------ métodos de reporte ------------------*/
     void reporteHistorialReservas();
     void reporteGastoPorMetodo();
     void reporteReservasCanceladas(int dias);
@@ -40,22 +37,15 @@ private:
 
 public:
     MenuUsuario(Sesion& s) : MenuBase(s) {
-        agregarOpcion(new MenuOpcionTexto("Buscar vuelos / Nueva reserva",
-            [this] { opcionBuscarYReservar(); }));
-        agregarOpcion(new MenuOpcionTexto("Mis reservas",
-            [this] { opcionVerReservas(); }));
-        agregarOpcion(new MenuOpcionTexto("Mi perfil",
-            [this] { opcionVerPerfil(); }));
-        agregarOpcion(new MenuOpcionTexto("Reportes",
-            [this] { opcionReportes(); }));  // opción añadida
-        agregarOpcion(new MenuOpcionTexto("Cerrar sesión",
-            [this] { opcionCerrarSesion(); }));
+        agregarOpcion(new MenuOpcionTexto("Buscar vuelos / Nueva reserva", [this] { opcionBuscarYReservar(); }));
+        agregarOpcion(new MenuOpcionTexto("Mis reservas", [this] { opcionVerReservas(); }));
+        agregarOpcion(new MenuOpcionTexto("Mi perfil", [this] { opcionVerPerfil(); }));
+        agregarOpcion(new MenuOpcionTexto("Reportes", [this] { opcionReportes(); }));
+        agregarOpcion(new MenuOpcionTexto("Cerrar sesion", [this] { opcionCerrarSesion(); }));
     }
 
     void mostrar() const override {
-        cout<< "--------------------------------------\n"
-            << "     MENU DE USUARIO - AIR  PACIFIC\n"
-            << "--------------------------------------\n";
+        cout << "MENU DE USUARIO - AIR PACIFIC" << endl;
         MenuBase::mostrar();
     }
 };

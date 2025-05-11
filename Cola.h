@@ -47,7 +47,7 @@ public:
 	T frente() const {
 		if (estaVacia()) {
 			std::cout << "La cola está vacía. Retornando valor por defecto.\n";
-			return T(); // Retorna un objeto por defecto si está vacía
+			return T();
 		}
 		return frente_->get_Elem();
 	}

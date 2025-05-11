@@ -108,7 +108,7 @@ void MenuUsuario::opcionBuscarYReservar() {
         int id; cin >> id;
         cin.ignore(10000, '\n');
 
-        // Buscar el vuelo para obtener su fecha (ya que antes la recibías desde el input)
+        // Buscar el vuelo para obtener su fecha (ya que antes la recibas desde el input)
         Vuelo v;
         if (!svcVuelos.buscarVuelo(id, v)) {
             cout << "Vuelo no encontrado.\n";
@@ -186,7 +186,7 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     bool exito = svcPagos.procesarPago(pago);
 
     if (exito) {
-        cout << "¡Reserva y pago confirmados!\n"
+        cout << "Reserva y pago confirmados!!!\n"
             << "Codigo reserva: " << codigoRes << "\n";
     }
     else {
@@ -228,7 +228,7 @@ void MenuUsuario::opcionVerPerfil() {
     int activas = contarConfirmadasRec(lista, 0);
     cout << "Reservas confirmadas: " << activas << '\n';
 
-    cout << "\n¿Deseas actualizar tu perfil?\n";
+    cout << "\nDeseas actualizar tu perfil?\n";
     cout << "1. Si\n2. No\nOpcion: ";
     int opc; cin >> opc; cin.ignore(10000, '\n');
 
@@ -267,13 +267,13 @@ void MenuUsuario::opcionReportes() {
     case 1: reporteHistorialReservas();                 break;
     case 2: reporteGastoPorMetodo();                    break;
     case 3: {
-        int d; cout << "¿ultimos cuantos dias?: ";
+        int d; cout << "ultimos cuantos dias?: ";
         cin >> d; cin.ignore(10000, '\n');
         reporteReservasCanceladas(d);
         break;
     }
     case 4: {
-        int k; cout << "¿Top cuantos vuelos?: ";
+        int k; cout << "Top cuantos vuelos?: ";
         cin >> k; cin.ignore(10000, '\n');
         reporteVuelosBaratos(k);
         break;

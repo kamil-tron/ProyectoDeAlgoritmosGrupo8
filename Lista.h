@@ -1,22 +1,22 @@
 ﻿#pragma once
 #include "Nodo.h"
 #include <functional>
-#include <string>          // ←  string
-#include <sstream>         // ←  toPrint()
+#include <string>
+#include <sstream>
 
-using uint = unsigned int; // ←  alias moderno
+using uint = unsigned int;
 
 using namespace std;
 
 template <class T>
 class Lista {
 private:
-	Nodo<T>* ini = nullptr;           // cabeza de la lista
-	uint      lon = 0;                 // número de elementos
+	Nodo<T>* ini = nullptr;
+	uint lon = 0;
 	using Comp = function<int(const T&, const T&)>;
 
 public:
-	Lista(const Lista& other) : ini(nullptr), lon(0) {          // 👉
+	Lista(const Lista& other) : ini(nullptr), lon(0) {
 		Nodo<T>* aux = other.ini;
 		while (aux) {
 			agregaFinal(aux->get_Elem());
@@ -24,9 +24,9 @@ public:
 		}
 	}
 
-	Lista& operator=(const Lista& other) {                      // 👉
+	Lista& operator=(const Lista& other) {
 		if (this == &other) return *this;
-		while (!esVacia()) eliminaInicial();          // limpia actual
+		while (!esVacia()) eliminaInicial();
 		Nodo<T>* aux = other.ini;
 		while (aux) {
 			agregaFinal(aux->get_Elem());
@@ -39,9 +39,8 @@ public:
 	explicit Lista(Nodo<T>* pNodo) : ini(pNodo), lon(pNodo ? 1 : 0) {}
 	~Lista();
 
-	/*-------------------- operaciones básicas --------------------*/
-	uint  longitud()  const { return lon; }
-	bool  esVacia()   const { return lon == 0; }
+	uint longitud() const { return lon; }
+	bool esVacia() const { return lon == 0; }
 
 	void agregaInicial(const T& elem);
 	void agregaPos(const T& elem, uint pos);
@@ -55,20 +54,15 @@ public:
 	void eliminaPos(uint pos);
 	void eliminaFinal() { eliminaPos(lon - 1); }
 
-	T obtenerInicial()         const { return obtenerPos(0); }
-	T obtenerPos(uint pos)     const;
-	T obtenerFinal()           const { return obtenerPos(lon - 1); }
+	T obtenerInicial() const { return obtenerPos(0); }
+	T obtenerPos(uint pos) const;
+	T obtenerFinal() const { return obtenerPos(lon - 1); }
 
-	T buscar(const T& elem)    const;
+	T buscar(const T& elem) const;
 
-	/*-------------------- utilidades extra ----------------------*/
 	string toPrint(const string& sep = " ") const;
-	int  size() const { return static_cast<int>(lon); }
+	int size() const { return static_cast<int>(lon); }
 };
-
-/*==============================================================*/
-/*==================   IMPLEMENTACIÓN BÁSICA   =================*/
-/*==============================================================*/
 
 template <class T>
 Lista<T>::~Lista() {
@@ -131,7 +125,7 @@ void Lista<T>::eliminaPos(uint pos) {
 
 template <class T>
 T Lista<T>::obtenerPos(uint pos) const {
-	if (pos >= lon) return T();                // ← valor‐por‐defecto
+	if (pos >= lon) return T();
 	Nodo<T>* aux = ini;
 	for (uint i = 0; i < pos; ++i) aux = aux->get_Sgte();
 	return aux->get_Elem();
@@ -144,7 +138,7 @@ T Lista<T>::buscar(const T& elem) const {
 		if (aux->get_Elem() == elem) return aux->get_Elem();
 		aux = aux->get_Sgte();
 	}
-	return T();                                // ← no encontrado
+	return T();
 }
 
 template <class T>

@@ -1,7 +1,6 @@
 ﻿#include "Ordenamientos.h"
 #include <string>
 
-/* ───────── Selection Sort (precio ↓) ───────── */
 void selectionSortPorPrecioDesc(Lista<Vuelo>& lista) {
     int n = lista.longitud();
     for (int i = 0; i < n - 1; ++i) {
@@ -18,7 +17,6 @@ void selectionSortPorPrecioDesc(Lista<Vuelo>& lista) {
     }
 }
 
-/* ───────── Insertion Sort (precio ↑) ───────── */
 void insertionSortPorPrecioAsc(Lista<PrecioReserva>& lista) {
     int n = lista.longitud();
     for (int i = 1; i < n; ++i) {
@@ -32,20 +30,18 @@ void insertionSortPorPrecioAsc(Lista<PrecioReserva>& lista) {
     }
 }
 
-/* ─────────── Utilidad de fecha ─────────── */
 int claveFecha(const std::string& f) {
     try {
         int d = std::stoi(f.substr(0, 2));
         int m = std::stoi(f.substr(3, 2));
         int y = std::stoi(f.substr(6, 4));
-        return y * 10000 + m * 100 + d;          // yyyymmdd
+        return y * 10000 + m * 100 + d;
     }
     catch (...) {
-        return 0;                                // formato inválido
+        return 0
     }
 }
 
-/* ────────── Shell Sort (fecha ↑) ────────── */
 void shellSortPorFechaAsc(Lista<Vuelo>& lista) {
     int n = lista.longitud();
     for (int gap = n / 2; gap > 0; gap /= 2) {

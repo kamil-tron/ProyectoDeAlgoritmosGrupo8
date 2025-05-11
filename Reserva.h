@@ -1,4 +1,3 @@
-// Reserva.h
 #pragma once
 
 #include <string>
@@ -15,12 +14,12 @@ enum class EstadoReserva {
 
 class Reserva {
 private:
-    string           codigo;
-    string           userEmail;
-    int              vueloId{};
-    string           fecha;
-    Lista<string>    asientos;
-    EstadoReserva    estado{ EstadoReserva::PENDIENTE };
+    string codigo;
+    string userEmail;
+    int vueloId{};
+    string fecha;
+    Lista<string> asientos;
+    EstadoReserva estado{ EstadoReserva::PENDIENTE };
 
 public:
     Reserva() = default;
@@ -38,19 +37,16 @@ public:
         , estado(EstadoReserva::PENDIENTE)
     {}
 
-    // Getters
     const string& getCodigo() const { return codigo; }
     const string& getUserEmail() const { return userEmail; }
-    int            getVueloId() const { return vueloId; }
+    int getVueloId() const { return vueloId; }
     const string& getFecha() const { return fecha; }
     const Lista<string>& getAsientos() const { return asientos; }
-    EstadoReserva  getEstado() const { return estado; }
+    EstadoReserva getEstado() const { return estado; }
 
-    // Transiciones de estado
     void confirmar() { estado = EstadoReserva::CONFIRMADA; }
     void cancelar() { estado = EstadoReserva::CANCELADA; }
 
-    // Agrega un asiento a la reserva
     void agregarAsiento(const string& asiento) {
         asientos.agregaFinal(asiento);
     }
@@ -61,7 +57,7 @@ public:
         switch (estado) {
         case EstadoReserva::PENDIENTE: flag = 'P'; break;
         case EstadoReserva::CONFIRMADA: flag = 'C'; break;
-        case EstadoReserva::CANCELADA:  flag = 'X'; break;
+        case EstadoReserva::CANCELADA: flag = 'X'; break;
         }
         oss << codigo << ','
             << userEmail << ','
@@ -83,15 +79,13 @@ public:
         iss >> r.vueloId >> comma;
         getline(iss, r.fecha, ',');
         iss >> flag >> comma;
-        // Interpretar estado
         switch (flag) {
         case 'P': r.estado = EstadoReserva::PENDIENTE; break;
         case 'C': r.estado = EstadoReserva::CONFIRMADA; break;
         case 'X': r.estado = EstadoReserva::CANCELADA; break;
-        default:  r.estado = EstadoReserva::PENDIENTE; break;
+        default: r.estado = EstadoReserva::PENDIENTE; break;
         }
 
-        // Lista de asientos
         getline(iss, seatsStr);
         r.asientos = Lista<string>();
         istringstream ss(seatsStr);

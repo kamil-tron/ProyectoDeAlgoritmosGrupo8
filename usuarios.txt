@@ -2,3 +2,4 @@
 666,Mauricio,Pajes,Mauricio,upc123
 292341,Waldo,Portal,el,Pro
 727211,Pacheco,Quispe,elduro,54321
+70528151,Mauricio,Pajes,mpajes2006@gmail.com,1234

@@ -10,10 +10,10 @@ using namespace std;
 
 class Vuelo {
 private:
-    int    id_{};
+    int id_{};
     string origen, destino, fecha;
     double precio_{};
-    int    capacidad_{};
+    int capacidad_{};
 
 public:
     Vuelo() = default;
@@ -36,7 +36,6 @@ public:
 
     bool operator==(const Vuelo& o) const { return id_ == o.id_; }
 
-    // Getters
     int getId() const { return id_; }
     const string& getOrigen() const { return origen; }
     const string& getDestino() const { return destino; }
@@ -44,11 +43,9 @@ public:
     double getPrecio() const { return precio_; }
     int getCapacidad() const { return capacidad_; }
 
-    // Setters
     void setPrecio(double p) { precio_ = p; }
     void setCapacidad(int c) { capacidad_ = c; }
 
-    // Persistencia básica (solo cabecera)
     string serialize() const {
         ostringstream oss;
         oss << id_ << ','
@@ -72,7 +69,6 @@ public:
         return v;
     }
 
-
     Lista<Asiento> listarAsientos() const {
         RepoAsientos repo;
         return repo.listarPorVuelo(id_);
@@ -88,7 +84,7 @@ public:
         return libres;
     }
 
-    int  getAsientosDisponibles() const { return contarAsientosDisponibles(); }
+    int getAsientosDisponibles() const { return contarAsientosDisponibles(); }
 
     void setAsientosDisponibles(int nuevosLibres) {
         RepoAsientos repo;
@@ -96,7 +92,6 @@ public:
         int libresActuales = contarAsientosDisponibles();
         int diferencia = nuevosLibres - libresActuales;
 
-        // Si necesito restar ⇒ ocupo asientos libres
         if (diferencia < 0) {
             diferencia = -diferencia;
             for (int i = 0; i < asientos.longitud() && diferencia; ++i) {
@@ -108,7 +103,6 @@ public:
                 }
             }
         }
-        // Si necesito sumar ⇒ libero asientos ocupados
         else if (diferencia > 0) {
             for (int i = 0; i < asientos.longitud() && diferencia; ++i) {
                 if (asientos.obtenerPos(i).isOcupado()) {
