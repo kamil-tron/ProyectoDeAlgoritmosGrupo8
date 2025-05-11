@@ -13,6 +13,7 @@
 
 using namespace std;
 
+// RECURSIVA
 void cuentaRegresiva(int n) {
 	if (n < 1) return;
 	cout << n << endl;
@@ -20,6 +21,7 @@ void cuentaRegresiva(int n) {
 	cuentaRegresiva(n - 1);
 }
 
+// RECURSIVA
 void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index) {
     if (index >= reservas.longitud()) {
         return;
@@ -40,12 +42,14 @@ void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int 
     imprimirReservasRecursivo(reservas, index + 1);
 }
 
+// RECURSIVA
 int MenuUsuario::contarConfirmadasRec(const Lista<Reserva>& lista, int i) {
     if (i >= lista.longitud()) return 0;
     int suma = (lista.obtenerPos(i).getEstado() == EstadoReserva::CONFIRMADA) ? 1 : 0;
     return suma + contarConfirmadasRec(lista, i + 1);
 }
 
+// RECURSIVA
 double MenuUsuario::imprimirHistorialRec(const Lista<Reserva>& reservas, int i) {
     if (i >= reservas.longitud()) return 0;
 
@@ -321,6 +325,7 @@ void MenuUsuario::reporteGastoPorMetodo() {
 
 	Lista<MetodoSum> sumas;
 
+    // LAMBDA
 	auto acumular = [](Lista<MetodoSum>& lst, const string& metodo, double monto) {
 		for (int i = 0; i < lst.longitud(); ++i) {
 			auto ms = lst.obtenerPos(i);
@@ -365,57 +370,46 @@ static time_t parseFecha(const string& ddmmyyyy) {
 }
 
 void MenuUsuario::reporteReservasCanceladas(int dias) {
-	auto reservas = svcReservas.listarReservasUsuario(
-		sesion.getUsuarioActual().getCorreo());
+    auto reservas = svcReservas.listarReservasUsuario(
+        sesion.getUsuarioActual().getCorreo());
 
-	if (reservas.esVacia()) {
-		cout << "\nNo hay reservas.\n";
-		return;
-	}
+    if (reservas.esVacia()) {
+        cout << "\nNo hay reservas.\n";
+        return;
+    }
 
-	time_t ahora = time(nullptr);
+    // LAMBDA
+    auto fechaADia = [](const string& fecha) -> int {
+        int d, m, a;
+        sscanf_s(fecha.c_str(), "%d/%d/%d", &d, &m, &a);
+        return a * 365 + m * 30 + d;
+        };
 
-	// Lambda para convertir fecha dd/mm/aaaa → time_t
-	auto parseFecha = [](const string& ddmmyyyy) -> time_t {
-		tm t{}; t.tm_isdst = -1;
-		sscanf_s(ddmmyyyy.c_str(), "%d/%d/%d", &t.tm_mday, &t.tm_mon, &t.tm_year);
-		t.tm_mon -= 1; t.tm_year -= 1900;
-		return mktime(&t);
-		};
+    int maxDia = 0;
+    for (int i = 0; i < reservas.longitud(); ++i) {
+        const Reserva& r = reservas.obtenerPos(i);
+        int dia = fechaADia(r.getFecha());
+        if (dia > maxDia) maxDia = dia;
+    }
 
-	// Lambda para saber si la cancelacion es reciente
-	auto fueCanceladaRecientemente = [&](const Reserva& r) {
-		if (r.getEstado() != EstadoReserva::CANCELADA) return false;
-		time_t f = parseFecha(r.getFecha());
-		double diff = difftime(ahora, f) / 86400.0;
-		return diff <= dias;
-		};
+    // LAMBDA
+    auto fueCanceladaRecientemente = [&](const Reserva& r) {
+        if (r.getEstado() != EstadoReserva::CANCELADA) return false;
+        int dia = fechaADia(r.getFecha());
+        return (maxDia - dia) <= dias;
+        };
 
-	int cont = 0;
-	cout << "\nRESERVAS CANCELADAS (ult " << dias << " dias)\n";
-	for (int i = 0; i < reservas.longitud(); ++i) {
-		const Reserva& r = reservas.obtenerPos(i);
-		if (fueCanceladaRecientemente(r)) {
-			cout << r.getCodigo() << " | " << r.getFecha() << " | Vuelo " << r.getVueloId() << '\n';
-			++cont;
-		}
-	}
+    int cont = 0;
+    cout << "\nRESERVAS CANCELADAS (ult " << dias << " dias)\n";
+    for (int i = 0; i < reservas.longitud(); ++i) {
+        const Reserva& r = reservas.obtenerPos(i);
+        if (fueCanceladaRecientemente(r)) {
+            cout << r.getCodigo() << " | " << r.getFecha() << " | Vuelo " << r.getVueloId() << '\n';
+            ++cont;
+        }
+    }
 
-	if (!cont) cout << "No se encontraron.\n";
-}
-
-
-void ordenarPorPrecio(Lista<PrecioReserva>& lst) {
-	for (int i = 0; i < lst.longitud(); ++i) {
-		for (int j = 0; j + 1 < lst.longitud(); ++j) {
-			auto a = lst.obtenerPos(j);
-			auto b = lst.obtenerPos(j + 1);
-			if (a.precio > b.precio) {
-				lst.modificarPos(b, j);
-				lst.modificarPos(a, j + 1);
-			}
-		}
-	}
+    if (!cont) cout << "No se encontraron.\n";
 }
 
 void MenuUsuario::reporteVuelosBaratos(int k) {
@@ -465,10 +459,12 @@ void MenuUsuario::reporteFrecuenciaDestinos() {
 	auto reservas = svcReservas.listarReservasUsuario(
 		sesion.getUsuarioActual().getCorreo());
 
+    // LAMBDA
 	auto esConfirmada = [](const Reserva& r) {
 		return r.getEstado() == EstadoReserva::CONFIRMADA;
 		};
 
+    //LAMBDA
 	auto incrementarDestino = [](Lista<DestinoCount>& lista, const string& destino) {
 		for (int i = 0; i < lista.longitud(); ++i) {
 			auto dc = lista.obtenerPos(i);
