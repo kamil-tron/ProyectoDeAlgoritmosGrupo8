@@ -1,10 +1,1 @@
-1,Puno,Picsi,02/04/2025,216,100
-2,Cajamarca,Ucayali,06/11/2025,399,120
-3,Lima,Trujillo,21/06/2025,689,100
-4,Lima,Amazonas,23/02/2025,564,90
-5,Cusco,San Martin,14/08/2025,781,80
-6,Picsi ,Paracas,01/01/2025,689,69
-7,Cajamarca,Amazonas,23/06/2025,359,96
-8,Ancash,Piura,25/05/2025,456,103
-9,Lima,Canada,02/11/2025,1690,120
-10,Lima,New York,23/06/2025,123,120
+1,Puno,Picsi,02/02/2025,100,120

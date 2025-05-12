@@ -21,16 +21,33 @@ void cuentaRegresiva(int n) {
 	cuentaRegresiva(n - 1);
 }
 
+
+
 // RECURSIVA
 void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index) {
-    if (index >= reservas.longitud()) {
-        return;
-    }
+    if (index >= reservas.longitud()) return;
 
     const auto& r = reservas.obtenerPos(index);
     Vuelo v;
     svcVuelos.buscarVuelo(r.getVueloId(), v);
-    double total = v.getPrecio() * r.getAsientos().longitud();
+
+    // Usamos TODOS los asientos para detectar VIP
+    auto allSeats = v.listarAsientos();
+    double total = 0.0;
+    for (int k = 0; k < r.getAsientos().longitud(); ++k) {
+        const string& codigo = r.getAsientos().obtenerPos(k);
+        // buscamos el asiento en allSeats
+        for (int m = 0; m < allSeats.longitud(); ++m) {
+            const Asiento& a = allSeats.obtenerPos(m);
+            if (a.getCodigo() == codigo) {
+                double precio = v.getPrecio();
+                if (a.isVip()) precio *= 1.20;
+                total += precio;
+                break;
+            }
+        }
+    }
+
     cout << r.getCodigo() << " | "
         << r.getVueloId() << " | "
         << r.getFecha() << " | "
@@ -42,7 +59,7 @@ void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int 
     imprimirReservasRecursivo(reservas, index + 1);
 }
 
-// RECURSIVA
+
 int MenuUsuario::contarConfirmadasRec(const Lista<Reserva>& lista, int i) {
     if (i >= lista.longitud()) return 0;
     int suma = (lista.obtenerPos(i).getEstado() == EstadoReserva::CONFIRMADA) ? 1 : 0;
@@ -54,8 +71,23 @@ double MenuUsuario::imprimirHistorialRec(const Lista<Reserva>& reservas, int i) 
     if (i >= reservas.longitud()) return 0;
 
     const Reserva& r = reservas.obtenerPos(i);
-    Vuelo v; svcVuelos.buscarVuelo(r.getVueloId(), v);
-    double total = v.getPrecio() * r.getAsientos().longitud();
+    Vuelo v;
+    svcVuelos.buscarVuelo(r.getVueloId(), v);
+
+    auto allSeats = v.listarAsientos();
+    double total = 0.0;
+    for (int k = 0; k < r.getAsientos().longitud(); ++k) {
+        const string& codigo = r.getAsientos().obtenerPos(k);
+        for (int m = 0; m < allSeats.longitud(); ++m) {
+            const Asiento& a = allSeats.obtenerPos(m);
+            if (a.getCodigo() == codigo) {
+                double precio = v.getPrecio();
+                if (a.isVip()) precio *= 1.20;
+                total += precio;
+                break;
+            }
+        }
+    }
 
     cout << r.getCodigo() << " | "
         << r.getFecha() << " | "
@@ -63,33 +95,48 @@ double MenuUsuario::imprimirHistorialRec(const Lista<Reserva>& reservas, int i) 
         << r.getAsientos().toPrint(",") << " | "
         << (r.getEstado() == EstadoReserva::CONFIRMADA ? "CONF" :
             r.getEstado() == EstadoReserva::PENDIENTE ? "PEND" : "CANC")
-        << " | " << fixed << setprecision(2) << total << '\n';
+        << " | S/ " << fixed << setprecision(2) << total << "\n";
 
     return total + imprimirHistorialRec(reservas, i + 1);
 }
 
 void MenuUsuario::opcionBuscarYReservar() {
-        auto todos = svcVuelos.listarVuelos();
+    // — Obtener handle y atributos de la consola una vez —
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    WORD defaultAttrs = csbi.wAttributes;
 
-        if (todos.esVacia()) {
-            cout << "No hay vuelos disponibles.\n";
-            return;
-        }
+    auto todos = svcVuelos.listarVuelos();
+    if (todos.esVacia()) {
+        cout << "No hay vuelos disponibles.\n";
+        return;
+    }
 
-        // Ordenar por precio (burbuja)
-        insertionSortPorPrecioAsc(todos);
+    // Ordenar por precio (burbuja)
+    insertionSortPorPrecioAsc(todos);
 
-        // Mostrar vuelos disponibles
-        cout << "\nVUELOS DISPONIBLES\n";
-        cout << "ID | Origen | Destino | Fecha       | Precio\n";
-        for (int i = 0; i < todos.longitud(); ++i) {
-            const Vuelo& v = todos.obtenerPos(i);
-            cout << setw(2) << v.getId() << " | "
-                << setw(6) << v.getOrigen() << " | "
-                << setw(7) << v.getDestino() << " | "
-                << setw(11) << v.getFecha() << " | S/ "
-                << fixed << setprecision(2) << v.getPrecio() << '\n';
-        }
+    // Mostrar vuelos disponibles
+    cout << "\nVUELOS DISPONIBLES\n";
+    cout << "ID | Origen | Destino | Fecha       | Precio\n";
+    for (int i = 0; i < todos.longitud(); ++i) {
+        const Vuelo& v = todos.obtenerPos(i);
+        cout << setw(2) << v.getId() << " | "
+            << setw(6) << v.getOrigen() << " | "
+            << setw(7) << v.getDestino() << " | "
+            << setw(11) << v.getFecha() << " | S/ "
+            // Imprime el precio normal
+            << fixed << setprecision(2) << v.getPrecio() << ' ';
+
+        // Pinta "+20%" en amarillo
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN);
+        cout << "+20%";
+
+        // Restaura el color y termina la línea
+        SetConsoleTextAttribute(hConsole, defaultAttrs);
+        cout << '\n';
+    }
+
 
         cout << "\nDesea reservar alguno de estos vuelos? (1=Si, 2=No): ";
         int opc; cin >> opc;
@@ -110,8 +157,6 @@ void MenuUsuario::opcionBuscarYReservar() {
         reservarVuelo(id, v.getFecha());
     }
 
-
-
 void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     Vuelo vuelo;
     if (!svcVuelos.buscarVuelo(id, vuelo)) {
@@ -123,20 +168,43 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
         cout << "No hay asientos disponibles.\n";
         return;
     }
+
+    // ——— Configuración de consola para colores ———
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    WORD defaultAttrs = csbi.wAttributes;
+
     cout << "\nAsientos libres:\n";
     string filaAnt;
     for (int i = 0; i < libres.longitud(); ++i) {
-        string cod = libres.obtenerPos(i).getCodigo();
+        const Asiento& a = libres.obtenerPos(i);
+        string cod = a.getCodigo();
+
+        // salto de fila si cambia de número
         string fila;
         for (char c : cod) if (isdigit(c)) fila += c; else break;
         if (!filaAnt.empty() && fila != filaAnt) cout << '\n';
-        cout << cod << ' ';
+
+        // fondo amarillo si es VIP
+        if (a.isVip()) {
+            SetConsoleTextAttribute(hConsole, BACKGROUND_RED | BACKGROUND_GREEN);
+            cout << cod;
+            SetConsoleTextAttribute(hConsole, defaultAttrs);
+            cout << ' ';
+        }
+        else {
+            cout << cod << ' ';
+        }
         filaAnt = fila;
     }
-    cout << "\n";
+    cout << "\n\n";
 
-    cout << "\nCantidad a reservar: ";
-    int cant; cin >> cant; cin.ignore(10000, '\n');
+    // ——— Selección de asientos ———
+    cout << "Cantidad a reservar: ";
+    int cant;
+    cin >> cant;
+    cin.ignore(10000, '\n');
     if (cant <= 0 || cant > libres.longitud()) {
         cout << "Cantidad invalida.\n";
         return;
@@ -144,39 +212,68 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     Lista<string> seleccion;
     cout << "Ingrese los codigos de asiento separados por espacio:\n";
     for (int i = 0; i < cant; ++i) {
-        string code; cin >> code;
+        string code;
+        cin >> code;
         seleccion.agregaFinal(code);
     }
     cin.ignore(10000, '\n');
 
-    ostringstream oss; oss << "R-" << time(nullptr);
+    // ——— Crear reserva ———
+    ostringstream oss;
+    oss << "R-" << time(nullptr);
     string codigoRes = oss.str();
-    Reserva res(codigoRes,
+    Reserva res(
+        codigoRes,
         sesion.getUsuarioActual().getCorreo(),
-        id, fecha, seleccion);
+        id, fecha,
+        seleccion
+    );
     if (!svcReservas.crearReserva(res)) {
         cout << "No fue posible completar la reserva (duplicada?).\n";
         return;
     }
 
+    // ——— Pago ———
     cout << "\nMetodo de pago:\n"
         << "1. Tarjeta de credito\n"
         << "2. Tarjeta de debito\n"
         << "3. Yape/Plin\n"
         << "Opcion: ";
-    int metodoOp; cin >> metodoOp; cin.ignore(10000, '\n');
-    string metodo = (metodoOp == 1 ? "TC" : metodoOp == 2 ? "TD" : "YP");
+    int metodoOp;
+    cin >> metodoOp;
+    cin.ignore(10000, '\n');
+    string metodo = (metodoOp == 1 ? "TC"
+        : metodoOp == 2 ? "TD"
+        : "YP");
 
-    double total = vuelo.getPrecio() * seleccion.longitud();
-    string fh = fecha;
+    // —— CÁLCULO IN-LINE DEL TOTAL CON RECARGO VIP +20% ——
+    double totalPago = 0.0;
+    for (int i = 0; i < seleccion.longitud(); ++i) {
+        const string& codigo = seleccion.obtenerPos(i);
+        // busca en 'libres' el objeto Asiento
+        for (int j = 0; j < libres.longitud(); ++j) {
+            const Asiento& a = libres.obtenerPos(j);
+            if (a.getCodigo() == codigo) {
+                double precio = vuelo.getPrecio();
+                if (a.isVip()) precio *= 1.20;  // +20% si es VIP
+                totalPago += precio;
+                break;
+            }
+        }
+    }
 
-    // 3) Procesar pago y actualizar reserva
+    Pago pago(
+        codigoRes,
+        totalPago,
+        metodo,
+        "COMPLETADO",
+        fecha
+    );
+
     cout << "Procesando pago...\n";
     cuentaRegresiva(3);
-    // Se elimina la llamada a cuentaRegresiva
-    Pago pago(codigoRes, total, metodo, "COMPLETADO", fh);
-    bool exito = svcPagos.procesarPago(pago);
 
+    bool exito = svcPagos.procesarPago(pago);
     if (exito) {
         cout << "Reserva y pago confirmados!!!\n"
             << "Codigo reserva: " << codigoRes << "\n";
@@ -185,6 +282,7 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
         cout << "El pago fallo o ya existe un pago para esta reserva.\n";
     }
 }
+
 
 void MenuUsuario::opcionVerReservas() {
     auto reservas = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
