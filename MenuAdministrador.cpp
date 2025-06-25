@@ -105,18 +105,35 @@ void MenuAdministrador::opcionVuelosMasCaros() {
 }
 
 void MenuAdministrador::opcionVuelosProximos() {
-    Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
-    shellSortPorFechaAsc(vuelos);
-    cout << "\nVUELOS PROXIMOS (orden cronologico)\nID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
+    Lista<Vuelo> vuelos = svcVuelos.listarVuelosPorFecha(); // cambio aqui (AVL)
+
+    if (vuelos.esVacia()) {
+        cout << "\nNo hay vuelos próximos registrados.\n";
+        return;
+    }
+
+    cout << "\nVUELOS PROXIMOS (orden cronologico - AVL)\n";
+    cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.\n";
+    cout << "---------------------------------------------------------------\n";
+
     function<void(int)> imprimir = [&](int i) {
         if (i >= vuelos.longitud()) return;
         const auto& v = vuelos.obtenerPos(i);
         int disp = svcReservas.listarAsientosDisponibles(v.getId()).longitud();
-        cout << v.getId() << " | " << v.getOrigen() << " | " << v.getDestino() << " | " << v.getFecha() << " | " << fixed << setprecision(2) << v.getPrecio() << " | " << disp << "\n";
+
+        cout << setw(2) << v.getId() << " | "
+            << setw(6) << v.getOrigen() << " | "
+            << setw(7) << v.getDestino() << " | "
+            << setw(10) << v.getFecha() << " | S/"
+            << fixed << setprecision(2) << setw(7) << v.getPrecio() << " | "
+            << setw(5) << disp << "\n";
+
         imprimir(i + 1);
         };
+
     imprimir(0);
 }
+
 
 void MenuAdministrador::opcionProcesarCheckIn() {
     CheckIn c;

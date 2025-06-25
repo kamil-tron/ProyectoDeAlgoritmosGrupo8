@@ -36,6 +36,14 @@ public:
 
     bool operator==(const Vuelo& o) const { return id_ == o.id_; }
 
+    bool operator<(const Vuelo& otro) const {
+        return getFechaOrdenable() < otro.getFechaOrdenable();
+    }
+
+    bool operator>(const Vuelo& otro) const {
+        return getFechaOrdenable() > otro.getFechaOrdenable();
+    }
+
     int getId() const { return id_; }
     const string& getOrigen() const { return origen; }
     const string& getDestino() const { return destino; }
@@ -113,5 +121,9 @@ public:
                 }
             }
         }
+    }
+
+    string getFechaOrdenable() const {
+        return fecha.substr(6, 4) + '/' + fecha.substr(3, 2) + '/' + fecha.substr(0, 2);
     }
 };

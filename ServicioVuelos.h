@@ -5,7 +5,7 @@
 #include "HashTable.h"
 #include "FuncionesHash.h"
 #include "Vuelo.h"
-#include "Asiento.h"
+#include "ArbolAVL.h"
 
 using namespace std;
 
@@ -15,13 +15,17 @@ private:
     RepoAsientos repoAsientos;
 
     HashTable<int, Vuelo>* idx;
+    ArbolAVL<Vuelo>* vuelosPorFecha;
 
     void cargarIndice();
 
 public:
     ServicioVuelos();
     ~ServicioVuelos();
+
     Lista<Vuelo> listarVuelos() const;
+    Lista<Vuelo> listarVuelosPorFecha() const;
+
     bool crearVuelo(const Vuelo& v);
     bool modificarVuelo(const Vuelo& v);
     bool eliminarVuelo(int id);
