@@ -65,22 +65,6 @@ void MenuAdministrador::opcionEliminarVuelo() {
         cout << (svcVuelos.eliminarVuelo(id) ? "Vuelo eliminado correctamente.\n" : "Error al eliminar vuelo.\n");
 }
 
-void MenuAdministrador::opcionEliminarUlitimoVuelo() {
-    auto lista = svcVuelos.listarVuelos();
-    if (lista.esVacia()) { cout << "No hay vuelos registrados.\n"; return; }
-    Vuelo ultimo;
-    function<void(int)> obtener = [&](int i) {
-        if (i == lista.longitud()) return;
-        ultimo = lista.obtenerPos(i);
-        obtener(i + 1);
-        };
-    obtener(0);
-    cout << "Seguro que desea eliminar el ultimo vuelo agregado (ID: " << ultimo.getId() << ")? (s/n): ";
-    char resp; cin >> resp; cin.ignore(10000, '\n');
-    if (resp == 's' || resp == 'S')
-        cout << (svcVuelos.eliminarVuelo(ultimo.getId()) ? "Ultimo vuelo eliminado exitosamente.\n" : "Error al eliminar el vuelo.\n");
-}
-
 void MenuAdministrador::opcionHistorialReservas() {
     auto lista = svcReservas.listarReservasUsuario("");
     cout << "Codigo | Usuario | Vuelo ID | Fecha | Asientos\n";
@@ -132,18 +116,6 @@ void MenuAdministrador::opcionVuelosProximos() {
         imprimir(i + 1);
         };
     imprimir(0);
-}
-
-void MenuAdministrador::opcionEliminarPrimerVuelo() {
-    auto lista = svcVuelos.listarVuelos();
-    if (lista.esVacia()) { cout << "No hay vuelos registrados.\n"; return; }
-    Cola<Vuelo> cola;
-    for (int i = 0; i < lista.longitud(); ++i) cola.encolar(lista.obtenerPos(i));
-    Vuelo primero = cola.frente();
-    cout << "Seguro que desea eliminar el PRIMER vuelo registrado (ID: " << primero.getId() << ")? (s/n): ";
-    char resp; cin >> resp; cin.ignore(10000, '\n');
-    if (resp == 's' || resp == 'S')
-        cout << (svcVuelos.eliminarVuelo(primero.getId()) ? "Primer vuelo eliminado exitosamente.\n" : "Error al eliminar el vuelo.\n");
 }
 
 void MenuAdministrador::opcionCerrarSesion() {
