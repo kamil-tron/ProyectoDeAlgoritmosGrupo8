@@ -31,19 +31,6 @@ void MenuAdministrador::opcionRegistrarVuelo() {
     cout << (svcVuelos.crearVuelo(v) ? "Vuelo registrado exitosamente con ID: " : "Error al registrar el vuelo. ID: ") << id << "\n";
 }
 
-void MenuAdministrador::opcionVerTodosVuelos() {
-    auto lista = svcVuelos.listarVuelos();
-    cout << "ID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
-    function<void(int)> imprimir = [&](int i) {
-        if (i >= lista.longitud()) return;
-        const auto& v = lista.obtenerPos(i);
-        int disp = svcReservas.listarAsientosDisponibles(v.getId()).longitud();
-        cout << v.getId() << " | " << v.getOrigen() << " | " << v.getDestino() << " | " << v.getFecha() << " | " << fixed << setprecision(2) << v.getPrecio() << " | " << disp << "\n";
-        imprimir(i + 1);
-        };
-    imprimir(0);
-}
-
 void MenuAdministrador::opcionModificarVuelo() {
     int id; cout << "Ingrese ID del vuelo a modificar: "; cin >> id; cin.ignore(10000, '\n');
     Vuelo v;
@@ -104,7 +91,7 @@ void MenuAdministrador::opcionVuelosMasCaros() {
     imprimir(0);
 }
 
-void MenuAdministrador::opcionVuelosProximos() {
+void MenuAdministrador::opcionVerTodosVuelos() {
     Lista<Vuelo> vuelos = svcVuelos.listarVuelosPorFecha(); // cambio aqui (AVL)
 
     if (vuelos.esVacia()) {

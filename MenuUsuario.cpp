@@ -65,24 +65,25 @@ void MenuUsuario::opcionBuscarYReservar() {
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     WORD defaultAttrs = csbi.wAttributes;
 
-    auto todos = svcVuelos.listarVuelos();
-    if (todos.esVacia()) {
+    auto vuelosOrdenadosFecha = svcVuelos.listarVuelosPorFecha();
+
+    if (vuelosOrdenadosFecha.esVacia()) {
         cout << "No hay vuelos disponibles.\n";
         return;
     }
 
-    insertionSortPorPrecioAsc(todos);
-
-    cout << "\nVUELOS DISPONIBLES\n";
+    cout << "\nVUELOS DISPONIBLES (orden cronológico)\n";
     cout << "ID | Origen | Destino | Fecha       | Precio\n";
+    cout << "---------------------------------------------------\n";
 
-    for (int i = 0; i < todos.longitud(); ++i) {
-        const Vuelo& v = todos.obtenerPos(i);
+    for (int i = 0; i < vuelosOrdenadosFecha.longitud(); ++i) {
+        const Vuelo& v = vuelosOrdenadosFecha.obtenerPos(i);
         cout << setw(2) << v.getId() << " | "
             << setw(6) << v.getOrigen() << " | "
             << setw(7) << v.getDestino() << " | "
-            << setw(11) << v.getFecha() << " | S/ "
-            << fixed << setprecision(2) << v.getPrecio() << ' ';
+            << setw(10) << v.getFecha() << " | S/"
+            << fixed << setprecision(2) << setw(7) << v.getPrecio() << " ";
+
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN);
         cout << "+20%";
         SetConsoleTextAttribute(hConsole, defaultAttrs);
