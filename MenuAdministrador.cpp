@@ -22,7 +22,7 @@ void MenuAdministrador::opcionRegistrarVuelo() {
         cout << "Capacidad de asientos: "; cin >> capacidad;
         cin.ignore(10000, '\n');
         if (capacidad > 120) cout << "Capacidad excedida\n";
-        if (capacidad < 1) cout << "Capacidad insuficiente\n";
+        if (capacidad < 1)  cout << "Capacidad insuficiente\n";
     }
 
     int id = svcVuelos.listarVuelos().longitud() + 1;
@@ -131,7 +131,7 @@ void MenuAdministrador::opcionProcesarCheckIn() {
 void MenuAdministrador::opcionVerPendientesCheckIn() {
     Cola<CheckIn> cola = svcCheckIn.pendientes();
     if (cola.esVacia()) {
-        cout << "La cola de check-in está vacía.\n";
+        cout << "La cola de check-in esta vacia.\n";
         return;
     }
     cout << "Pasajeros esperando check-in:\n";
@@ -147,14 +147,14 @@ void MenuAdministrador::opcionVerPendientesCheckIn() {
 void MenuAdministrador::opcionVerHistorialCheckIn() {
     Pila<CheckIn> pila = svcCheckIn.ultimos();
     if (pila.esVacia()) {
-        cout << "No hay historial de check-in en esta sesión.\n";
+        cout << "No hay historial de check-in en esta sesion.\n";
         return;
     }
-    cout << "Últimos check-in procesados (más reciente primero):\n";
+    cout << "Ultimos check-in procesados (mas reciente primero):\n";
     while (!pila.esVacia()) {
         CheckIn c = pila.cima();
         pila.desapilar();
-        cout << "• " << c.getEmail()
+        cout << "* " << c.getEmail()
             << "  (reserva " << c.getReservaCod() << ")\n";
     }
 }
