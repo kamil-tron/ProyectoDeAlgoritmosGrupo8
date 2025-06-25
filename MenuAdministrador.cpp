@@ -79,7 +79,7 @@ void MenuAdministrador::opcionVerUsuarios() {
 
 void MenuAdministrador::opcionVuelosMasCaros() {
     Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
-    selectionSortPorPrecioDesc(ordenados);
+    mergeSortPorPrecioDesc(ordenados);
     cout << "\nVUELOS MAS CAROS (precio descendente)\nID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
     function<void(int)> imprimir = [&](int i) {
         if (i >= ordenados.longitud()) return;
