@@ -1,11 +1,12 @@
 ﻿#pragma once
-
 #include "MenuBase.h"
 #include "MenuOpcionTexto.h"
 #include "ServicioVuelos.h"
 #include "ServicioReservas.h"
 #include "RepoUsuarios.h"
 #include <iostream>
+
+using namespace std;
 
 class MenuAdministrador : public MenuBase {
 private:
@@ -40,7 +41,7 @@ public:
     }
 
     void mostrar() const override {
-        cout << "\n--- MENU DE ADMINISTRADOR AIR PACIFIC---\n";
+        cout << "\n--- MENU DE ADMINISTRADOR AIR PACIFIC ---\n";
         MenuBase::mostrar();
     }
 };

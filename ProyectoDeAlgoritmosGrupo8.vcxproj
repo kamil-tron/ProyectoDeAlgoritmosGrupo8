@@ -151,6 +151,8 @@
     <ClInclude Include="Cola.h" />
     <ClInclude Include="ContadorDeDias.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="HashEntidad.h" />
+    <ClInclude Include="HashTable.h" />
     <ClInclude Include="MatrizColor.h" />
     <ClInclude Include="Ordenamientos.h" />
     <ClInclude Include="Pila.h" />
