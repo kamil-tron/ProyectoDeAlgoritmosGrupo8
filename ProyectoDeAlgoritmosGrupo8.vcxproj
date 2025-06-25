@@ -148,6 +148,7 @@
     <ClInclude Include="Administrador.h" />
     <ClInclude Include="Asiento.h" />
     <ClInclude Include="AuthService.h" />
+    <ClInclude Include="CheckIn.h" />
     <ClInclude Include="Cola.h" />
     <ClInclude Include="ContadorDeDias.h" />
     <ClInclude Include="FileManager.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Pago.h" />
     <ClInclude Include="RepoAdmins.h" />
     <ClInclude Include="RepoAsientos.h" />
+    <ClInclude Include="RepoCheckIn.h" />
     <ClInclude Include="RepoPagos.h" />
     <ClInclude Include="RepoReservas.h" />
     <ClInclude Include="RepoUsuarios.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="Reserva.h" />
     <ClInclude Include="Roles.h" />
     <ClInclude Include="ServicioAsientos.h" />
+    <ClInclude Include="ServicioCheckIn.h" />
     <ClInclude Include="ServicioPagos.h" />
     <ClInclude Include="ServicioReservas.h" />
     <ClInclude Include="ServicioVuelos.h" />

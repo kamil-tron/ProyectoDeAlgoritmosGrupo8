@@ -12,17 +12,17 @@ public:
 	Cola() : frente_(nullptr), final_(nullptr) {}
 
 	~Cola() {
-		while (!estaVacia())
+		while (!esVacia())
 			desencolar();
 	}
 
-	bool estaVacia() const {
+	bool esVacia() const {
 		return frente_ == nullptr;
 	}
 
 	void encolar(const T& elem) {
 		Nodo<T>* nuevo = new Nodo<T>(elem);
-		if (estaVacia()) {
+		if (esVacia()) {
 			frente_ = final_ = nuevo;
 		}
 		else {
@@ -32,7 +32,7 @@ public:
 	}
 
 	void desencolar() {
-		if (estaVacia()) {
+		if (esVacia()) {
 			std::cout << "La cola está vacía. No se puede desencolar.\n";
 			return;
 		}
@@ -45,7 +45,7 @@ public:
 	}
 
 	T frente() const {
-		if (estaVacia()) {
+		if (esVacia()) {
 			std::cout << "La cola está vacía. Retornando valor por defecto.\n";
 			return T();
 		}

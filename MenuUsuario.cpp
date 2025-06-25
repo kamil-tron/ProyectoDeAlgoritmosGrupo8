@@ -249,6 +249,20 @@ void MenuUsuario::opcionVerPerfil() {
     cout << "Perfil actualizado correctamente.\n";
 }
 
+void MenuUsuario::opcionHacerCheckIn() {
+    string codigo;
+    cout << "Ingrese codigo de reserva confirmada: ";
+    cin >> codigo;
+
+    if (svcCheckIn.registrarEnCola(codigo)) {
+        cout << "Te uniste a la cola de check-in. ¡Gracias!\n";
+    }
+    else {
+        cout << "No se pudo registrar el check-in. "
+            "Verifica que la reserva este confirmada y no hayas hecho check-in antes.\n";
+    }
+}
+
 void MenuUsuario::opcionCerrarSesion() {
     cout << "Cerrando sesion...\n";
 }

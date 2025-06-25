@@ -4,6 +4,7 @@
 #include "ServicioVuelos.h"
 #include "ServicioReservas.h"
 #include "ServicioPagos.h"
+#include "ServicioCheckIn.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -13,12 +14,14 @@ private:
     ServicioVuelos svcVuelos;
     ServicioReservas svcReservas;
     ServicioPagos svcPagos;
+	ServicioCheckIn svcCheckIn;
 
     void reservarVuelo(int vueloId);
     void imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index);
     int contarConfirmadasRec(const Lista<Reserva>& lista, int i);
     void opcionBuscarYReservar();
     void opcionVerReservas();
+	void opcionHacerCheckIn();
     void opcionVerPerfil();
     void opcionCerrarSesion();
 
@@ -26,6 +29,7 @@ public:
     MenuUsuario(Sesion& s) : MenuBase(s) {
         agregarOpcion(new MenuOpcionTexto("Buscar vuelos / Nueva reserva", [this] { opcionBuscarYReservar(); }));
         agregarOpcion(new MenuOpcionTexto("Mis reservas", [this] { opcionVerReservas(); }));
+		agregarOpcion(new MenuOpcionTexto("Hacer check-in", [this] { opcionHacerCheckIn(); }));
         agregarOpcion(new MenuOpcionTexto("Mi perfil", [this] { opcionVerPerfil(); }));
         agregarOpcion(new MenuOpcionTexto("Cerrar sesion", [this] { opcionCerrarSesion(); }));
     }

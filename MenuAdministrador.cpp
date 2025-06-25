@@ -118,6 +118,47 @@ void MenuAdministrador::opcionVuelosProximos() {
     imprimir(0);
 }
 
+void MenuAdministrador::opcionProcesarCheckIn() {
+    CheckIn c;
+    if (!svcCheckIn.procesarSiguiente(c)) {
+        cout << "No hay pasajeros en la cola de check-in.\n";
+        return;
+    }
+    cout << "Check-in procesado: "
+        << c.getEmail() << "  (reserva " << c.getReservaCod() << ")\n";
+}
+
+void MenuAdministrador::opcionVerPendientesCheckIn() {
+    Cola<CheckIn> cola = svcCheckIn.pendientes();
+    if (cola.esVacia()) {
+        cout << "La cola de check-in está vacía.\n";
+        return;
+    }
+    cout << "Pasajeros esperando check-in:\n";
+    int pos = 1;
+    while (!cola.esVacia()) {
+        CheckIn c = cola.frente();
+        cola.desencolar();
+        cout << pos++ << ") "
+            << c.getEmail() << " (reserva " << c.getReservaCod() << ")\n";
+    }
+}
+
+void MenuAdministrador::opcionVerHistorialCheckIn() {
+    Pila<CheckIn> pila = svcCheckIn.ultimos();
+    if (pila.esVacia()) {
+        cout << "No hay historial de check-in en esta sesión.\n";
+        return;
+    }
+    cout << "Últimos check-in procesados (más reciente primero):\n";
+    while (!pila.esVacia()) {
+        CheckIn c = pila.cima();
+        pila.desapilar();
+        cout << "• " << c.getEmail()
+            << "  (reserva " << c.getReservaCod() << ")\n";
+    }
+}
+
 void MenuAdministrador::opcionCerrarSesion() {
     cout << "Cerrando sesion...\n";
 }
