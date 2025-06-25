@@ -13,30 +13,24 @@
 
 using namespace std;
 
-// RECURSIVA
 void cuentaRegresiva(int n) {
-	if (n < 1) return;
-	cout << n << endl;
-	Sleep(1000);
-	cuentaRegresiva(n - 1);
+    if (n < 1) return;
+    cout << n << endl;
+    Sleep(1000);
+    cuentaRegresiva(n - 1);
 }
 
-
-
-// RECURSIVA
 void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index) {
     if (index >= reservas.longitud()) return;
 
     const auto& r = reservas.obtenerPos(index);
     Vuelo v;
     svcVuelos.buscarVuelo(r.getVueloId(), v);
-
-    // Usamos TODOS los asientos para detectar VIP
     auto allSeats = v.listarAsientos();
     double total = 0.0;
+
     for (int k = 0; k < r.getAsientos().longitud(); ++k) {
         const string& codigo = r.getAsientos().obtenerPos(k);
-        // buscamos el asiento en allSeats
         for (int m = 0; m < allSeats.longitud(); ++m) {
             const Asiento& a = allSeats.obtenerPos(m);
             if (a.getCodigo() == codigo) {
@@ -59,49 +53,13 @@ void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int 
     imprimirReservasRecursivo(reservas, index + 1);
 }
 
-
 int MenuUsuario::contarConfirmadasRec(const Lista<Reserva>& lista, int i) {
     if (i >= lista.longitud()) return 0;
     int suma = (lista.obtenerPos(i).getEstado() == EstadoReserva::CONFIRMADA) ? 1 : 0;
     return suma + contarConfirmadasRec(lista, i + 1);
 }
 
-// RECURSIVA
-double MenuUsuario::imprimirHistorialRec(const Lista<Reserva>& reservas, int i) {
-    if (i >= reservas.longitud()) return 0;
-
-    const Reserva& r = reservas.obtenerPos(i);
-    Vuelo v;
-    svcVuelos.buscarVuelo(r.getVueloId(), v);
-
-    auto allSeats = v.listarAsientos();
-    double total = 0.0;
-    for (int k = 0; k < r.getAsientos().longitud(); ++k) {
-        const string& codigo = r.getAsientos().obtenerPos(k);
-        for (int m = 0; m < allSeats.longitud(); ++m) {
-            const Asiento& a = allSeats.obtenerPos(m);
-            if (a.getCodigo() == codigo) {
-                double precio = v.getPrecio();
-                if (a.isVip()) precio *= 1.20;
-                total += precio;
-                break;
-            }
-        }
-    }
-
-    cout << r.getCodigo() << " | "
-        << r.getFecha() << " | "
-        << r.getVueloId() << " | "
-        << r.getAsientos().toPrint(",") << " | "
-        << (r.getEstado() == EstadoReserva::CONFIRMADA ? "CONF" :
-            r.getEstado() == EstadoReserva::PENDIENTE ? "PEND" : "CANC")
-        << " | S/ " << fixed << setprecision(2) << total << "\n";
-
-    return total + imprimirHistorialRec(reservas, i + 1);
-}
-
 void MenuUsuario::opcionBuscarYReservar() {
-    // — Obtener handle y atributos de la consola una vez —
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
@@ -113,63 +71,53 @@ void MenuUsuario::opcionBuscarYReservar() {
         return;
     }
 
-    // Ordenar por precio (burbuja)
     insertionSortPorPrecioAsc(todos);
 
-    // Mostrar vuelos disponibles
     cout << "\nVUELOS DISPONIBLES\n";
     cout << "ID | Origen | Destino | Fecha       | Precio\n";
+
     for (int i = 0; i < todos.longitud(); ++i) {
         const Vuelo& v = todos.obtenerPos(i);
         cout << setw(2) << v.getId() << " | "
             << setw(6) << v.getOrigen() << " | "
             << setw(7) << v.getDestino() << " | "
             << setw(11) << v.getFecha() << " | S/ "
-            // Imprime el precio normal
             << fixed << setprecision(2) << v.getPrecio() << ' ';
-
-        // Pinta "+20%" en amarillo
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN);
         cout << "+20%";
-
-        // Restaura el color y termina la línea
         SetConsoleTextAttribute(hConsole, defaultAttrs);
         cout << '\n';
     }
 
+    cout << "\nDesea reservar alguno de estos vuelos? (1=Si, 2=No): ";
+    int opc; cin >> opc; cin.ignore(10000, '\n');
+    if (opc != 1) return;
 
-        cout << "\nDesea reservar alguno de estos vuelos? (1=Si, 2=No): ";
-        int opc; cin >> opc;
-        cin.ignore(10000, '\n');
-        if (opc != 1) return;
+    cout << "Seleccione ID del vuelo: ";
+    int id; cin >> id; cin.ignore(10000, '\n');
 
-        cout << "Seleccione ID del vuelo: ";
-        int id; cin >> id;
-        cin.ignore(10000, '\n');
-
-        // Buscar el vuelo para obtener su fecha (ya que antes la recibas desde el input)
-        Vuelo v;
-        if (!svcVuelos.buscarVuelo(id, v)) {
-            cout << "Vuelo no encontrado.\n";
-            return;
-        }
-
-        reservarVuelo(id, v.getFecha());
+    Vuelo v;
+    if (!svcVuelos.buscarVuelo(id, v)) {
+        cout << "Vuelo no encontrado.\n";
+        return;
     }
 
-void MenuUsuario::reservarVuelo(int id, const string& fecha) {
+    reservarVuelo(id);
+}
+
+void MenuUsuario::reservarVuelo(int id) {
     Vuelo vuelo;
     if (!svcVuelos.buscarVuelo(id, vuelo)) {
         cout << "Vuelo no encontrado.\n";
         return;
     }
+
     auto libres = svcReservas.listarAsientosDisponibles(id);
     if (libres.esVacia()) {
         cout << "No hay asientos disponibles.\n";
         return;
     }
 
-    // ——— Configuración de consola para colores ———
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
@@ -177,16 +125,15 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
 
     cout << "\nAsientos libres:\n";
     string filaAnt;
+
     for (int i = 0; i < libres.longitud(); ++i) {
         const Asiento& a = libres.obtenerPos(i);
         string cod = a.getCodigo();
 
-        // salto de fila si cambia de número
         string fila;
         for (char c : cod) if (isdigit(c)) fila += c; else break;
         if (!filaAnt.empty() && fila != filaAnt) cout << '\n';
 
-        // fondo amarillo si es VIP
         if (a.isVip()) {
             SetConsoleTextAttribute(hConsole, BACKGROUND_RED | BACKGROUND_GREEN);
             cout << cod;
@@ -200,89 +147,52 @@ void MenuUsuario::reservarVuelo(int id, const string& fecha) {
     }
     cout << "\n\n";
 
-    // ——— Selección de asientos ———
     cout << "Cantidad a reservar: ";
-    int cant;
-    cin >> cant;
-    cin.ignore(10000, '\n');
+    int cant; cin >> cant; cin.ignore(10000, '\n');
     if (cant <= 0 || cant > libres.longitud()) {
         cout << "Cantidad invalida.\n";
         return;
     }
+
     Lista<string> seleccion;
     cout << "Ingrese los codigos de asiento separados por espacio:\n";
     for (int i = 0; i < cant; ++i) {
-        string code;
-        cin >> code;
+        string code; cin >> code;
         seleccion.agregaFinal(code);
     }
     cin.ignore(10000, '\n');
 
-    // ——— Crear reserva ———
-    ostringstream oss;
-    oss << "R-" << time(nullptr);
-    string codigoRes = oss.str();
-    Reserva res(
-        codigoRes,
-        sesion.getUsuarioActual().getCorreo(),
-        id, fecha,
-        seleccion
-    );
-    if (!svcReservas.crearReserva(res)) {
-        cout << "No fue posible completar la reserva (duplicada?).\n";
+    Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
+    Reserva nueva;
+    if (!svcReservas.crearReservaConAsientos(u, id, seleccion, nueva)) {
+        cout << "No fue posible completar la reserva.\n";
         return;
     }
 
-    // ——— Pago ———
+    double totalPago = svcReservas.calcularTotal(id, seleccion);
+
     cout << "\nMetodo de pago:\n"
         << "1. Tarjeta de credito\n"
         << "2. Tarjeta de debito\n"
         << "3. Yape/Plin\n"
         << "Opcion: ";
-    int metodoOp;
-    cin >> metodoOp;
-    cin.ignore(10000, '\n');
-    string metodo = (metodoOp == 1 ? "TC"
-        : metodoOp == 2 ? "TD"
-        : "YP");
-
-    // —— CÁLCULO IN-LINE DEL TOTAL CON RECARGO VIP +20% ——
-    double totalPago = 0.0;
-    for (int i = 0; i < seleccion.longitud(); ++i) {
-        const string& codigo = seleccion.obtenerPos(i);
-        // busca en 'libres' el objeto Asiento
-        for (int j = 0; j < libres.longitud(); ++j) {
-            const Asiento& a = libres.obtenerPos(j);
-            if (a.getCodigo() == codigo) {
-                double precio = vuelo.getPrecio();
-                if (a.isVip()) precio *= 1.20;  // +20% si es VIP
-                totalPago += precio;
-                break;
-            }
-        }
-    }
-
-    Pago pago(
-        codigoRes,
-        totalPago,
-        metodo,
-        "COMPLETADO",
-        fecha
-    );
+    int metodoOp; cin >> metodoOp; cin.ignore(10000, '\n');
+    string metodo = (metodoOp == 1 ? "TC" : metodoOp == 2 ? "TD" : "YP");
 
     cout << "Procesando pago...\n";
     cuentaRegresiva(3);
 
-    bool exito = svcPagos.procesarPago(pago);
+    Pago pagoConfirmado;
+    bool exito = svcPagos.procesarPagoReserva(nueva, totalPago, metodo, pagoConfirmado);
+
     if (exito) {
         cout << "Reserva y pago confirmados!!!\n"
-            << "Codigo reserva: " << codigoRes << "\n";
+            << "Codigo reserva: " << nueva.getCodigo() << "\n";
     }
     else {
         cout << "El pago fallo o ya existe un pago para esta reserva.\n";
     }
 }
-
 
 void MenuUsuario::opcionVerReservas() {
     auto reservas = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
@@ -290,19 +200,20 @@ void MenuUsuario::opcionVerReservas() {
         cout << "\nNo tienes reservas.\n";
         return;
     }
+
     cout << "\nMIS RESERVAS\n"
         << "Codigo | Vuelo | Fecha | Asientos | Estado | Total\n";
 
     imprimirReservasRecursivo(reservas, 0);
 
     cout << "\nDeseas cancelar alguna reserva? (1=Si, 2=No): ";
-    int opc;
-    cin >> opc;
-    cin.ignore(10000, '\n');
+    int opc; cin >> opc; cin.ignore(10000, '\n');
     if (opc != 1) return;
+
     cout << "Codigo de la reserva a cancelar: ";
     string codigo;
     getline(cin, codigo);
+
     if (svcReservas.cancelarReserva(codigo))
         cout << "Reserva cancelada.\n";
     else
@@ -313,21 +224,19 @@ void MenuUsuario::opcionVerPerfil() {
     cout << "\nMI PERFIL\n";
     sesion.getUsuarioActual().mostrarPerfil();
 
-    auto lista = svcReservas.listarReservasUsuario(
-        sesion.getUsuarioActual().getCorreo());
+    auto lista = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
     int activas = contarConfirmadasRec(lista, 0);
     cout << "Reservas confirmadas: " << activas << '\n';
 
     cout << "\nDeseas actualizar tu perfil?\n";
     cout << "1. Si\n2. No\nOpcion: ";
     int opc; cin >> opc; cin.ignore(10000, '\n');
-
     if (opc != 1) return;
 
     string nuevoNombre, nuevoApellido, nuevaContrasena;
-    cout << "Nuevo nombre: ";      getline(cin, nuevoNombre);
-    cout << "Nuevo apellido: ";    getline(cin, nuevoApellido);
-    cout << "Nueva contrasena: ";  getline(cin, nuevaContrasena);
+    cout << "Nuevo nombre: "; getline(cin, nuevoNombre);
+    cout << "Nuevo apellido: "; getline(cin, nuevoApellido);
+    cout << "Nueva contrasena: "; getline(cin, nuevaContrasena);
 
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
     u.setNombre(nuevoNombre);
@@ -340,255 +249,6 @@ void MenuUsuario::opcionVerPerfil() {
     cout << "Perfil actualizado correctamente.\n";
 }
 
-
-void MenuUsuario::opcionReportes() {
-    int opc;
-    cout << "\n--- REPORTES ---\n"
-        << "1. Historial de reservas\n"
-        << "2. Gasto por metodo de pago\n"
-        << "3. Reservas canceladas\n"
-        << "4. Vuelos mas economicos\n"
-        << "5. Frecuencia de destinos\n"
-        << "6. Volver\n"
-        << "Opcion: ";
-    cin >> opc; cin.ignore(10000, '\n');
-
-    switch (opc) {
-    case 1: reporteHistorialReservas();                 break;
-    case 2: reporteGastoPorMetodo();                    break;
-    case 3: {
-        int d; cout << "ultimos cuantos dias?: ";
-        cin >> d; cin.ignore(10000, '\n');
-        reporteReservasCanceladas(d);
-        break;
-    }
-    case 4: {
-        int k; cout << "Top cuantos vuelos?: ";
-        cin >> k; cin.ignore(10000, '\n');
-        reporteVuelosBaratos(k);
-        break;
-    }
-    case 5: reporteFrecuenciaDestinos();                break;
-    default: break;  // volver
-    }
-}
-
-void MenuUsuario::reporteHistorialReservas() {
-    auto reservas = svcReservas.listarReservasUsuario(
-        sesion.getUsuarioActual().getCorreo());
-
-    if (reservas.esVacia()) {
-        cout << "\nNo hay reservas registradas.\n";
-        return;
-    }
-    cout << "\nHISTORIAL COMPLETO\n"
-        << "Codigo | Fecha | Vuelo | Asientos | Estado | S/ Total\n";
-
-    double totalGlobal = imprimirHistorialRec(reservas, 0);
-
-    cout << "-------------------------------------------\n"
-        << "Gasto acumulado: S/ " << fixed << setprecision(2) << totalGlobal << "\n";
-}
-
-struct MetodoSum { string metodo; double suma; };
-
-void acumularMetodo(Lista<MetodoSum>& lst, const string& metodo, double monto) {
-	for (int i = 0; i < lst.longitud(); ++i) {
-		auto ms = lst.obtenerPos(i);
-		if (ms.metodo == metodo) {
-			ms.suma += monto;
-			lst.modificarPos(ms, i);
-			return;
-		}
-	}
-	lst.agregaFinal({ metodo, monto });
-}
-
-void MenuUsuario::reporteGastoPorMetodo() {
-	auto pagos = svcPagos.listarPagosUsuario(
-		sesion.getUsuarioActual().getCorreo());
-
-	if (pagos.esVacia()) {
-		cout << "\nNo hay pagos registrados.\n";
-		return;
-	}
-
-	Lista<MetodoSum> sumas;
-
-    // LAMBDA
-	auto acumular = [](Lista<MetodoSum>& lst, const string& metodo, double monto) {
-		for (int i = 0; i < lst.longitud(); ++i) {
-			auto ms = lst.obtenerPos(i);
-			if (ms.metodo == metodo) {
-				ms.suma += monto;
-				lst.modificarPos(ms, i);
-				return;
-			}
-		}
-		lst.agregaFinal({ metodo, monto });
-		};
-
-	for (int i = 0; i < pagos.longitud(); ++i) {
-		const Pago& p = pagos.obtenerPos(i);
-		acumular(sumas, p.getMetodo(), p.getMonto());
-	}
-
-	auto obtenerEtiquetaMetodo = [](const string& metodo) {
-		if (metodo == "TC") return "Tarjeta Credito";
-		if (metodo == "TD") return "Tarjeta Debito";
-		return "Yape/Plin";
-		};
-
-	cout << "\nGASTO POR MeTODO DE PAGO\n";
-	double totalGeneral = 0;
-	for (int i = 0; i < sumas.longitud(); ++i) {
-		MetodoSum ms = sumas.obtenerPos(i);
-		string etiqueta = obtenerEtiquetaMetodo(ms.metodo);
-		cout << setw(16) << left << etiqueta << ": S/ " << fixed << setprecision(2) << ms.suma << '\n';
-		totalGeneral += ms.suma;
-	}
-
-	cout << "Total general: S/ " << fixed << setprecision(2) << totalGeneral << "\n";
-}
-
-static time_t parseFecha(const string& ddmmyyyy) {
-	tm t{}; t.tm_isdst = -1;
-	sscanf_s(ddmmyyyy.c_str(), "%d/%d/%d", &t.tm_mday, &t.tm_mon, &t.tm_year);
-	t.tm_mon -= 1;
-	t.tm_year -= 1900;
-	return mktime(&t);
-}
-
-void MenuUsuario::reporteReservasCanceladas(int dias) {
-    auto reservas = svcReservas.listarReservasUsuario(
-        sesion.getUsuarioActual().getCorreo());
-
-    if (reservas.esVacia()) {
-        cout << "\nNo hay reservas.\n";
-        return;
-    }
-
-    // LAMBDA
-    auto fechaADia = [](const string& fecha) -> int {
-        int d, m, a;
-        sscanf_s(fecha.c_str(), "%d/%d/%d", &d, &m, &a);
-        return a * 365 + m * 30 + d;
-        };
-
-    int maxDia = 0;
-    for (int i = 0; i < reservas.longitud(); ++i) {
-        const Reserva& r = reservas.obtenerPos(i);
-        int dia = fechaADia(r.getFecha());
-        if (dia > maxDia) maxDia = dia;
-    }
-
-    // LAMBDA
-    auto fueCanceladaRecientemente = [&](const Reserva& r) {
-        if (r.getEstado() != EstadoReserva::CANCELADA) return false;
-        int dia = fechaADia(r.getFecha());
-        return (maxDia - dia) <= dias;
-        };
-
-    int cont = 0;
-    cout << "\nRESERVAS CANCELADAS (ult " << dias << " dias)\n";
-    for (int i = 0; i < reservas.longitud(); ++i) {
-        const Reserva& r = reservas.obtenerPos(i);
-        if (fueCanceladaRecientemente(r)) {
-            cout << r.getCodigo() << " | " << r.getFecha() << " | Vuelo " << r.getVueloId() << '\n';
-            ++cont;
-        }
-    }
-
-    if (!cont) cout << "No se encontraron.\n";
-}
-
-void MenuUsuario::reporteVuelosBaratos(int k) {
-    auto reservas = svcReservas.listarReservasUsuario(
-        sesion.getUsuarioActual().getCorreo());
-
-    Lista<PrecioReserva> precios;
-    for (int i = 0; i < reservas.longitud(); ++i) {
-        const Reserva& r = reservas.obtenerPos(i);
-        if (r.getEstado() != EstadoReserva::CONFIRMADA) continue;
-        Vuelo v;  svcVuelos.buscarVuelo(r.getVueloId(), v);
-        precios.agregaFinal({ v.getPrecio(), r });
-    }
-
-    if (precios.esVacia()) {
-        cout << "\nNo hay reservas confirmadas.\n";
-        return;
-    }
-
-    insertionSortPorPrecioAsc(precios);                    // ↑ precio
-
-    cout << "\nTOP " << k << " VUELOS MAS BARATOS\n";
-    for (int i = 0; i < precios.longitud() && i < k; ++i) {
-        const PrecioReserva& pr = precios.obtenerPos(i);
-        Vuelo v;  svcVuelos.buscarVuelo(pr.res.getVueloId(), v);
-        cout << i + 1 << ") " << v.getOrigen() << "-" << v.getDestino()
-            << " (" << pr.res.getFecha() << ") - S/ "
-            << fixed << setprecision(2) << pr.precio << '\n';
-    }
-}
-
-struct DestinoCount { string destino; int cant; };
-
-void incrementarDestino(Lista<DestinoCount>& l, const string& dest) {
-	for (int i = 0; i < l.longitud(); ++i) {
-		auto dc = l.obtenerPos(i);
-		if (dc.destino == dest) {
-			dc.cant++;
-			l.modificarPos(dc, i);
-			return;
-		}
-	}
-	l.agregaFinal({ dest,1 });
-}
-
-void MenuUsuario::reporteFrecuenciaDestinos() {
-	auto reservas = svcReservas.listarReservasUsuario(
-		sesion.getUsuarioActual().getCorreo());
-
-    // LAMBDA
-	auto esConfirmada = [](const Reserva& r) {
-		return r.getEstado() == EstadoReserva::CONFIRMADA;
-		};
-
-    //LAMBDA
-	auto incrementarDestino = [](Lista<DestinoCount>& lista, const string& destino) {
-		for (int i = 0; i < lista.longitud(); ++i) {
-			auto dc = lista.obtenerPos(i);
-			if (dc.destino == destino) {
-				dc.cant++;
-				lista.modificarPos(dc, i);
-				return;
-			}
-		}
-		lista.agregaFinal({ destino, 1 });
-		};
-
-	Lista<DestinoCount> freq;
-	for (int i = 0; i < reservas.longitud(); ++i) {
-		const Reserva& r = reservas.obtenerPos(i);
-		if (!esConfirmada(r)) continue;
-
-		Vuelo v;
-		svcVuelos.buscarVuelo(r.getVueloId(), v);
-		incrementarDestino(freq, v.getDestino());
-	}
-
-	if (freq.esVacia()) {
-		cout << "\nAun no tienes destinos confirmados.\n";
-		return;
-	}
-
-	cout << "\nFRECUENCIA DE DESTINOS\n";
-	for (int i = 0; i < freq.longitud(); ++i) {
-		auto dc = freq.obtenerPos(i);
-		cout << setw(10) << left << dc.destino << " : " << dc.cant << " vuelo(s)\n";
-	}
-}
-
 void MenuUsuario::opcionCerrarSesion() {
-	cout << "Cerrando sesion...\n";
+    cout << "Cerrando sesion...\n";
 }

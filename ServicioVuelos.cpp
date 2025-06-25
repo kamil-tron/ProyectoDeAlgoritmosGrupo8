@@ -3,6 +3,8 @@
 #include "Asiento.h"
 #include "RepoAsientos.h"
 
+static const double VIP_SURCHARGE = 0.20;
+
 Lista<Vuelo> ServicioVuelos::listarVuelos() const {
     return repoVuelos.cargarTodos();
 }

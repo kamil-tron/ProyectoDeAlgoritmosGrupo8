@@ -1,5 +1,4 @@
 #pragma once
-
 #include "RepoVuelos.h"
 #include "RepoAsientos.h"
 #include "Lista.h"
@@ -14,8 +13,7 @@ private:
     RepoAsientos repoAsientos;
 
 public:
-    ServicioVuelos() = default;
-
+    ServicioVuelos() {}
     Lista<Vuelo> listarVuelos() const;
     bool crearVuelo(const Vuelo& v);
     bool modificarVuelo(const Vuelo& v);

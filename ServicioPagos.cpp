@@ -42,3 +42,19 @@ Lista<Pago> ServicioPagos::listarPagosUsuario(const std::string& correo) const {
     }
     return result;
 }
+
+bool ServicioPagos::procesarPagoReserva(const Reserva& reserva,
+    double monto,
+    const string& metodo,
+    Pago& outPago) {
+    // fecha del pago igual a la fecha del vuelo (podrías usar la fecha actual si prefieres)
+    string fecha = reserva.getFecha();
+
+    // construimos el objeto Pago
+    Pago p(reserva.getCodigo(), monto, metodo, "COMPLETADO", fecha);
+
+    // delegamos a la lógica existente
+    bool ok = procesarPago(p);
+    if (ok) outPago = p;     // devolver el pago confirmado
+    return ok;
+}

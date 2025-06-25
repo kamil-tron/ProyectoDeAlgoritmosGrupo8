@@ -6,17 +6,24 @@
 #include "Lista.h"
 #include <string>
 
+using namespace std;
+
 class ServicioPagos {
 private:
-    RepoPagos    repoPagos;
+    RepoPagos repoPagos;
     RepoReservas repoReservas;
 
 public:
     ServicioPagos();
 
+    /* existente */
     bool procesarPago(const Pago& pago);
+    bool obtenerPagoPorReserva(const string& reservaCodigo, Pago& p) const;
+    Lista<Pago> listarPagosUsuario(const string& correo) const;
 
-    bool obtenerPagoPorReserva(const std::string& reservaCodigo, Pago& p) const;
-
-    Lista<Pago> listarPagosUsuario(const std::string& correo) const;
+    /* NUEVO */
+    bool procesarPagoReserva(const Reserva& reserva,
+        double monto,
+        const string& metodo,
+        Pago& outPago);
 };

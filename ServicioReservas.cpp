@@ -1,15 +1,15 @@
 #include "ServicioReservas.h"
-#include "Asiento.h"
-#include "Reserva.h"
-#include <string>
+#include <sstream>
+#include <ctime>
+
+using namespace std;
 
 Lista<Reserva> ServicioReservas::listarReservasUsuario(const string& email) const {
     auto todas = repoReservas.cargarTodos();
     Lista<Reserva> result;
     for (int i = 0; i < todas.longitud(); ++i) {
         const Reserva& r = todas.obtenerPos(i);
-        if (r.getUserEmail() == email &&
-            r.getEstado() != EstadoReserva::CANCELADA) {
+        if (r.getUserEmail() == email && r.getEstado() != EstadoReserva::CANCELADA) {
             result.agregaFinal(r);
         }
     }
@@ -17,64 +17,52 @@ Lista<Reserva> ServicioReservas::listarReservasUsuario(const string& email) cons
 }
 
 Lista<Asiento> ServicioReservas::listarAsientosDisponibles(int vueloId) const {
-    auto todos = repoAsientos.listarPorVuelo(vueloId);
     Lista<Asiento> libres;
-    for (int i = 0; i < todos.longitud(); ++i) {
-        const Asiento& a = todos.obtenerPos(i);
-        if (!a.isOcupado()) {
-            libres.agregaFinal(a);
-        }
-    }
+    svcAsientos.listarDisponibles(vueloId, libres);
     return libres;
 }
 
 bool ServicioReservas::crearReserva(const Reserva& r) {
     Vuelo v;
-    if (!repoVuelos.buscarPorId(r.getVueloId(), v))
-        return false;
-
-    for (int i = 0; i < r.getAsientos().longitud(); ++i) {
-        string code = r.getAsientos().obtenerPos(i);
-        int fila = stoi(code.substr(0, code.size() - 1));
-        char letra = code.back();
-        Asiento a;
-        if (!repoAsientos.buscar(r.getVueloId(), fila, letra, a) ||
-            a.isOcupado()) {
-            return false;
-        }
-    }
-
-    for (int i = 0; i < r.getAsientos().longitud(); ++i) {
-        string code = r.getAsientos().obtenerPos(i);
-        int fila = stoi(code.substr(0, code.size() - 1));
-        char letra = code.back();
-        Asiento a;
-        repoAsientos.buscar(r.getVueloId(), fila, letra, a);
-        a.setOcupado(true);
-        repoAsientos.actualizar(a);
-    }
-
+    if (!repoVuelos.buscarPorId(r.getVueloId(), v)) return false;
+    if (!validarAsientosDisponibles(r.getVueloId(), r.getAsientos())) return false;
+    if (!svcAsientos.ocupar(r.getVueloId(), r.getAsientos())) return false;
     return repoReservas.crearReserva(r);
 }
 
 bool ServicioReservas::cancelarReserva(const string& codigo) {
     Reserva r;
-    if (!repoReservas.buscarPorCodigo(codigo, r) ||
-        r.getEstado() == EstadoReserva::CANCELADA) {
-        return false;
-    }
-
-    for (int i = 0; i < r.getAsientos().longitud(); ++i) {
-        string code = r.getAsientos().obtenerPos(i);
-        int fila = stoi(code.substr(0, code.size() - 1));
-        char letra = code.back();
-        Asiento a;
-        if (repoAsientos.buscar(r.getVueloId(), fila, letra, a)) {
-            a.setOcupado(false);
-            repoAsientos.actualizar(a);
-        }
-    }
-
+    if (!repoReservas.buscarPorCodigo(codigo, r) || r.getEstado() == EstadoReserva::CANCELADA) return false;
+    svcAsientos.liberar(r.getVueloId(), r.getAsientos());
     r.cancelar();
     return repoReservas.actualizar(r);
+}
+
+string ServicioReservas::generarCodigo() const {
+    ostringstream oss;
+    oss << "R-" << time(nullptr);
+    return oss.str();
+}
+
+bool ServicioReservas::validarAsientosDisponibles(int vueloId, const Lista<string>& codigos) const {
+    double dummy;
+    for (int i = 0; i < codigos.longitud(); ++i) {
+        if (!svcAsientos.precioAsiento(vueloId, codigos.obtenerPos(i), dummy)) return false;
+    }
+    return true;
+}
+
+double ServicioReservas::calcularTotal(int vueloId, const Lista<string>& codigos) const {
+    return svcAsientos.totalSeleccion(vueloId, codigos);
+}
+
+bool ServicioReservas::crearReservaConAsientos(const Usuario& usuario, int vueloId, const Lista<string>& codigos, Reserva& outReserva) {
+    if (!validarAsientosDisponibles(vueloId, codigos)) return false;
+    Vuelo v;
+    if (!repoVuelos.buscarPorId(vueloId, v)) return false;
+    string codigo = generarCodigo();
+    Reserva nueva(codigo, usuario.getCorreo(), vueloId, v.getFecha(), codigos);
+    if (!crearReserva(nueva)) return false;
+    outReserva = nueva;
+    return true;
 }
