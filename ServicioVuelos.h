@@ -2,6 +2,8 @@
 #include "RepoVuelos.h"
 #include "RepoAsientos.h"
 #include "Lista.h"
+#include "HashTable.h"
+#include "FuncionesHash.h"
 #include "Vuelo.h"
 #include "Asiento.h"
 
@@ -12,8 +14,13 @@ private:
     RepoVuelos repoVuelos;
     RepoAsientos repoAsientos;
 
+    HashTable<int, Vuelo>* idx;
+
+    void cargarIndice();
+
 public:
-    ServicioVuelos() {}
+    ServicioVuelos();
+    ~ServicioVuelos();
     Lista<Vuelo> listarVuelos() const;
     bool crearVuelo(const Vuelo& v);
     bool modificarVuelo(const Vuelo& v);

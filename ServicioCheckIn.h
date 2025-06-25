@@ -5,6 +5,8 @@
 #include "RepoCheckIn.h"
 #include "RepoReservas.h"
 #include "Reserva.h"
+#include "HashTable.h"
+#include "FuncionesHash.h"
 
 using namespace std;
 
@@ -14,35 +16,37 @@ private:
     Pila<CheckIn> hist;
     RepoCheckIn repoCheck;
     RepoReservas repoRes;
+    HashTable<string, Reserva>* idxRes;
 
-public:
-    ServicioCheckIn() {
-        Lista<CheckIn> todos = repoCheck.cargarTodos();
-        for (int i = 0; i < todos.longitud(); ++i) {
-            const CheckIn& ci = todos.obtenerPos(i);
-            Reserva r;
-            if (!repoRes.buscarPorCodigo(ci.getReservaCod(), r)) continue;
+    void cargarIndice() {
+        auto todas = repoRes.cargarTodos();
+        for (int i = 0; i < todas.longitud(); ++i) {
+            const Reserva& r = todas.obtenerPos(i);
+            idxRes->insertar(r.getCodigo(), r);
             if (!r.isCheckedIn())
-                colaPend.encolar(ci);
+                colaPend.encolar(CheckIn(0, r.getVueloId(), r.getCodigo(), r.getUserEmail()));
             else
-                hist.apilar(ci);
+                hist.apilar(CheckIn(0, r.getVueloId(), r.getCodigo(), r.getUserEmail()));
         }
     }
 
+public:
+    ServicioCheckIn()
+        : idxRes(new HashTable<string, Reserva>(4000, hashString)) {
+        cargarIndice();
+    }
+
+    ~ServicioCheckIn() { delete idxRes; }
+
     bool registrarEnCola(const string& reservaCod) {
-        Reserva r;
-        if (!repoRes.buscarPorCodigo(reservaCod, r) ||
-            r.getEstado() != EstadoReserva::CONFIRMADA ||
-            r.isCheckedIn())
+        Reserva* r = idxRes->obtener(reservaCod);
+        if (!r || r->getEstado() != EstadoReserva::CONFIRMADA || r->isCheckedIn())
             return false;
 
-        CheckIn c(repoCheck.cargarTodos().longitud() + 1,
-            r.getVueloId(),
-            reservaCod,
-            r.getUserEmail());
-
+        CheckIn c(repoCheck.cargarTodos().longitud() + 1, r->getVueloId(), reservaCod, r->getUserEmail());
         colaPend.encolar(c);
-        return repoCheck.registrarCheckIn(c);
+        repoCheck.registrarCheckIn(c);
+        return true;
     }
 
     bool procesarSiguiente(CheckIn& out) {
@@ -52,10 +56,10 @@ public:
         colaPend.desencolar();
         hist.apilar(out);
 
-        Reserva r;
-        if (repoRes.buscarPorCodigo(out.getReservaCod(), r)) {
-            r.marcarCheckIn();
-            repoRes.actualizar(r);
+        Reserva* r = idxRes->obtener(out.getReservaCod());
+        if (r) {
+            r->marcarCheckIn();
+            repoRes.actualizar(*r);
         }
         return true;
     }

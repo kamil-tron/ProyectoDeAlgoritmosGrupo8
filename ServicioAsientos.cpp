@@ -1,15 +1,33 @@
 #include "ServicioAsientos.h"
 
-using namespace std;
-
 const double ServicioAsientos::VIP_SURCHARGE = 0.20;
 
-bool ServicioAsientos::listarDisponibles(int vueloId, Lista<Asiento>& out) const {
-    auto todos = repoAsientos.listarPorVuelo(vueloId);
-    for (int i = 0; i < todos.longitud(); ++i) {
-        if (!todos.obtenerPos(i).isOcupado())
-            out.agregaFinal(todos.obtenerPos(i));
+ServicioAsientos::ServicioAsientos()
+    : idx(new HashTable<string, Asiento>(8000, hashString)) {
+    cargarIndice();
+}
+
+ServicioAsientos::~ServicioAsientos() {
+    delete idx;
+}
+
+void ServicioAsientos::cargarIndice() {
+    auto vuelos = repoVuelos.cargarTodos();
+    for (int i = 0; i < vuelos.longitud(); ++i) {
+        int vId = vuelos.obtenerPos(i).getId();
+        auto lista = repoAsientos.listarPorVuelo(vId);
+        for (int j = 0; j < lista.longitud(); ++j) {
+            const Asiento& a = lista.obtenerPos(j);
+            idx->insertar(makeKey(vId, a.getFila(), a.getLetra()), a);
+        }
     }
+}
+
+bool ServicioAsientos::listarDisponibles(int vueloId, Lista<Asiento>& out) const {
+    auto lista = repoAsientos.listarPorVuelo(vueloId);
+    for (int i = 0; i < lista.longitud(); ++i)
+        if (!lista.obtenerPos(i).isOcupado())
+            out.agregaFinal(lista.obtenerPos(i));
     return !out.esVacia();
 }
 
@@ -18,10 +36,10 @@ bool ServicioAsientos::precioAsiento(int vueloId, const string& codigo, double& 
     if (!repoVuelos.buscarPorId(vueloId, v)) return false;
     int fila = stoi(codigo.substr(0, codigo.size() - 1));
     char letra = codigo.back();
-    Asiento a;
-    if (!repoAsientos.buscar(vueloId, fila, letra, a)) return false;
+    const Asiento* a = idx->obtener(makeKey(vueloId, fila, letra));
+    if (!a) return false;
     precio = v.getPrecio();
-    if (a.isVip()) precio *= (1.0 + VIP_SURCHARGE);
+    if (a->isVip()) precio *= (1.0 + VIP_SURCHARGE);
     return true;
 }
 
@@ -38,10 +56,10 @@ bool ServicioAsientos::ocupar(int vueloId, const Lista<string>& codigos) {
     for (int i = 0; i < codigos.longitud(); ++i) {
         int fila = stoi(codigos.obtenerPos(i).substr(0, codigos.obtenerPos(i).size() - 1));
         char letra = codigos.obtenerPos(i).back();
-        Asiento a;
-        if (!repoAsientos.buscar(vueloId, fila, letra, a) || a.isOcupado()) return false;
-        a.setOcupado(true);
-        repoAsientos.actualizar(a);
+        Asiento* a = idx->obtener(makeKey(vueloId, fila, letra));
+        if (!a || a->isOcupado()) return false;
+        a->setOcupado(true);
+        repoAsientos.actualizar(*a);
     }
     return true;
 }
@@ -50,10 +68,10 @@ bool ServicioAsientos::liberar(int vueloId, const Lista<string>& codigos) {
     for (int i = 0; i < codigos.longitud(); ++i) {
         int fila = stoi(codigos.obtenerPos(i).substr(0, codigos.obtenerPos(i).size() - 1));
         char letra = codigos.obtenerPos(i).back();
-        Asiento a;
-        if (!repoAsientos.buscar(vueloId, fila, letra, a)) return false;
-        a.setOcupado(false);
-        repoAsientos.actualizar(a);
+        Asiento* a = idx->obtener(makeKey(vueloId, fila, letra));
+        if (!a) return false;
+        a->setOcupado(false);
+        repoAsientos.actualizar(*a);
     }
     return true;
 }

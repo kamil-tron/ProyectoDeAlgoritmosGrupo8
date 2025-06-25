@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Administrador.cpp" />
     <ClCompile Include="AuthService.cpp" />
+    <ClCompile Include="FuncionesHash.cpp" />
     <ClCompile Include="JetSmartApp.cpp" />
     <ClCompile Include="MenuAdministrador.cpp" />
     <ClCompile Include="MenuInicio.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Cola.h" />
     <ClInclude Include="ContadorDeDias.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FuncionesHash.h" />
     <ClInclude Include="HashEntidad.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="MatrizColor.h" />

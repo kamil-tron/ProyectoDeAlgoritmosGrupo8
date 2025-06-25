@@ -63,6 +63,9 @@
     <ClCompile Include="ServicioAsientos.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="FuncionesHash.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h">
@@ -183,6 +186,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="ServicioCheckIn.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="FuncionesHash.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
