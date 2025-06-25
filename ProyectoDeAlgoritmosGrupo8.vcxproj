@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h" />
+    <ClInclude Include="ArbolAVL.h" />
     <ClInclude Include="Asiento.h" />
     <ClInclude Include="AuthService.h" />
     <ClInclude Include="CheckIn.h" />
