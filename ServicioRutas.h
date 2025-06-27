@@ -5,6 +5,7 @@
 #include "Aeropuerto.h"
 #include "Grafo.h"
 #include "ServicioVuelos.h"
+#include "RepoAeropuertos.h"
 #include "HashTable.h"
 #include "FuncionesHash.h"
 
@@ -32,6 +33,7 @@ private:
 	vector<Aeropuerto> listaAeropuertos;
 	ServicioVuelos& servicioVuelos;
 	HashTable<string, int>* mapaCodigosAeropuerto;
+	RepoAeropuertos  repoAeropuertos;
 
 	int obtenerIndiceAeropuerto(const string& codigo) {
 		int* indice = mapaCodigosAeropuerto->obtener(codigo);
@@ -42,9 +44,21 @@ private:
 		return nuevoIndice;
 	}
 
-	void agregarArista(int indiceOrigen, int indiceDestino, double distancia, double costo) {
-		int posArista = grafo.AdicionarArco(indiceOrigen, indiceDestino);
-		grafo.ModificarArco(indiceOrigen, posArista, PesoVuelo{ distancia, costo });
+	void upsertArista(int idxO, int idxD, double dist, double costo)
+	{
+		int m = grafo.CantidadArcos(idxO);
+		for (int a = 0; a < m; ++a) {
+			if (grafo.ObtenerVerticeLlegada(idxO, a) == idxD) {
+				PesoVuelo pv = grafo.ObtenerArco(idxO, a);
+				if (costo < pv.costo)       pv.costo = costo;
+				if (dist < pv.distancia)   pv.distancia = dist;
+				grafo.ModificarArco(idxO, a, pv);
+				return;
+			}
+		}
+		// Arista nueva
+		int pos = grafo.AdicionarArco(idxO, idxD);
+		grafo.ModificarArco(idxO, pos, PesoVuelo{ dist, costo });
 	}
 
 	double calcularDistanciaEuclidiana(const Aeropuerto& a, const Aeropuerto& b) {
@@ -52,7 +66,7 @@ private:
 		int dy = a.getY() - b.getY();
 		return sqrt(dx * dx + dy * dy);
 	}
-
+	
 	RutaPosible calcularRutaDijkstra(int indiceOrigen, int indiceDestino, CriterioPeso criterio) {
 		int totalNodos = grafo.CantidadVertices();
 		vector<double> distancia(totalNodos, VALOR_INFINITO);
@@ -115,14 +129,27 @@ private:
 	}
 
 public:
-	ServicioRutas(ServicioVuelos& servicioVuelos)
-		: servicioVuelos(servicioVuelos), mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString)) {
+	ServicioRutas(ServicioVuelos& svcVuelos)
+		: servicioVuelos(svcVuelos),
+		mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
+	{
+		Lista<Aeropuerto> aps = repoAeropuertos.cargarTodos();
+		for (int i = 0; i < aps.longitud(); ++i) {
+			const Aeropuerto& a = aps.obtenerPos(i);
+			int idx = grafo.AdicionarVertice(PesoVuelo{ 0,0 });
+			listaAeropuertos.push_back(a);
+			mapaCodigosAeropuerto->insertar(a.getCodigo(), idx);
+		}
+
 		Lista<Vuelo> vuelos = servicioVuelos.listarVuelos();
-		for (int i = 0; i < vuelos.longitud(); i++) {
-			const Vuelo& vuelo = vuelos.obtenerPos(i);
-			int idxOrigen = obtenerIndiceAeropuerto(vuelo.getOrigen());
-			int idxDestino = obtenerIndiceAeropuerto(vuelo.getDestino());
-			agregarArista(idxOrigen, idxDestino, 1.0, vuelo.getPrecio());
+		for (int i = 0; i < vuelos.longitud(); ++i) {
+			const Vuelo& v = vuelos.obtenerPos(i);
+			int* o = mapaCodigosAeropuerto->obtener(v.getOrigen());
+			int* d = mapaCodigosAeropuerto->obtener(v.getDestino());
+			if (!o || !d) continue;
+			double distReal = calcularDistanciaEuclidiana(
+				listaAeropuertos[*o], listaAeropuertos[*d]);
+			upsertArista(*o, *d, distReal, v.getPrecio());
 		}
 	}
 

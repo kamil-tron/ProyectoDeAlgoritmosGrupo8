@@ -165,6 +165,7 @@
     <ClInclude Include="Pago.h" />
     <ClInclude Include="p_queue.h" />
     <ClInclude Include="RepoAdmins.h" />
+    <ClInclude Include="RepoAeropuertos.h" />
     <ClInclude Include="RepoAsientos.h" />
     <ClInclude Include="RepoCheckIn.h" />
     <ClInclude Include="RepoPagos.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="RepoVuelos.h" />
     <ClInclude Include="Reserva.h" />
     <ClInclude Include="Roles.h" />
+    <ClInclude Include="ServicioAeropuertos.h" />
     <ClInclude Include="ServicioAsientos.h" />
     <ClInclude Include="ServicioCheckIn.h" />
     <ClInclude Include="ServicioPagos.h" />

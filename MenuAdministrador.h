@@ -4,6 +4,7 @@
 #include "ServicioVuelos.h"
 #include "ServicioReservas.h"
 #include "ServicioCheckIn.h"
+#include "ServicioAeropuertos.h"
 #include "RepoUsuarios.h"
 #include <iostream>
 
@@ -14,6 +15,7 @@ private:
     ServicioVuelos svcVuelos;
     ServicioReservas svcReservas;
 	ServicioCheckIn svcCheckIn;
+	ServicioAeropuertos svcAeropuertos;
 
     void opcionRegistrarVuelo();
     void opcionModificarVuelo();
@@ -27,10 +29,19 @@ private:
 	void opcionVerPendientesCheckIn();
 	void opcionVerHistorialCheckIn();
 
+    void opcionRegistrarAeropuerto();
+    void opcionVerAeropuertos();
+
     void opcionCerrarSesion();
 
 public:
     MenuAdministrador(Sesion& s) : MenuBase(s) {
+        agregarOpcion(new MenuOpcionTexto(
+            "Registrar aeropuerto", [this] { opcionRegistrarAeropuerto(); }));
+        agregarOpcion(new MenuOpcionTexto(
+            "Ver aeropuertos", [this] { opcionVerAeropuertos(); }));
+
+
         // Gestión de vuelos
         agregarOpcion(new MenuOpcionTexto("Registrar nuevo vuelo", [this] { opcionRegistrarVuelo(); }));
         agregarOpcion(new MenuOpcionTexto("Ver todos los vuelos", [this] { opcionVerTodosVuelos(); })); // ahora ordenados por fecha

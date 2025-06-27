@@ -163,6 +163,41 @@ void MenuAdministrador::opcionVerHistorialCheckIn() {
     }
 }
 
+void MenuAdministrador::opcionRegistrarAeropuerto() {
+    string cod; int x, y;
+    cout << "Código IATA: ";   cin >> cod;
+    cout << "Coordenada X : "; cin >> x;
+    cout << "Coordenada Y : "; cin >> y;
+
+    if (svcAeropuertos.existe(cod)) {
+        cout << "Ya existe un aeropuerto con ese código.\n";
+    }
+    else if (svcAeropuertos.crear(Aeropuerto(cod, x, y))) {
+        cout << "Aeropuerto registrado.\n";
+    }
+    else {
+        cout << "No se pudo registrar el aeropuerto.\n";
+    }
+    cin.ignore(); cin.get();
+}
+
+void MenuAdministrador::opcionVerAeropuertos() {
+    auto lista = svcAeropuertos.listar();
+    if (lista.esVacia()) {
+        cout << "No hay aeropuertos registrados.\n";
+    }
+    else {
+        cout << "COD  X   Y\n";
+        for (int i = 0; i < lista.longitud(); ++i) {
+            const Aeropuerto& a = lista.obtenerPos(i);
+            cout << a.getCodigo() << "  "
+                << a.getX() << "   "
+                << a.getY() << '\n';
+        }
+    }
+    cin.ignore(); cin.get();
+}
+
 void MenuAdministrador::opcionCerrarSesion() {
     cout << "Cerrando sesion...\n";
 }
