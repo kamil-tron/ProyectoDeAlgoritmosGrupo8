@@ -91,5 +91,66 @@ private:
 		if (dist[t] == INF_VALUE) return ruta; // No hay ruta
 		for (int v = t; v != -1; v = prev[v])
 			ruta.vertices.agregaInicial(v);
+
+		Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
+		for (int i = 0; i + 1 < ruta.vertices.longitud(); i++) {
+			int u = ruta.vertices.obtenerPos(i);
+			int v = ruta.vertices.obtenerPos(i + 1);
+			const Aeropuerto& A = aeropuertos[u];
+			const Aeropuerto& B = aeropuertos[v];
+
+			for (int j = 0; j < vuelos.longitud(); j++)
+			{
+				const Vuelo& v1 = vuelos.obtenerPos(j);
+				if (v1.getOrigen() == A.getCodigo() && v1.getDestino() == B.getCodigo()) 
+				{
+					ruta.vuelos.agregaFinal(v1);
+					ruta.distanciaTotal += distanciaEuclidiana(A, B);
+					ruta.costoTotal += v1.getPrecio();
+					break;
+				}
+			}
+		}
+		return ruta;
+	}
+
+public:
+	ServicioRutas(ServicioVuelos& svcVuelos)
+		: svcVuelos(svcVuelos), idexAeropuertos(new HashTable<string, int>(1000, hashString)) {
+		Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
+		for (int i = 0; i < vuelos.longitud(); i++)
+		{
+			const Vuelo& v = vuelos.obtenerPos(i);
+			int idxOri = obtenerIndice(v.getOrigen());
+			int idxDst = obtenerIndice(v.getDestino());
+			agregarArco(idxOri, idxDst, 1.0, v.getPrecio());
+		}
+	}
+
+	~ServicioRutas() {
+		delete idexAeropuertos;
+	}
+
+	RutaPosible rutaMasCorta(const string& origen, const string& destino) {
+		int* ps = idexAeropuertos->obtener(origen);
+		int* pt = idexAeropuertos->obtener(destino);
+		if (!ps || !pt) return RutaPosible(); // Origen o destino no encontrado
+		return dijkstra(*ps, *pt, CriterioPeso::DISTANCIA);
+	}
+
+	RutaPosible rutaMasBarata(const string& origen, const string& destino) {
+		int* ps = idexAeropuertos->obtener(origen);
+		int* pt = idexAeropuertos->obtener(destino);
+		if (!ps || !pt) return RutaPosible(); // Origen o destino no encontrado
+		return dijkstra(*ps, *pt, CriterioPeso::COSTO);
+	}
+
+	Lista<RutaPosible> kMejoresRutas(const string& o, const string& d, int k)  {
+		Lista<RutaPosible> res;
+		if (k <= 0) return res;
+		RutaPosible mejor = rutaMasCorta(o, d);
+		if (mejor.vertices.esVacia()) return res;
+		res.agregaFinal(mejor);
+		return res;
 	}
 };
