@@ -11,31 +11,31 @@
 
 class ServicioReservas {
 private:
-    RepoReservas repoReservas;
-    RepoVuelos repoVuelos;
-    ServicioAsientos svcAsientos;
-    HashTable<string, Reserva>* idx;
+	RepoReservas repoReservas;
+	RepoVuelos repoVuelos;
+	ServicioAsientos svcAsientos;
+	HashTable<string, Reserva>* idx;
 
-    void cargarIndice();
-    string generarCodigo() const;
+	void cargarIndice();
+	string generarCodigo() const;
 
 public:
-    ServicioReservas();
-    ~ServicioReservas();
+	ServicioReservas();
+	~ServicioReservas();
 
-    Lista<Reserva> listarReservasUsuario(const string& email) const;
-    Lista<Asiento> listarAsientosDisponibles(int vueloId) const;
+	Lista<Reserva> listarReservasUsuario(const string& email) const;
+	Lista<Asiento> listarAsientosDisponibles(int vueloId) const;
 
-    bool crearReserva(const Reserva& r);
-    bool cancelarReserva(const string& codigo);
+	bool crearReserva(const Reserva& r);
+	bool cancelarReserva(const string& codigo);
 
-    bool validarAsientosDisponibles(int vueloId, const Lista<string>& codigos) const;
-    double calcularTotal(int vueloId, const Lista<string>& codigos) const;
-    bool crearReservaConAsientos(const Usuario& usuario,
-        int vueloId,
-        const Lista<string>& codigos,
-        Reserva& outReserva);
+	bool validarAsientosDisponibles(int vueloId, const Lista<string>& codigos) const;
+	double calcularTotal(int vueloId, const Lista<string>& codigos) const;
+	bool crearReservaConAsientos(const Usuario& usuario,
+		int vueloId,
+		const Lista<string>& codigos,
+		Reserva& outReserva);
 
-    Reserva* obtener(const string& codigo);
-    const Reserva* obtener(const string& codigo) const;
+	Reserva* obtener(const string& codigo);
+	const Reserva* obtener(const string& codigo) const;
 };

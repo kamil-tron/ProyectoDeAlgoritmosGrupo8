@@ -13,36 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de encabezado\entidades">
+      <UniqueIdentifier>{3e75512b-31f6-4191-8250-a74ddc7e1baa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\repositorios">
+      <UniqueIdentifier>{1b52ea09-0c70-44bd-8aa9-e8254660ae9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\servicios">
+      <UniqueIdentifier>{0514fabe-98b9-4374-bf78-fda3802061be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\estructuras">
+      <UniqueIdentifier>{b4a7cdde-abab-4a54-adf3-7f10106b4630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\auxiliares">
+      <UniqueIdentifier>{4cf77188-a171-4ef2-8688-6738182fde7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\menus">
+      <UniqueIdentifier>{c7e24ea3-0e9f-418a-ab75-58e7af401974}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ProyectoDeAlgoritmosGrupo8.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="Reserva.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Usuario.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Administrador.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Vuelo.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Pago.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="ServicioPagos.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="ServicioReservas.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="ServicioVuelos.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="AuthService.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="MenuAdministrador.cpp">
@@ -57,142 +51,139 @@
     <ClCompile Include="JetSmartApp.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="Ordenamientos.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="ServicioAsientos.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="FuncionesHash.cpp">
+    <ClCompile Include="ServicioReservas.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Administrador.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="UserEntity.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Roles.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Usuario.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodo.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Lista.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Reserva.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Vuelo.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Pago.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="RepoAdmins.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="RepoUsuarios.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="RepoPagos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="RepoReservas.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="RepoVuelos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="ServicioPagos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="ServicioReservas.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="ServicioVuelos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="AuthService.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Sesion.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuOpcion.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuOpcionTexto.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuBase.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuAdministrador.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuUsuario.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuInicio.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="JetSmartApp.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Pila.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Cola.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="MatrizColor.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Asiento.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="ContadorDeDias.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="RepoAsientos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Ordenamientos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="ServicioAsientos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="HashEntidad.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="HashTable.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\entidades</Filter>
     </ClInclude>
     <ClInclude Include="CheckIn.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Pago.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Reserva.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Usuario.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Administrador.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="UserEntity.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Vuelo.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Roles.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoAdmins.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoAsientos.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
     </ClInclude>
     <ClInclude Include="RepoCheckIn.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoPagos.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoReservas.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoUsuarios.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoVuelos.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="ServicioAsientos.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
     </ClInclude>
     <ClInclude Include="ServicioCheckIn.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\servicios</Filter>
     </ClInclude>
-    <ClInclude Include="FuncionesHash.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="ServicioPagos.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
+    </ClInclude>
+    <ClInclude Include="ServicioReservas.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
+    </ClInclude>
+    <ClInclude Include="ServicioVuelos.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuUsuario.h">
+      <Filter>Archivos de encabezado\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuAdministrador.h">
+      <Filter>Archivos de encabezado\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="JetSmartApp.h">
+      <Filter>Archivos de encabezado\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuBase.h">
+      <Filter>Archivos de encabezado\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuInicio.h">
+      <Filter>Archivos de encabezado\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuOpcion.h">
+      <Filter>Archivos de encabezado\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuOpcionTexto.h">
+      <Filter>Archivos de encabezado\menus</Filter>
     </ClInclude>
     <ClInclude Include="ArbolAVL.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="Cola.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="FuncionesHash.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="HashEntidad.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="HashTable.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="Lista.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="Pila.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodo.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthService.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="Ordenamientos.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
+    </ClInclude>
+    <ClInclude Include="ContadorDeDias.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
+    </ClInclude>
+    <ClInclude Include="Sesion.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrizColor.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

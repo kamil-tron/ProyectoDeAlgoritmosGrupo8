@@ -127,23 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Administrador.cpp" />
-    <ClCompile Include="AuthService.cpp" />
-    <ClCompile Include="FuncionesHash.cpp" />
     <ClCompile Include="JetSmartApp.cpp" />
     <ClCompile Include="MenuAdministrador.cpp" />
     <ClCompile Include="MenuInicio.cpp" />
     <ClCompile Include="MenuUsuario.cpp" />
-    <ClCompile Include="Ordenamientos.cpp" />
-    <ClCompile Include="Pago.cpp" />
     <ClCompile Include="ProyectoDeAlgoritmosGrupo8.cpp" />
-    <ClCompile Include="Reserva.cpp" />
     <ClCompile Include="ServicioAsientos.cpp" />
     <ClCompile Include="ServicioPagos.cpp" />
     <ClCompile Include="ServicioReservas.cpp" />
-    <ClCompile Include="ServicioVuelos.cpp" />
-    <ClCompile Include="Usuario.cpp" />
-    <ClCompile Include="Vuelo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h" />

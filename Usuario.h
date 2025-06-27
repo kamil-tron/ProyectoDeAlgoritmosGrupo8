@@ -3,6 +3,19 @@
 #include "UserEntity.h"
 #include <string>
 #include <iostream>
+#include <sstream>
+
+using namespace std;
+
+inline void trim(string& str) {
+	while (!str.empty()) {
+		char c = str.back();
+		if (c == ' ' || c == '\n' || c == '\r' || c == '\t')
+			str.pop_back();
+		else
+			break;
+	}
+}
 
 class Usuario final : public UserEntity {
 private:
@@ -33,13 +46,33 @@ public:
 	void setApellido(const string& a) { apellido = a; }
 	void setPassword(const string& p) { contrasena = p; }
 
-
 	void mostrarPerfil() const override {
 		cout << "Nombre : " << nombre << ' ' << apellido << '\n'
 			<< "DNI    : " << dni << '\n'
 			<< "Correo : " << correo << '\n';
 	}
 
-	string serialize() const;
-	static Usuario fromString(const string& s);
+	string serialize() const {
+		ostringstream ss;
+		ss << dni << ','
+			<< nombre << ','
+			<< apellido << ','
+			<< correo << ','
+			<< contrasena;
+		return ss.str();
+	}
+
+	static Usuario fromString(const string& s) {
+		istringstream ss(s);
+		string dni, nom, ape, mail, pass;
+
+		getline(ss, dni, ',');
+		getline(ss, nom, ',');
+		getline(ss, ape, ',');
+		getline(ss, mail, ',');
+		getline(ss, pass);
+		trim(pass);
+
+		return Usuario(dni, nom, ape, mail, pass);
+	}
 };
