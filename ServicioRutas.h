@@ -18,7 +18,7 @@ struct PesoVuelo {
 };
 
 struct RutaPosible {
-	Lista<int> vertices;
+	Lista<int> indicesAeropuertos;
 	Lista<Vuelo> vuelos;
 	double distanciaTotal{ 0 };
 	double costoTotal{ 0 };
@@ -26,87 +26,87 @@ struct RutaPosible {
 
 class ServicioRutas {
 private:
-	const double INF_VALUE = 1e18;
+	const double VALOR_INFINITO = 1e18;
 
-	Grafo<PesoVuelo> g;
-	vector<Aeropuerto> aeropuertos;
-	ServicioVuelos& svcVuelos;
-	HashTable<string, int>* idexAeropuertos;
+	Grafo<PesoVuelo> grafo;
+	vector<Aeropuerto> listaAeropuertos;
+	ServicioVuelos& servicioVuelos;
+	HashTable<string, int>* mapaCodigosAeropuerto;
 
-	int obtenerIndice(const std::string& codigo) {
-		int* p = idexAeropuertos->obtener(codigo);
-		if (p) return *p;
-		int idx = g.AdicionarVertice(PesoVuelo{ 0,0 });
-		aeropuertos.push_back(Aeropuerto(codigo, 0, 0));
-		idexAeropuertos->insertar(codigo, idx);
-		return idx;
+	int obtenerIndiceAeropuerto(const string& codigo) {
+		int* indice = mapaCodigosAeropuerto->obtener(codigo);
+		if (indice) return *indice;
+		int nuevoIndice = grafo.AdicionarVertice(PesoVuelo{ 0,0 });
+		listaAeropuertos.push_back(Aeropuerto(codigo, 0, 0));
+		mapaCodigosAeropuerto->insertar(codigo, nuevoIndice);
+		return nuevoIndice;
 	}
 
-	void agregarArco(int idxOri, int idxDst, double dist, double costo) {
-		int pos = g.AdicionarArco(idxOri, idxDst);
-		g.ModificarArco(idxOri, pos, PesoVuelo{ dist, costo });
+	void agregarArista(int indiceOrigen, int indiceDestino, double distancia, double costo) {
+		int posArista = grafo.AdicionarArco(indiceOrigen, indiceDestino);
+		grafo.ModificarArco(indiceOrigen, posArista, PesoVuelo{ distancia, costo });
 	}
 
-	double distanciaEuclidiana(const Aeropuerto& a, const Aeropuerto& b) {
+	double calcularDistanciaEuclidiana(const Aeropuerto& a, const Aeropuerto& b) {
 		int dx = a.getX() - b.getX();
 		int dy = a.getY() - b.getY();
-		return sqrt((dx * dx + dy * dy) * 1.0);
+		return sqrt(dx * dx + dy * dy);
 	}
 
-	RutaPosible dijkstra(int s, int t, CriterioPeso criterio)  {
-		int n = g.CantidadVertices();
-		vector<double> dist(n, INF_VALUE);
-		vector<int> prev(n, -1);
-		vector<bool> visitado(n, false);
-		dist[s] = 0;
+	RutaPosible calcularRutaDijkstra(int indiceOrigen, int indiceDestino, CriterioPeso criterio) {
+		int totalNodos = grafo.CantidadVertices();
+		vector<double> distancia(totalNodos, VALOR_INFINITO);
+		vector<int> anterior(totalNodos, -1);
+		vector<bool> visitado(totalNodos, false);
+		distancia[indiceOrigen] = 0;
 
 		while (true) {
-			int u = -1; double best = INF_VALUE;
-			for (int i = 0; i < n; i++)
-			{
-				if(!visitado[i] && dist[i] < best) {
-					best = dist[i];
-					u = i;
+			int actual = -1;
+			double mejorDistancia = VALOR_INFINITO;
+
+			for (int i = 0; i < totalNodos; i++) {
+				if (!visitado[i] && distancia[i] < mejorDistancia) {
+					mejorDistancia = distancia[i];
+					actual = i;
 				}
 			}
 
-			if (u == -1 || u == t) break; // No hay más nodos o llegamos al destino
-			visitado[u] = true;
+			if (actual == -1 || actual == indiceDestino) break;
 
-			int m = g.CantidadArcos(u);
-			for (int k = 0; k < m; k++)
-			{
-				int v = g.ObtenerVerticeLlegada(u, k);
-				PesoVuelo peso = g.ObtenerArco(u, k);
-				double w = (criterio == CriterioPeso::DISTANCIA) ? peso.distancia : peso.costo;
-				if (dist[u] + w < dist[v])
-				{
-					dist[v] = dist[u] + w;
-					prev[v] = u;
+			visitado[actual] = true;
+			int cantidadAristas = grafo.CantidadArcos(actual);
+
+			for (int j = 0; j < cantidadAristas; j++) {
+				int vecino = grafo.ObtenerVerticeLlegada(actual, j);
+				PesoVuelo peso = grafo.ObtenerArco(actual, j);
+				double valor = (criterio == CriterioPeso::DISTANCIA) ? peso.distancia : peso.costo;
+				if (distancia[actual] + valor < distancia[vecino]) {
+					distancia[vecino] = distancia[actual] + valor;
+					anterior[vecino] = actual;
 				}
 			}
 		}
 
 		RutaPosible ruta;
-		if (dist[t] == INF_VALUE) return ruta; // No hay ruta
-		for (int v = t; v != -1; v = prev[v])
-			ruta.vertices.agregaInicial(v);
+		if (distancia[indiceDestino] == VALOR_INFINITO) return ruta;
 
-		Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
-		for (int i = 0; i + 1 < ruta.vertices.longitud(); i++) {
-			int u = ruta.vertices.obtenerPos(i);
-			int v = ruta.vertices.obtenerPos(i + 1);
-			const Aeropuerto& A = aeropuertos[u];
-			const Aeropuerto& B = aeropuertos[v];
+		for (int v = indiceDestino; v != -1; v = anterior[v]) {
+			ruta.indicesAeropuertos.agregaInicial(v);
+		}
 
-			for (int j = 0; j < vuelos.longitud(); j++)
-			{
-				const Vuelo& v1 = vuelos.obtenerPos(j);
-				if (v1.getOrigen() == A.getCodigo() && v1.getDestino() == B.getCodigo()) 
-				{
-					ruta.vuelos.agregaFinal(v1);
-					ruta.distanciaTotal += distanciaEuclidiana(A, B);
-					ruta.costoTotal += v1.getPrecio();
+		Lista<Vuelo> vuelosDisponibles = servicioVuelos.listarVuelos();
+		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); i++) {
+			int origenIdx = ruta.indicesAeropuertos.obtenerPos(i);
+			int destinoIdx = ruta.indicesAeropuertos.obtenerPos(i + 1);
+			const Aeropuerto& origen = listaAeropuertos[origenIdx];
+			const Aeropuerto& destino = listaAeropuertos[destinoIdx];
+
+			for (int j = 0; j < vuelosDisponibles.longitud(); j++) {
+				const Vuelo& vuelo = vuelosDisponibles.obtenerPos(j);
+				if (vuelo.getOrigen() == origen.getCodigo() && vuelo.getDestino() == destino.getCodigo()) {
+					ruta.vuelos.agregaFinal(vuelo);
+					ruta.distanciaTotal += calcularDistanciaEuclidiana(origen, destino);
+					ruta.costoTotal += vuelo.getPrecio();
 					break;
 				}
 			}
@@ -115,42 +115,72 @@ private:
 	}
 
 public:
-	ServicioRutas(ServicioVuelos& svcVuelos)
-		: svcVuelos(svcVuelos), idexAeropuertos(new HashTable<string, int>(1000, hashString)) {
-		Lista<Vuelo> vuelos = svcVuelos.listarVuelos();
-		for (int i = 0; i < vuelos.longitud(); i++)
-		{
-			const Vuelo& v = vuelos.obtenerPos(i);
-			int idxOri = obtenerIndice(v.getOrigen());
-			int idxDst = obtenerIndice(v.getDestino());
-			agregarArco(idxOri, idxDst, 1.0, v.getPrecio());
+	ServicioRutas(ServicioVuelos& servicioVuelos)
+		: servicioVuelos(servicioVuelos), mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString)) {
+		Lista<Vuelo> vuelos = servicioVuelos.listarVuelos();
+		for (int i = 0; i < vuelos.longitud(); i++) {
+			const Vuelo& vuelo = vuelos.obtenerPos(i);
+			int idxOrigen = obtenerIndiceAeropuerto(vuelo.getOrigen());
+			int idxDestino = obtenerIndiceAeropuerto(vuelo.getDestino());
+			agregarArista(idxOrigen, idxDestino, 1.0, vuelo.getPrecio());
 		}
 	}
 
 	~ServicioRutas() {
-		delete idexAeropuertos;
+		delete mapaCodigosAeropuerto;
 	}
 
 	RutaPosible rutaMasCorta(const string& origen, const string& destino) {
-		int* ps = idexAeropuertos->obtener(origen);
-		int* pt = idexAeropuertos->obtener(destino);
-		if (!ps || !pt) return RutaPosible(); // Origen o destino no encontrado
-		return dijkstra(*ps, *pt, CriterioPeso::DISTANCIA);
+		int* idxOrigen = mapaCodigosAeropuerto->obtener(origen);
+		int* idxDestino = mapaCodigosAeropuerto->obtener(destino);
+		if (!idxOrigen || !idxDestino) return RutaPosible();
+		return calcularRutaDijkstra(*idxOrigen, *idxDestino, CriterioPeso::DISTANCIA);
 	}
 
 	RutaPosible rutaMasBarata(const string& origen, const string& destino) {
-		int* ps = idexAeropuertos->obtener(origen);
-		int* pt = idexAeropuertos->obtener(destino);
-		if (!ps || !pt) return RutaPosible(); // Origen o destino no encontrado
-		return dijkstra(*ps, *pt, CriterioPeso::COSTO);
+		int* idxOrigen = mapaCodigosAeropuerto->obtener(origen);
+		int* idxDestino = mapaCodigosAeropuerto->obtener(destino);
+		if (!idxOrigen || !idxDestino) return RutaPosible();
+		return calcularRutaDijkstra(*idxOrigen, *idxDestino, CriterioPeso::COSTO);
 	}
 
-	Lista<RutaPosible> kMejoresRutas(const string& o, const string& d, int k)  {
-		Lista<RutaPosible> res;
-		if (k <= 0) return res;
-		RutaPosible mejor = rutaMasCorta(o, d);
-		if (mejor.vertices.esVacia()) return res;
-		res.agregaFinal(mejor);
-		return res;
+	Lista<RutaPosible> mejoresKRutas(const string& origen, const string& destino, int cantidad) {
+		Lista<RutaPosible> rutas;
+		if (cantidad <= 0) return rutas;
+
+		RutaPosible rutaInicial = rutaMasCorta(origen, destino);
+		if (rutaInicial.indicesAeropuertos.esVacia()) return rutas;
+
+		rutas.agregaFinal(rutaInicial);
+
+		for (int i = 1; i < cantidad; i++) {
+			const RutaPosible& rutaAnterior = rutas.obtenerFinal();
+			int longitud = rutaAnterior.indicesAeropuertos.longitud();
+			if (longitud < 2) break;
+
+			int penultimo = rutaAnterior.indicesAeropuertos.obtenerPos(longitud - 2);
+			int ultimo = rutaAnterior.indicesAeropuertos.obtenerFinal();
+
+			int cantidadArcos = grafo.CantidadArcos(penultimo);
+			bool seBloqueo = false;
+
+			for (int j = 0; j < cantidadArcos; j++) {
+				if (grafo.ObtenerVerticeLlegada(penultimo, j) == ultimo) {
+					PesoVuelo pesoOriginal = grafo.ObtenerArco(penultimo, j);
+					PesoVuelo pesoBloqueado = pesoOriginal;
+					pesoBloqueado.distancia = pesoBloqueado.costo = VALOR_INFINITO;
+					grafo.ModificarArco(penultimo, j, pesoBloqueado);
+
+					RutaPosible nuevaRuta = rutaMasCorta(origen, destino);
+					if (!nuevaRuta.indicesAeropuertos.esVacia()) rutas.agregaFinal(nuevaRuta);
+
+					grafo.ModificarArco(penultimo, j, pesoOriginal);
+					seBloqueo = true;
+					break;
+				}
+			}
+			if (!seBloqueo) break;
+		}
+		return rutas;
 	}
 };
