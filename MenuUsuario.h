@@ -5,6 +5,7 @@
 #include "ServicioReservas.h"
 #include "ServicioPagos.h"
 #include "ServicioCheckIn.h"
+#include "ServicioRutas.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -15,8 +16,10 @@ private:
     ServicioReservas svcReservas;
     ServicioPagos svcPagos;
 	ServicioCheckIn svcCheckIn;
+    ServicioRutas svcRutas;
 
     void reservarVuelo(int vueloId);
+    void reservarRuta(const RutaPosible& ruta);
     void imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index);
     int contarConfirmadasRec(const Lista<Reserva>& lista, int i);
     void opcionBuscarYReservar();

@@ -185,5 +185,23 @@
     <ClInclude Include="MatrizColor.h">
       <Filter>Archivos de encabezado\auxiliares</Filter>
     </ClInclude>
+    <ClInclude Include="Aeropuerto.h">
+      <Filter>Archivos de encabezado\entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Grafo.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="p_queue.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="RepoAeropuertos.h">
+      <Filter>Archivos de encabezado\repositorios</Filter>
+    </ClInclude>
+    <ClInclude Include="ServicioAeropuertos.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
+    </ClInclude>
+    <ClInclude Include="ServicioRutas.h">
+      <Filter>Archivos de encabezado\servicios</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

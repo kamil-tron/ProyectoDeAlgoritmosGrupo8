@@ -31,7 +31,7 @@ private:
 
 	Grafo<PesoVuelo> grafo;
 	vector<Aeropuerto> listaAeropuertos;
-	ServicioVuelos& servicioVuelos;
+	ServicioVuelos servicioVuelos;
 	HashTable<string, int>* mapaCodigosAeropuerto;
 	RepoAeropuertos  repoAeropuertos;
 
@@ -129,9 +129,8 @@ private:
 	}
 
 public:
-	ServicioRutas(ServicioVuelos& svcVuelos)
-		: servicioVuelos(svcVuelos),
-		mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
+	ServicioRutas()
+		: mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
 	{
 		Lista<Aeropuerto> aps = repoAeropuertos.cargarTodos();
 		for (int i = 0; i < aps.longitud(); ++i) {
