@@ -22,7 +22,7 @@ void JetSmartApp::run() {
 				cin >> op;
 				cin.ignore(10000, '\n');
 				menu.ejecutar(op);
-			} while (op != 12);
+			} while (op != 11);
 		}
 		else {
 			MenuUsuario menu(*ses);
