@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h" />
+    <ClInclude Include="Aeropuerto.h" />
     <ClInclude Include="ArbolAVL.h" />
     <ClInclude Include="Asiento.h" />
     <ClInclude Include="AuthService.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="ContadorDeDias.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FuncionesHash.h" />
+    <ClInclude Include="Grafo.h" />
     <ClInclude Include="HashEntidad.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="MatrizColor.h" />
@@ -161,6 +163,7 @@
     <ClInclude Include="MenuUsuario.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="Pago.h" />
+    <ClInclude Include="p_queue.h" />
     <ClInclude Include="RepoAdmins.h" />
     <ClInclude Include="RepoAsientos.h" />
     <ClInclude Include="RepoCheckIn.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="ServicioCheckIn.h" />
     <ClInclude Include="ServicioPagos.h" />
     <ClInclude Include="ServicioReservas.h" />
+    <ClInclude Include="ServicioRutas.h" />
     <ClInclude Include="ServicioVuelos.h" />
     <ClInclude Include="Sesion.h" />
     <ClInclude Include="UserEntity.h" />
