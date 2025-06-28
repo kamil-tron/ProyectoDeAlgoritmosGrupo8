@@ -28,6 +28,8 @@ struct RutaPosible {
 class ServicioRutas {
 private:
 	const double VALOR_INFINITO = 1e18;
+	int MIN_DIAS_ESCALA = 0;
+	int MAX_DIAS_ESCALA = 1;
 
 	Grafo<PesoVuelo> grafo;
 	vector<Aeropuerto> listaAeropuertos;
@@ -67,67 +69,78 @@ private:
 		return sqrt(dx * dx + dy * dy);
 	}
 	
-	RutaPosible calcularRutaDijkstra(int indiceOrigen, int indiceDestino, CriterioPeso criterio) {
-		int totalNodos = grafo.CantidadVertices();
-		vector<double> distancia(totalNodos, VALOR_INFINITO);
-		vector<int> anterior(totalNodos, -1);
-		vector<bool> visitado(totalNodos, false);
-		distancia[indiceOrigen] = 0;
+	bool conexionValida(const Vuelo& prev, const Vuelo& next) {
+		int delta = next.getFechaSerial() - prev.getFechaSerial();
+		return delta >= MIN_DIAS_ESCALA && delta <= MAX_DIAS_ESCALA;
+	}
 
+	RutaPosible calcularRutaDijkstra(int idxO, int idxD, CriterioPeso criterio) {
+		int n = grafo.CantidadVertices();
+		vector<double> dist(n, VALOR_INFINITO);
+		vector<int> prev(n, -1);
+		vector<bool> seen(n, false);
+		dist[idxO] = 0;
+
+		// Dijkstra
 		while (true) {
-			int actual = -1;
-			double mejorDistancia = VALOR_INFINITO;
-
-			for (int i = 0; i < totalNodos; i++) {
-				if (!visitado[i] && distancia[i] < mejorDistancia) {
-					mejorDistancia = distancia[i];
-					actual = i;
+			int u = -1;
+			double best = VALOR_INFINITO;
+			for (int i = 0; i < n; ++i) {
+				if (!seen[i] && dist[i] < best) {
+					best = dist[i]; u = i;
 				}
 			}
-
-			if (actual == -1 || actual == indiceDestino) break;
-
-			visitado[actual] = true;
-			int cantidadAristas = grafo.CantidadArcos(actual);
-
-			for (int j = 0; j < cantidadAristas; j++) {
-				int vecino = grafo.ObtenerVerticeLlegada(actual, j);
-				PesoVuelo peso = grafo.ObtenerArco(actual, j);
-				double valor = (criterio == CriterioPeso::DISTANCIA) ? peso.distancia : peso.costo;
-				if (distancia[actual] + valor < distancia[vecino]) {
-					distancia[vecino] = distancia[actual] + valor;
-					anterior[vecino] = actual;
+			if (u < 0 || u == idxD) break;
+			seen[u] = true;
+			int m = grafo.CantidadArcos(u);
+			for (int j = 0; j < m; ++j) {
+				int v = grafo.ObtenerVerticeLlegada(u, j);
+				PesoVuelo pv = grafo.ObtenerArco(u, j);
+				double cost = (criterio == CriterioPeso::DISTANCIA) ? pv.distancia : pv.costo;
+				if (dist[u] + cost < dist[v]) {
+					dist[v] = dist[u] + cost;
+					prev[v] = u;
 				}
 			}
 		}
 
 		RutaPosible ruta;
-		if (distancia[indiceDestino] == VALOR_INFINITO) return ruta;
+		if (dist[idxD] == VALOR_INFINITO) return ruta;
 
-		for (int v = indiceDestino; v != -1; v = anterior[v]) {
+		// Reconstruir índices
+		for (int v = idxD; v != -1; v = prev[v])
 			ruta.indicesAeropuertos.agregaInicial(v);
-		}
 
-		Lista<Vuelo> vuelosDisponibles = servicioVuelos.listarVuelos();
-		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); i++) {
-			int origenIdx = ruta.indicesAeropuertos.obtenerPos(i);
-			int destinoIdx = ruta.indicesAeropuertos.obtenerPos(i + 1);
-			const Aeropuerto& origen = listaAeropuertos[origenIdx];
-			const Aeropuerto& destino = listaAeropuertos[destinoIdx];
+		// Seleccionar vuelos con validación de escalas
+		Lista<Vuelo> todos = servicioVuelos.listarVuelos();
+		int lastDate = -1;
+		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
+			int iO = ruta.indicesAeropuertos.obtenerPos(i);
+			int iD = ruta.indicesAeropuertos.obtenerPos(i + 1);
+			const auto& aerO = listaAeropuertos[iO];
+			const auto& aerD = listaAeropuertos[iD];
 
-			for (int j = 0; j < vuelosDisponibles.longitud(); j++) {
-				const Vuelo& vuelo = vuelosDisponibles.obtenerPos(j);
-				if (vuelo.getOrigen() == origen.getCodigo() && vuelo.getDestino() == destino.getCodigo()) {
-					ruta.vuelos.agregaFinal(vuelo);
-					ruta.distanciaTotal += calcularDistanciaEuclidiana(origen, destino);
-					ruta.costoTotal += vuelo.getPrecio();
-					break;
+			bool found = false;
+			Vuelo elegido;
+			for (int k = 0; k < todos.longitud(); ++k) {
+				const Vuelo& v = todos.obtenerPos(k);
+				if (v.getOrigen() == aerO.getCodigo() && v.getDestino() == aerD.getCodigo()) {
+					if (lastDate < 0 || conexionValida(elegido, v)) {
+						elegido = v;
+						found = true;
+						break;
+					}
 				}
 			}
+			if (!found) { ruta.vuelos.limpiar(); return ruta; }
+
+			ruta.vuelos.agregaFinal(elegido);
+			ruta.distanciaTotal += calcularDistanciaEuclidiana(aerO, aerD);
+			ruta.costoTotal += elegido.getPrecio();
+			lastDate = elegido.getFechaSerial();
 		}
 		return ruta;
 	}
-
 public:
 	ServicioRutas()
 		: mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))

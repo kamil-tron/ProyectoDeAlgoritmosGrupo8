@@ -48,6 +48,14 @@ public:
     const string& getOrigen() const { return origen; }
     const string& getDestino() const { return destino; }
     const string& getFecha() const { return fecha; }
+
+    int getFechaSerial() const {
+		int d = stoi(fecha.substr(0, 2));
+		int m = stoi(fecha.substr(3, 2));
+		int y = stoi(fecha.substr(6, 4));
+		return y * 10000 + m * 100 + d;
+	}
+
     double getPrecio() const { return precio_; }
     int getCapacidad() const { return capacidad_; }
 

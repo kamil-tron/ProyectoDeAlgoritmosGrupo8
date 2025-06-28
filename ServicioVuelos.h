@@ -137,4 +137,8 @@ public:
 
 		return true;
 	}
+
+	Lista<Aeropuerto> listarAeropuertos() const {
+		return repoAeropuertos.cargarTodos();
+	}
 };

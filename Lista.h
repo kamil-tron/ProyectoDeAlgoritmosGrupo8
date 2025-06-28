@@ -54,6 +54,10 @@ public:
 	void eliminaPos(uint pos);
 	void eliminaFinal() { eliminaPos(lon - 1); }
 
+	void limpiar() {
+		while (!esVacia()) eliminaInicial();
+	}
+
 	T obtenerInicial() const { return obtenerPos(0); }
 	T obtenerPos(uint pos) const;
 	T obtenerFinal() const { return obtenerPos(lon - 1); }
