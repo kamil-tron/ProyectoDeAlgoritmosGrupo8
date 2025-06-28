@@ -3,14 +3,15 @@
 
 using namespace std;
 
-template <class T, T vacio = -1> class Grafo {
+template <class T>
+class Grafo {
 private:
     class CArco {
     public:
         T info;
         int v; // índice del vértice de llegada
         CArco(int vLlegada) {
-            info = vacio;
+            info = T();
             v = vLlegada;
         }
     };
@@ -20,7 +21,7 @@ private:
         T info;
         vector<CArco*>* ady; // Lista de adyacencia
         CVertice() {
-            info = vacio;
+            info = T();
             ady = new vector<CArco*>();
         }
     };
