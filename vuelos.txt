@@ -1,246 +1,100 @@
-﻿cramil23
-cramil23
-Compartiendo su pantalla
-
-mpajes2006 — 20/05/2025 21:02
-\
-cramil23 — 20/05/2025 21:03
-Xd
-Que fue
-🗣️
-Xd
-Que haces crack
-Llamaste
-Loco
-Me tienes bailando
-mpajes2006 — 20/05/2025 21:54
-wtf, yo habia ido a pasear a mis perros y recien subo a mi cuarto XD
-cramil23 — 21/05/2025 9:16
-Es que de la nada me salió que estabas llamando
-mpajes2006
- ha iniciado una llamada que ha durado 3 horas. — 31/05/2025 23:06
-cramil23 — 01/06/2025 1:18
-tal cual
-cramil23 — 08/06/2025 22:12
-tal cual
-mpajes2006
- ha iniciado una llamada que ha durado 3 horas. — 08/06/2025 22:17
-mpajes2006 — 08/06/2025 22:42
-https://lucid.app/lucidchart/a09eed77-5d6e-4928-9e92-a2f2466c42e4/edit?viewport_loc=-5062%2C-4132%2C5700%2C2865%2C7ydbN4mPXwgC&invitationId=inv_72fa0a4b-d8f8-4c9f-b6bc-083ccbea98e4
-Lucidchart
-Diagrama De Clases Trabajo Parcial : Lucidchart
-Check out my Lucidchart document! Lucidchart is the intelligent diagramming solution that empowers teams to clarify complexity, align their insights, and build the future faster. Create your own diagram or flowchart at lucidchart.com.
-Diagrama De Clases Trabajo Parcial: Lucidchart
-cramil23
- ha iniciado una llamada que ha durado unos segundos. — 15/06/2025 21:18
-mpajes2006
- ha iniciado una llamada que ha durado 36 minutos. — 15/06/2025 21:19
-cramil23 — 15/06/2025 22:01
-el que perdona murio en la cruz
-mpajes2006 — 15/06/2025 22:12
-estoy que termino mi coso del trabajo
-cómo vas con los análisis big o?
-cramil23 — 15/06/2025 22:21
-ya esta
-ando terminando el ultimo
-mpajes2006 — 15/06/2025 22:29
-chvre mano, gracias te debo una, cuando lo tengas prepara todo el entregable y asegúrate que todo esté incluido
-y me lo pasas
-cramil23 — 15/06/2025 22:31
-va manito
-cramil23 — 15/06/2025 22:55
-Tipo de archivo adjunto: document
-big 0.docx
-968.59 KB
-confirma porciaca
-mpajes2006
- ha iniciado una llamada que ha durado una hora. — 15/06/2025 22:56
-cramil23 — 15/06/2025 23:35
-un control z para pilas
-cola de reclamaciones
-cramil23 — 16/06/2025 0:10
-ya fue
-mpajes2006
- ha iniciado una llamada que ha durado 2 horas. — 18/06/2025 22:16
-mpajes2006 — 18/06/2025 23:39
-quickSort(arboles, 0, n - 1, [](const ArbolForestal &a, const ArbolForestal &b) {
-        if (a.edad != b.edad) {
-            return a.edad < b.edad;
-        }
-        return a.salud < b.salud;
-    });
-retirate de la carrera
-para reprobar estas preparado
-cramil23 — 18/06/2025 23:44
-pajes
-solo terminas rapido
-Tienes una llamada perdida de 
-mpajes2006
- que ha durado 3 minutos. — 19/06/2025 5:04
-cramil23
- ha iniciado una llamada que ha durado 32 minutos. — 19/06/2025 5:10
-mpajes2006 — 19/06/2025 5:35
-void _porNivel(Nodo<T> nodo) {
-        if (nodo == nullptr) return;
-
-        Cola<Nodo<T>> cola;
-        cola.encolar(nodo);
-
-        while (!cola.estaVacia()) {
-            Nodo<T>* actual = cola.desencolar();
-            procesar(actual->elemento);
-
-            if (actual->izq != nullptr) cola.encolar(actual->izq);
-            if (actual->der != nullptr) cola.encolar(actual->der);
-        }
-    }
-cramil23 — 21/06/2025 22:02
-chat chat
-cree que somos su chat
-mpajes2006 — 21/06/2025 22:06
-pasa el labarotorio de fisica
-cramil23 — 21/06/2025 22:08
-un hola maldita lesbiana
-Tipo de archivo adjunto: document
-Reporte del laboratorio N° 11 de Física I Asíncrono.docx
-587.82 KB
-ahi esta
-Tienes una llamada perdida de 
-mpajes2006
- que ha durado 3 minutos. — 26/06/2025 22:29
-mpajes2006
- ha iniciado una llamada que ha durado 3 horas. — 26/06/2025 22:32
-mpajes2006
- ha iniciado una llamada. — 17:59
-cramil23 — 18:47
-#include <cstdlib>  // para std::system
-
-int main() {
-    // Esto ajusta la consola a 120 columnas y 30 filas
-    std::system("mode con: cols=120 lines=30");
-
-    // ...el resto de tu programa...
-    return 0;
-}
-mpajes2006 — 20:05
-git checkout feature/ImplementacionGrafos
-mpajes2006 — 20:14
-1,AQP,MIA,20/07/2025,343.00,39
-2,MIA,CHH,12/12/2025,389.00,116
-3,MIA,BOG,09/04/2025,341.00,93
-4,IQT,JUL,17/09/2025,272.00,36
-5,EZE,CUZ,23/06/2025,346.00,79
-6,TRU,SCL,15/09/2025,337.00,101
-Expandir
-message.txt
-4 KB
-1,1,A,0,1
-1,1,B,0,1
-1,1,C,1,1
-1,1,D,1,1
-1,1,E,0,1
-1,1,F,0,1... (Tiempo restante: 45 KB)
-Expandir
-message.txt
-95 KB
-﻿
-1,AQP,MIA,20/07/2025,343.00,39
-2,MIA,CHH,12/12/2025,389.00,116
-3,MIA,BOG,09/04/2025,341.00,93
-4,IQT,JUL,17/09/2025,272.00,36
-5,EZE,CUZ,23/06/2025,346.00,79
-6,TRU,SCL,15/09/2025,337.00,101
-7,PIU,IQT,27/02/2025,147.00,100
-8,MIA,CHH,04/11/2025,143.00,54
-9,CUZ,MIA,13/05/2025,320.00,112
-10,PCL,TPP,06/07/2025,232.00,94
-11,CUZ,TRU,08/10/2025,406.00,51
-12,CUZ,PCL,10/03/2025,319.00,77
-13,PCL,EZE,01/04/2025,121.00,118
-14,EZE,JUL,02/02/2025,196.00,79
-15,CHH,EZE,22/01/2025,259.00,82
-16,IQT,TRU,15/03/2025,153.00,96
-17,IQT,PCL,22/09/2025,115.00,41
-18,EZE,PCL,27/11/2025,281.00,112
-19,MIA,AQP,05/12/2025,156.00,79
-20,TRU,BOG,28/07/2025,437.00,98
-21,PCL,IQT,10/06/2025,325.00,46
-22,CUZ,PCL,26/06/2025,404.00,45
-23,PCL,TPP,28/01/2025,199.00,82
-24,SCL,GRU,28/08/2025,149.00,47
-25,JUL,AQP,11/09/2025,155.00,104
-26,MIA,CHH,19/10/2025,104.00,90
-27,PIU,GRU,13/03/2025,221.00,77
-28,IQT,BOG,24/01/2025,398.00,55
-29,TPP,PCL,07/03/2025,379.00,67
-30,IQT,CHH,20/03/2025,170.00,62
-31,TPP,IQT,07/02/2025,122.00,77
-32,IQT,MIA,27/07/2025,449.00,52
-33,PIU,MIA,28/12/2025,222.00,103
-34,SCL,JUL,24/07/2025,119.00,113
-35,IQT,LIM,13/07/2025,497.00,111
-36,CUZ,AQP,22/04/2025,447.00,117
-37,CHH,SCL,02/12/2025,116.00,110
-38,JUL,IQT,01/02/2025,238.00,101
-39,CHH,GRU,03/11/2025,221.00,74
-40,BOG,TRU,22/05/2025,217.00,32
-41,JUL,GRU,22/12/2025,207.00,96
-42,CUZ,BOG,15/07/2025,441.00,45
-43,EZE,MIA,23/12/2025,105.00,45
-44,CUZ,GRU,09/06/2025,297.00,93
-45,GRU,LIM,16/01/2025,193.00,71
-46,GRU,SCL,17/08/2025,383.00,32
-47,PCL,TRU,12/08/2025,435.00,91
-48,LIM,IQT,27/02/2025,259.00,75
-49,BOG,AQP,15/12/2025,404.00,35
-50,LIM,CUZ,12/06/2025,412.00,91
-51,CUZ,PIU,07/02/2025,153.00,54
-52,AQP,MIA,08/09/2025,324.00,102
-53,IQT,PCL,12/07/2025,223.00,114
-54,PIU,SCL,20/03/2025,439.00,99
-55,LIM,AQP,14/02/2025,358.00,46
-56,PCL,TRU,15/04/2025,446.00,84
-57,MIA,TRU,22/10/2025,312.00,35
-58,GRU,JUL,22/08/2025,106.00,108
-59,PIU,AQP,01/07/2025,153.00,116
-60,TPP,AQP,12/02/2025,305.00,88
-61,TRU,PIU,27/11/2025,166.00,98
-62,CUZ,PCL,28/07/2025,261.00,54
-63,EZE,TRU,24/09/2025,285.00,115
-64,CUZ,MIA,24/07/2025,262.00,67
-65,JUL,SCL,10/06/2025,251.00,64
-66,GRU,CHH,25/04/2025,209.00,90
-67,EZE,SCL,21/03/2025,297.00,54
-68,CUZ,MIA,05/12/2025,467.00,60
-69,MIA,PCL,21/08/2025,387.00,55
-70,CUZ,SCL,10/11/2025,357.00,85
-71,AQP,CUZ,25/03/2025,114.00,63
-72,SCL,IQT,04/07/2025,145.00,89
-73,MIA,PCL,08/12/2025,371.00,119
-74,SCL,EZE,16/07/2025,439.00,46
-75,MIA,CUZ,03/09/2025,331.00,87
-76,BOG,TPP,16/10/2025,340.00,104
-77,PIU,TPP,08/07/2025,443.00,77
-78,IQT,AQP,08/11/2025,243.00,65
-79,IQT,LIM,10/04/2025,268.00,120
-80,TRU,LIM,21/12/2025,103.00,31
-81,LIM,CHH,05/03/2025,338.00,42
-82,LIM,GRU,27/04/2025,435.00,90
-83,PCL,JUL,04/06/2025,428.00,115
-84,MIA,SCL,15/01/2025,131.00,39
-85,GRU,TRU,01/03/2025,284.00,118
-86,PIU,PCL,02/09/2025,110.00,84
-87,EZE,LIM,24/10/2025,382.00,120
-88,TPP,PIU,22/07/2025,331.00,82
-89,PIU,SCL,22/11/2025,183.00,78
-90,SCL,CHH,07/04/2025,410.00,81
-91,CUZ,CHH,15/10/2025,148.00,47
-92,JUL,GRU,19/11/2025,222.00,45
-93,CUZ,BOG,09/10/2025,218.00,119
-94,PCL,CHH,09/05/2025,349.00,71
-95,SCL,CHH,18/08/2025,357.00,43
-96,LIM,JUL,22/03/2025,465.00,77
-97,CUZ,JUL,22/10/2025,202.00,34
-98,GRU,SCL,01/09/2025,421.00,51
-99,CHH,LIM,10/11/2025,448.00,59
-100,CHH,AQP,28/08/2025,228.00,43
+1,JUL,CUZ,03/04/2025,389.00,41
+2,IQT,LIM,20/08/2025,235.00,98
+3,LIM,SCL,18/05/2025,496.00,39
+4,EZE,GRU,20/04/2025,110.00,82
+5,EZE,CHH,20/11/2025,294.00,78
+6,EZE,LIM,07/11/2025,343.00,110
+7,PIU,MIA,27/12/2025,270.00,33
+8,SCL,AQP,28/11/2025,250.00,116
+9,TPP,EZE,09/06/2025,388.00,92
+10,MIA,JUL,12/07/2025,334.00,42
+11,CUZ,BOG,03/06/2025,184.00,30
+12,GRU,AQP,11/06/2025,374.00,30
+13,CUZ,GRU,13/05/2025,270.00,42
+14,IQT,SCL,28/01/2025,108.00,83
+15,LIM,JUL,02/09/2025,135.00,81
+16,SCL,CUZ,28/05/2025,448.00,62
+17,TRU,GRU,06/11/2025,111.00,30
+18,GRU,MIA,01/01/2025,495.00,88
+19,IQT,TRU,13/03/2025,103.00,57
+20,TPP,AQP,28/10/2025,391.00,98
+21,CHH,PCL,24/04/2025,419.00,37
+22,CHH,MIA,16/08/2025,299.00,89
+23,CUZ,TRU,18/05/2025,295.00,114
+24,CHH,JUL,22/07/2025,354.00,91
+25,PCL,CHH,14/11/2025,430.00,87
+26,IQT,EZE,08/06/2025,325.00,42
+27,LIM,EZE,14/08/2025,107.00,63
+28,JUL,EZE,23/04/2025,308.00,119
+29,AQP,LIM,22/12/2025,361.00,84
+30,GRU,CUZ,08/10/2025,187.00,60
+31,GRU,PIU,08/08/2025,167.00,40
+32,EZE,PIU,18/05/2025,191.00,37
+33,JUL,LIM,02/09/2025,261.00,95
+34,SCL,EZE,06/11/2025,196.00,52
+35,BOG,MIA,21/09/2025,352.00,71
+36,TPP,JUL,18/06/2025,303.00,94
+37,TRU,JUL,03/03/2025,446.00,110
+38,AQP,EZE,18/06/2025,148.00,76
+39,AQP,IQT,10/03/2025,136.00,103
+40,TPP,GRU,22/11/2025,307.00,104
+41,PCL,AQP,13/04/2025,248.00,107
+42,TRU,IQT,27/12/2025,176.00,101
+43,MIA,AQP,10/06/2025,486.00,48
+44,TPP,TRU,19/07/2025,115.00,43
+45,TRU,PCL,12/03/2025,272.00,30
+46,MIA,PIU,01/10/2025,288.00,38
+47,CHH,LIM,18/12/2025,401.00,43
+48,BOG,CHH,13/03/2025,223.00,76
+49,SCL,IQT,13/05/2025,170.00,42
+50,CHH,SCL,20/12/2025,123.00,49
+51,CHH,IQT,26/01/2025,412.00,102
+52,TPP,TRU,24/09/2025,138.00,30
+53,MIA,AQP,25/02/2025,494.00,42
+54,MIA,PCL,13/01/2025,178.00,38
+55,EZE,CHH,03/07/2025,443.00,63
+56,TPP,PIU,10/01/2025,409.00,65
+57,SCL,CUZ,16/05/2025,489.00,33
+58,MIA,LIM,16/07/2025,403.00,59
+59,PIU,JUL,27/08/2025,256.00,113
+60,JUL,PCL,21/09/2025,291.00,104
+61,PCL,TPP,25/04/2025,268.00,114
+62,CHH,TPP,23/04/2025,332.00,54
+63,AQP,TPP,04/08/2025,497.00,117
+64,JUL,EZE,25/04/2025,417.00,118
+65,PIU,PCL,19/09/2025,166.00,64
+66,JUL,TPP,18/03/2025,367.00,39
+67,IQT,JUL,15/07/2025,164.00,37
+68,SCL,LIM,16/05/2025,136.00,51
+69,SCL,IQT,12/07/2025,192.00,65
+70,LIM,CUZ,19/07/2025,321.00,109
+71,EZE,TPP,15/05/2025,245.00,113
+72,IQT,CUZ,26/09/2025,462.00,69
+73,CHH,CUZ,02/11/2025,422.00,38
+74,SCL,LIM,02/03/2025,375.00,69
+75,AQP,TRU,08/12/2025,110.00,45
+76,TRU,PIU,22/11/2025,304.00,62
+77,PCL,LIM,07/06/2025,235.00,92
+78,AQP,CUZ,08/02/2025,392.00,89
+79,CHH,BOG,04/09/2025,309.00,92
+80,TRU,CHH,11/08/2025,483.00,112
+81,PCL,AQP,19/02/2025,266.00,62
+82,GRU,PCL,21/05/2025,256.00,85
+83,TRU,PCL,23/05/2025,422.00,46
+84,MIA,PIU,18/09/2025,487.00,53
+85,TPP,MIA,25/02/2025,389.00,44
+86,CUZ,GRU,22/09/2025,425.00,74
+87,PIU,AQP,18/06/2025,225.00,64
+88,LIM,AQP,06/07/2025,296.00,30
+89,AQP,TRU,21/02/2025,267.00,61
+90,MIA,LIM,22/03/2025,164.00,64
+91,PCL,JUL,22/06/2025,443.00,105
+92,GRU,CHH,14/02/2025,135.00,97
+93,JUL,PIU,07/12/2025,198.00,51
+94,BOG,IQT,20/05/2025,163.00,120
+95,CUZ,AQP,27/03/2025,158.00,69
+96,MIA,CUZ,09/05/2025,346.00,69
+97,TRU,JUL,24/04/2025,336.00,70
+98,CUZ,EZE,23/04/2025,203.00,69
+99,PIU,PCL,15/10/2025,288.00,81
+100,AQP,BOG,12/09/2025,187.00,81
