@@ -135,6 +135,7 @@
     <ClCompile Include="ServicioAsientos.cpp" />
     <ClCompile Include="ServicioPagos.cpp" />
     <ClCompile Include="ServicioReservas.cpp" />
+    <ClCompile Include="ServicioVuelos.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Administrador.h" />
