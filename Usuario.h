@@ -1,21 +1,12 @@
 #pragma once
 
 #include "UserEntity.h"
+#include "StringUtils.h"
 #include <string>
 #include <iostream>
 #include <sstream>
 
 using namespace std;
-
-inline void trim(string& str) {
-	while (!str.empty()) {
-		char c = str.back();
-		if (c == ' ' || c == '\n' || c == '\r' || c == '\t')
-			str.pop_back();
-		else
-			break;
-	}
-}
 
 class Usuario final : public UserEntity {
 private:

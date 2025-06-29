@@ -182,6 +182,7 @@
     <ClInclude Include="ServicioRutas.h" />
     <ClInclude Include="ServicioVuelos.h" />
     <ClInclude Include="Sesion.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="UserEntity.h" />
     <ClInclude Include="Usuario.h" />
     <ClInclude Include="Vuelo.h" />

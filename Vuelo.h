@@ -1,10 +1,12 @@
 ﻿#pragma once
-
 #include <string>
 #include <sstream>
 #include "Asiento.h"
 #include "Lista.h"
 #include "RepoAsientos.h"
+#include "StringUtils.h"
+#include <iomanip>
+#include <cstdio>
 
 using namespace std;
 
@@ -49,12 +51,29 @@ public:
     const string& getDestino() const { return destino; }
     const string& getFecha() const { return fecha; }
 
-    int getFechaSerial() const {
-		int d = stoi(fecha.substr(0, 2));
-		int m = stoi(fecha.substr(3, 2));
-		int y = stoi(fecha.substr(6, 4));
-		return y * 10000 + m * 100 + d;
-	}
+    int getFechaSerial() const
+    {
+        // 1. El campo no debería estar vacío
+        if (fecha.empty())
+            throw std::invalid_argument("fecha vacía en vuelo " +
+                std::to_string(id_));
+
+        // 2. Limpio espacios y CR/LF por si llegaron desde el CSV
+        std::string f = fecha;
+        trim(f);                           // tu helper de StringUtils.h
+
+        // 3. Extraigo día / mes / año ― versión “segura” con sscanf_s
+        int d, m, y;
+        if (sscanf_s(f.c_str(), "%d/%d/%d", &d, &m, &y) != 3)
+            throw std::invalid_argument("fecha malformada: " + f);
+
+        // 4. Validación numérica básica (opcional pero útil)
+        if (d < 1 || d > 31 || m < 1 || m > 12 || y < 1900)
+            throw std::out_of_range("fecha fuera de rango: " + f);
+
+        // 5. Devuelvo YYYYMMDD como entero (por ejemplo 20250811)
+        return y * 10000 + m * 100 + d;
+    }
 
     double getPrecio() const { return precio_; }
     int getCapacidad() const { return capacidad_; }
@@ -77,10 +96,13 @@ public:
         istringstream iss(s);
         Vuelo v;
         char comma;
+
         iss >> v.id_ >> comma;
-        getline(iss, v.origen, ',');
-        getline(iss, v.destino, ',');
-        getline(iss, v.fecha, ',');
+
+        getline(iss, v.origen, ',');  trim(v.origen);
+        getline(iss, v.destino, ',');  trim(v.destino);
+        getline(iss, v.fecha, ',');  trim(v.fecha);
+
         iss >> v.precio_ >> comma >> v.capacidad_;
         return v;
     }

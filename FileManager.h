@@ -2,6 +2,7 @@
 #include <string>
 #include "Lista.h"
 #include <fstream>
+#include "StringUtils.h"
 
 using namespace std;
 
@@ -14,17 +15,18 @@ public:
 		: filename(filename) {
 	}
 
-	Lista<T> cargarTodos() const {
-		Lista<T> items;
+    Lista<T> cargarTodos() const {
+        Lista<T> items;
 		ifstream ifs(filename);
 		string line;
 		while (getline(ifs, line)) {
-			if (!line.empty()) {
-				items.agregaFinal(T::fromString(line));
-			}
-		}
-		return items;
-	}
+			trim(line);
+            if (!line.empty()) {
+                items.agregaFinal(T::fromString(line));
+            }
+        }
+        return items;
+    }
 
 	void guardar(const Lista<T>& items) const {
 		ofstream ofs(filename, ios::trunc);

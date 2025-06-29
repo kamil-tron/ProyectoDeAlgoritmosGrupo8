@@ -203,5 +203,8 @@
     <ClInclude Include="ServicioRutas.h">
       <Filter>Archivos de encabezado\servicios</Filter>
     </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

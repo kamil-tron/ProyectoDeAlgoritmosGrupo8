@@ -70,6 +70,9 @@ private:
 	}
 	
 	bool conexionValida(const Vuelo& prev, const Vuelo& next) {
+		if (prev.getFecha().empty())               // primer tramo
+			return true;
+
 		int delta = next.getFechaSerial() - prev.getFechaSerial();
 		return delta >= MIN_DIAS_ESCALA && delta <= MAX_DIAS_ESCALA;
 	}
@@ -122,13 +125,19 @@ private:
 
 			bool found = false;
 			Vuelo elegido;
+
 			for (int k = 0; k < todos.longitud(); ++k) {
 				const Vuelo& v = todos.obtenerPos(k);
-				if (v.getOrigen() == aerO.getCodigo() && v.getDestino() == aerD.getCodigo()) {
-					if (lastDate < 0 || conexionValida(elegido, v)) {
+
+				if (v.getOrigen() == aerO.getCodigo() &&
+					v.getDestino() == aerD.getCodigo())
+				{
+					if (!found) {                // primer candidato
 						elegido = v;
 						found = true;
-						break;
+					}
+					else if (conexionValida(elegido, v)) {
+						elegido = v;            // cumple ventana -> lo acepto
 					}
 				}
 			}
