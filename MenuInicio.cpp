@@ -14,16 +14,16 @@ void MenuInicio::mostrar() const {
 
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	cout << endl;
-	cout << "                SISTEMA DE TICKETS - AIR PACIFIC                 \n";
+	cout << "                                                                SISTEMA DE TICKETS - AIR PACIFIC                 \n";
 
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	cout << "==================================================================\n";
+	cout << "                                                ==================================================================\n";
 
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	for (int i = 0; i < opciones_.longitud(); ++i) {
-		cout << (i + 1) << ". " << opciones_.obtenerPos(i) << "\n";
+		cout << "                                                                " << (i + 1) << ". " << opciones_.obtenerPos(i) << "\n";
 	}
-	cout << "Seleccione opcion: ";
+	cout << "                                                                Seleccione opcion: ";
 }
 
 void MenuInicio::ejecutar() {
@@ -77,7 +77,6 @@ void MenuInicio::opcionIniciarSesion() {
 		ContadorDeDias::obtenerInstancia()->incrementarContador();
 		int diasTranscurridos = ContadorDeDias::obtenerInstancia()->obtenerDiasTranscurridos();
 		cout << "Día " << diasTranscurridos << " del simulador.\n";
-
 	}
 	else {
 		delete nueva;
