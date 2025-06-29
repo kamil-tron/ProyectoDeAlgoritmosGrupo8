@@ -3,8 +3,6 @@
 #include "Sesion.h"
 #include "Lista.h"
 #include "Usuario.h"
-#include "MenuUsuario.h"
-#include "MenuAdministrador.h"
 #include <iostream>
 #include <string>
 #include <Windows.h>

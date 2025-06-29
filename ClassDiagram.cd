@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical">
+  <Class Name="AuthService" Collapsed="true">
+    <Position X="25.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAEAAAAAAAAAgCAQAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>AuthService.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServicioAsientos" Collapsed="true">
+    <Position X="27" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ARAAgAAAAAAQAAAAGAAEABAAAAAAAAAAgBCAAAAAAwA=</HashCode>
+      <FileName>ServicioAsientos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServicioCheckIn" Collapsed="true">
+    <Position X="28.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAIABAAkAAAAAAAAAAAAIABAAAAAGACAIAAAQAA=</HashCode>
+      <FileName>ServicioCheckIn.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServicioPagos" Collapsed="true">
+    <Position X="25.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAACAAAEAEAAgAAAAAADAAAAAAQCAAAAAAgA=</HashCode>
+      <FileName>ServicioPagos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServicioReservas" Collapsed="true">
+    <Position X="27" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAACCAAEAAAEBgBAoAAAAQAAkAAACAAAAAAwA=</HashCode>
+      <FileName>ServicioReservas.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServicioVuelos">
+    <Position X="32.75" Y="7.5" Width="1.5" />
+    <AssociationLine Name="repoAsientos" Type="RepoAsientos" ManuallyRouted="true">
+      <Path>
+        <Point X="33.875" Y="7.5" />
+        <Point X="33.875" Y="6.862" />
+        <Point X="35" Y="6.862" />
+        <Point X="35" Y="5.191" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAgAACAIAAAAAAAAGAAAAEAAAAgIgAAAAACAAAACAwA=</HashCode>
+      <FileName>ServicioVuelos.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="idx" />
+      <Field Name="repoAsientos" />
+      <Field Name="repoVuelos" />
+      <Field Name="vuelosPorFecha" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="HashTable&lt;K, T&gt;" Collapsed="true">
+    <Position X="38.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAgQQAAAAgkAIBAiAAAAAIAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>HashTable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RepoAsientos" Collapsed="true">
+    <Position X="34.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAEAAAAAAAAgAAEAAAAABAAAAIAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>RepoAsientos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RepoVuelos" Collapsed="true">
+    <Position X="31.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABABgAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>RepoVuelos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArbolAVL&lt;T&gt;" Collapsed="true">
+    <Position X="38.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAACAIACAAhAAAABAIAgAAAAAAAAAAAEAABAAAAAAg=</HashCode>
+      <FileName>ArbolAVL.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Asiento" Collapsed="true">
+    <Position X="34.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAIAUAAEAAAABIQAACQAAQAAAACAABCkBAAA=</HashCode>
+      <FileName>Asiento.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

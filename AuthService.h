@@ -24,9 +24,7 @@ public:
 	RepoUsuarios& getRepoUsuarios() { return repoUsr; }
 };
 
-inline bool AuthService::login(const string& correo,
-	const string& pass,
-	Sesion& s) const {
+inline bool AuthService::login(const string& correo, const string& pass, Sesion& s) const {
 	Administrador adm;
 	if (repoAdm.buscarPorCorreo(correo, adm)
 		&& adm.checkPassword(pass)) {
