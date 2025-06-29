@@ -64,6 +64,8 @@ public:
 
 	T buscar(const T& elem) const;
 
+	T& obtenerRef(uint pos);
+
 	string toPrint(const string& sep = " ") const;
 	int size() const { return static_cast<int>(lon); }
 };
@@ -155,4 +157,13 @@ string Lista<T>::toPrint(const string& sep) const {
 		if (aux) os << sep;
 	}
 	return os.str();
+}
+
+template <class T>
+T& Lista<T>::obtenerRef(uint pos) {
+	static T dummy = T();
+	if (pos >= lon) return dummy;
+	Nodo<T>* aux = ini;
+	for (uint i = 0; i < pos; ++i) aux = aux->get_Sgte();
+	return const_cast<T&>(aux->get_Elem());   // quita const
 }
