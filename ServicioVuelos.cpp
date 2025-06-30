@@ -31,6 +31,7 @@ Lista<Vuelo> ServicioVuelos::listarVuelos() const {
 }
 
 Lista<Vuelo> ServicioVuelos::listarVuelosPorFecha() const {
+
 	Lista<Vuelo> ordenados;
 
 	listaTemporal = &ordenados;

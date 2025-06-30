@@ -38,12 +38,26 @@ public:
 
     bool operator==(const Vuelo& o) const { return id_ == o.id_; }
 
-    bool operator<(const Vuelo& otro) const {
-        return getFechaOrdenable() < otro.getFechaOrdenable();
+    bool operator<(const Vuelo& otro) const
+    {
+        int f1 = getFechaSerial();          // YYYYMMDD como entero
+        int f2 = otro.getFechaSerial();
+
+        if (f1 != f2)                       // 1. ordenar por fecha
+            return f1 < f2;
+
+        return id_ < otro.id_;              // 2. desempatar por id
     }
 
-    bool operator>(const Vuelo& otro) const {
-        return getFechaOrdenable() > otro.getFechaOrdenable();
+    bool operator>(const Vuelo& otro) const
+    {
+        int f1 = getFechaSerial();
+        int f2 = otro.getFechaSerial();
+
+        if (f1 != f2)
+            return f1 > f2;
+
+        return id_ > otro.id_;
     }
 
     int getId() const { return id_; }

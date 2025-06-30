@@ -1,36 +1,37 @@
 #pragma once
-#include <algorithm>  // for std::max
 
 template<class T>
 class NodoAVL {
 public:
     T elemento;
-    NodoAVL* izq;
-    NodoAVL* der;
+    NodoAVL* izq, * der;
     int altura;
-    NodoAVL()
-        : izq(nullptr), der(nullptr), altura(1) // altura inicial de la hoja
-    {
+
+    NodoAVL() {
+        izq = nullptr;
+        der = nullptr;
+        altura = 0;
     }
 };
 
-template <class T>
+template <class T> 
 class ArbolAVL {
 private:
     NodoAVL<T>* raiz;
-    void (*procesar)(T);
+    void (*procesar)(T); // Puntero a una funcion
 
+    // Operaciones privadas
     int _altura(NodoAVL<T>* nodo) {
-        return nodo ? nodo->altura : 0;
+        if (nodo == nullptr)
+            return 0;
+        return nodo->altura;
     }
 
     void _rotarDerecha(NodoAVL<T>*& nodo) {
         NodoAVL<T>* p = nodo->izq;
         nodo->izq = p->der;
         p->der = nodo;
-        // actualizar alturas desde abajo hacia arriba
-        nodo->altura = 1 + std::max(_altura(nodo->izq), _altura(nodo->der));
-        p->altura = 1 + std::max(_altura(p->izq), _altura(p->der));
+        // Actualizar la altura
         nodo = p;
     }
 
@@ -38,78 +39,81 @@ private:
         NodoAVL<T>* p = nodo->der;
         nodo->der = p->izq;
         p->izq = nodo;
-        // actualizar alturas desde abajo hacia arriba
-        nodo->altura = 1 + std::max(_altura(nodo->izq), _altura(nodo->der));
-        p->altura = 1 + std::max(_altura(p->izq), _altura(p->der));
         nodo = p;
     }
 
     void _balanceo(NodoAVL<T>*& nodo) {
-        if (!nodo) return;
         int hizq = _altura(nodo->izq);
         int hder = _altura(nodo->der);
-        int fb = hder - hizq;
 
-        // caso subarbol derecho pesado
+        int fb = hder - hizq; // factor de balance
+
         if (fb > 1) {
-            if (_altura(nodo->der->izq) > _altura(nodo->der->der))
-                _rotarDerecha(nodo->der);
-            _rotarIzquierda(nodo);
-        }
-        // caso subarbol izquierdo pesado
-        else if (fb < -1) {
-            if (_altura(nodo->izq->der) > _altura(nodo->izq->izq))
-                _rotarIzquierda(nodo->izq);
-            _rotarDerecha(nodo);  // <-- rotar el propio nodo
-        }
+            int hhizq = _altura(nodo->der->izq);
+            int hhder = _altura(nodo->der->der);
 
-        // actualizar altura del nodo actual
+            if (hhizq > hhder) { // verifico si aplica doble rotación
+                _rotarDerecha(nodo->der);
+            }
+            _rotarIzquierda(nodo);
+        } // altura por derecha mayor
+
+        if (fb < -1) {
+            int hhizq = _altura(nodo->izq->izq);
+            int hhder = _altura(nodo->izq->der);
+            if (hhizq < hhder) {
+                _rotarIzquierda(nodo->izq);
+            }
+            _rotarDerecha(nodo->der);
+        } // altura por izquierda mayor
+
+        // Actualizar la altura del nodo raiz
         hizq = _altura(nodo->izq);
         hder = _altura(nodo->der);
-        nodo->altura = 1 + std::max(hizq, hder);
+        nodo->altura = 1 + ((hizq > hder) ? hizq : hder);
     }
 
-    bool _insertar(NodoAVL<T>*& nodo, const T& e) {
-        if (!nodo) {
+    bool _insertar(NodoAVL<T>*& nodo, T e) {
+        if (nodo == nullptr) {
             nodo = new NodoAVL<T>();
             nodo->elemento = e;
-            // altura ya inicializada en constructor
             return true;
         }
-        bool inserted = false;
-        if (e < nodo->elemento) {
-            inserted = _insertar(nodo->izq, e);
-        }
-        else if (e > nodo->elemento) {
-            inserted = _insertar(nodo->der, e);
-        }
-        else {
-            return false;  // duplicado
-        }
-        if (inserted) {
-            _balanceo(nodo);
-        }
-        return inserted;
+        else if (e == nodo->elemento)
+            return false;
+        else if (e < nodo->elemento)
+            _insertar(nodo->izq, e);
+        else if (e > nodo->elemento)
+            _insertar(nodo->der, e);
+        _balanceo(nodo);
+        return true;
     }
 
     void _inOrden(NodoAVL<T>* nodo) {
-        if (!nodo) return;
+        if (nodo == nullptr)
+            return;
         _inOrden(nodo->izq);
         procesar(nodo->elemento);
         _inOrden(nodo->der);
     }
 
+    void _inOrdenH(NodoAVL<T>* nodo) {
+        if (nodo == nullptr)
+            return;
+        _inOrdenH(nodo->izq);
+        procesar(nodo->altura);
+        _inOrdenH(nodo->der);
+    }
+
 public:
-    explicit ArbolAVL(void (*fn)(T))
-        : raiz(nullptr), procesar(fn)
-    {
+    ArbolAVL(void (*nuevoPunteroFuncion)(T)) {
+        this->procesar = nuevoPunteroFuncion;
+        this->raiz = nullptr;
     }
 
-    bool insertar(const T& e) {
-        return _insertar(raiz, e);
-    }
+    bool insertar(T e) { return _insertar(this->raiz, e); }
 
-    void inOrden() {
-        _inOrden(raiz);
-    }
+    void inOrden() { _inOrden(this->raiz); }
+
+    void inOrdenH() { _inOrdenH(this->raiz); }
 };
