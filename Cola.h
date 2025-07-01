@@ -19,6 +19,22 @@ public:
 	bool esVacia() const {
 		return frente_ == nullptr;
 	}
+	// Número de elementos en la cola
+	int size() const {
+		int cnt = 0;
+		for (Nodo<T>* p = frente_; p; p = p->get_Sgte())
+			++cnt;
+		return cnt;
+	}
+
+	// Acceso al elemento i-ésimo (0-based, de frente hacia atrás)
+	const T& at(int index) const {
+		Nodo<T>* p = frente_;
+		while (p && index-- > 0)
+			p = p->get_Sgte();
+		if (!p) throw std::out_of_range("Cola::at");
+		return p->get_Elem();
+	}
 
 	void encolar(const T& elem) {
 		Nodo<T>* nuevo = new Nodo<T>(elem);

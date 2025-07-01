@@ -16,7 +16,7 @@ void MenuInicio::mostrar() const {
 	const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
 
 	generarmatriz();
-
+	logo(29,0);
 
 	cursor(60, 24);
 	SetConsoleTextAttribute(hConsole, BG_GRAY);
@@ -48,15 +48,16 @@ void MenuInicio::ejecutar() {
 		cin.ignore(10000, '\n');
 		switch (op) {
 		case 1:
-
+			generarmatriz();
 			opcionRegistrarse();
 			break;
 		case 2:
-
+			generarmatriz();
 			opcionIniciarSesion();
 			if (sesion) return;
 			break;
 		case 3:
+			generarmatriz();
 			opcionSalir();
 			return;
 		default:
@@ -66,28 +67,36 @@ void MenuInicio::ejecutar() {
 }
 
 void MenuInicio::opcionRegistrarse() {
-	string nombre, apellido, dni, correo, pass;
-	cout << "Ingrese nombre: "; getline(cin, nombre);
-	cout << "Ingrese apellido: "; getline(cin, apellido);
-	cout << "Ingrese DNI: "; getline(cin, dni);
-	cout << "Ingrese correo: "; getline(cin, correo);
-	cout << "Ingrese contrasena: "; getline(cin, pass);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+	string nombre, apellido, dni, correo, pass; int y = 6;
+	cursor(60, 5);
+	SetConsoleTextAttribute(hConsole, BG_GRAY); cursor(60, y); y++;
+	cout << "Ingrese nombre: "; getline(cin, nombre); cursor(60, y); y++;
+	cout << "Ingrese apellido: "; getline(cin, apellido); cursor(60, y); y++;
+	cout << "Ingrese DNI: "; getline(cin, dni); cursor(60, y); y++;
+	cout << "Ingrese correo: "; getline(cin, correo); cursor(60, y); y++;
+	cout << "Ingrese contrasena: "; getline(cin, pass); cursor(60, y); y++;
 
 	Usuario u(dni, nombre, apellido, correo, pass);
-	if (auth.registrarUsuario(u))
-		cout << "Registro exitoso.\n";
-	else
-		cout << "DNI o correo ya registrado.\n";
+	if (auth.registrarUsuario(u)){
+		cout << "Registro exitoso."; cursor(60, y); y++;
+	}else
+		cout << "DNI o correo ya registrado.";
 }
 
 void MenuInicio::opcionIniciarSesion() {
-	string correo, pass;
-	cout << "                  Correo: ";      getline(cin, correo);
-	cout << "                  Contrasena: ";  getline(cin, pass);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+	string correo, pass;int y=6;
+	cursor(60, 5);
+	SetConsoleTextAttribute(hConsole, BG_GRAY);
+	cout << "Correo: ";      getline(cin, correo);cursor(60, y);y++;
+	cout << "Contrasena: ";  getline(cin, pass);cursor(60, y); y++;
 
 	Sesion* nueva = new Sesion();
 	if (auth.login(correo, pass, *nueva)) {
-		cout << "                  Inicio de sesion exitoso.\n";
+		cout << "Inicio de sesion exitoso.\n";	cursor(60, y); y++;
 		sesion = nueva;
 
 		ContadorDeDias::obtenerInstancia()->incrementarContador();
