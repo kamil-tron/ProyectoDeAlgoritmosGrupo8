@@ -3,7 +3,7 @@
 const double ServicioAsientos::VIP_SURCHARGE = 0.20;
 
 ServicioAsientos::ServicioAsientos()
-    : idx(new HashTable<string, Asiento>(8000, hashString)) {
+    : idx(new HashTable<string, Asiento>(400000, hashString)) {
     cargarIndice();
 }
 
