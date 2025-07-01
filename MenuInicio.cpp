@@ -9,21 +9,35 @@ MenuInicio::MenuInicio() {
 }
 
 void MenuInicio::mostrar() const {
+	int y = 26;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	// bitmask de fondo gris claro:
+	const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+
 	generarmatriz();
 
-	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	cout << endl;
-	cout << "                SISTEMA DE TICKETS - AIR PACIFIC                 \n";
 
-	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	cout << "==================================================================\n";
+	cursor(60, 24);
+	SetConsoleTextAttribute(hConsole, BG_GRAY);
+	cout << "SISTEMA DE TICKETS - AIR PACIFIC";
 
-	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+	cursor(40, y);  y++;
+	SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN);
+	cout << "=====================================================================";
+
+
 	for (int i = 0; i < opciones_.longitud(); ++i) {
-		cout << (i + 1) << ". " << opciones_.obtenerPos(i) << "\n";
+		cursor(60, y);  y++;
+		SetConsoleTextAttribute(hConsole, BG_GRAY);
+		cout << (i + 1) << ". " << opciones_.obtenerPos(i);
 	}
+
+	cursor(60, y);
+	SetConsoleTextAttribute(hConsole, BG_GRAY);
 	cout << "Seleccione opcion: ";
+
 }
 
 void MenuInicio::ejecutar() {
@@ -34,9 +48,11 @@ void MenuInicio::ejecutar() {
 		cin.ignore(10000, '\n');
 		switch (op) {
 		case 1:
+
 			opcionRegistrarse();
 			break;
 		case 2:
+
 			opcionIniciarSesion();
 			if (sesion) return;
 			break;
@@ -66,18 +82,17 @@ void MenuInicio::opcionRegistrarse() {
 
 void MenuInicio::opcionIniciarSesion() {
 	string correo, pass;
-	cout << "Correo: ";      getline(cin, correo);
-	cout << "Contrasena: ";  getline(cin, pass);
+	cout << "                  Correo: ";      getline(cin, correo);
+	cout << "                  Contrasena: ";  getline(cin, pass);
 
 	Sesion* nueva = new Sesion();
 	if (auth.login(correo, pass, *nueva)) {
-		cout << "Inicio de sesion exitoso.\n";
+		cout << "                  Inicio de sesion exitoso.\n";
 		sesion = nueva;
 
 		ContadorDeDias::obtenerInstancia()->incrementarContador();
 		int diasTranscurridos = ContadorDeDias::obtenerInstancia()->obtenerDiasTranscurridos();
 		cout << "Día " << diasTranscurridos << " del simulador.\n";
-
 	}
 	else {
 		delete nueva;
