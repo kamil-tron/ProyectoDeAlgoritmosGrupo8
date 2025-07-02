@@ -8,6 +8,7 @@
 #include "RepoAeropuertos.h"
 #include "HashTable.h"
 #include "FuncionesHash.h"
+#include "MatrizMapa.h"
 
 using namespace std;
 
@@ -231,4 +232,48 @@ public:
 		}
 		return rutas;
 	}
+
+	void pintarRutaEnMatriz(const RutaPosible& ruta,
+		int valorLinea = 4,
+		int valorNodo = 9)
+	{
+		if (ruta.indicesAeropuertos.esVacia()) return;
+
+		// 1. Marcar aeropuertos
+		for (int i = 0; i < ruta.indicesAeropuertos.longitud(); ++i) {
+			int idx = ruta.indicesAeropuertos.obtenerPos(i);
+			if (idx < 0 || idx >= (int)listaAeropuertos.size()) continue;
+
+			int y = listaAeropuertos[idx].getY();  // fila
+			int x = listaAeropuertos[idx].getX();  // columna
+			if (y >= 0 && y < 50 && x >= 0 && x < 101)
+				matrizPeru[y][x] = valorNodo;
+		}
+
+		// 2. Dibujar líneas entre aeropuertos (algoritmo de Bresenham)
+		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
+			const Aeropuerto& a = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i)];
+			const Aeropuerto& b = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i + 1)];
+
+			int x0 = a.getX(), y0 = a.getY();
+			int x1 = b.getX(), y1 = b.getY();
+			int dx = std::abs(x1 - x0);
+			int dy = -std::abs(y1 - y0);
+			int sx = (x0 < x1) ? 1 : -1;
+			int sy = (y0 < y1) ? 1 : -1;
+			int err = dx + dy;
+
+			while (true) {
+				if (y0 >= 0 && y0 < 50 && x0 >= 0 && x0 < 101 &&
+					matrizPeru[y0][x0] != valorNodo) {
+					matrizPeru[y0][x0] = valorLinea;
+				}
+				if (x0 == x1 && y0 == y1) break;
+				int e2 = 2 * err;
+				if (e2 >= dy) { err += dy; x0 += sx; }
+				if (e2 <= dx) { err += dx; y0 += sy; }
+			}
+		}
+	}
+
 };
