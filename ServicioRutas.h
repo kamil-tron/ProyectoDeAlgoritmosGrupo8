@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cmath>
 #include <vector>
@@ -111,11 +111,11 @@ private:
 		RutaPosible ruta;
 		if (dist[idxD] == VALOR_INFINITO) return ruta;
 
-		// Reconstruir �ndices
+		// Reconstruir índices
 		for (int v = idxD; v != -1; v = prev[v])
 			ruta.indicesAeropuertos.agregaInicial(v);
 
-		// Seleccionar vuelos con validaci�n de escalas
+		// Seleccionar vuelos con validación de escalas
 		Lista<Vuelo> todos = servicioVuelos.listarVuelos();
 		int lastDate = -1;
 		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
@@ -151,6 +151,39 @@ private:
 		}
 		return ruta;
 	}
+
+	bool secuenciasIguales(const Lista<int>& a,
+		const Lista<int>& b) const
+	{
+		if (a.longitud() != b.longitud()) return false;
+		for (int i = 0; i < a.longitud(); ++i)
+			if (a.obtenerPos(i) != b.obtenerPos(i)) return false;
+		return true;
+	}
+
+	bool existeRuta(const Lista<RutaPosible>& rutas,
+		const RutaPosible& cand) const
+	{
+		for (int i = 0; i < rutas.longitud(); ++i)
+			if (secuenciasIguales(
+				rutas.obtenerPos(i).indicesAeropuertos,
+				cand.indicesAeropuertos))
+				return true;
+		return false;
+	}
+
+	// genera clave tipo "LIM-CUZ-TPP" para HashTable
+	string hashRuta(const RutaPosible& r) const
+	{
+		string clave;
+		for (int i = 0; i < r.indicesAeropuertos.longitud(); ++i) {
+			int idx = r.indicesAeropuertos.obtenerPos(i);
+			clave += listaAeropuertos[idx].getCodigo();
+			if (i + 1 < r.indicesAeropuertos.longitud()) clave += '-';
+		}
+		return clave;
+	}
+
 public:
 	ServicioRutas()
 		: mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
@@ -193,44 +226,75 @@ public:
 		return calcularRutaDijkstra(*idxOrigen, *idxDestino, CriterioPeso::COSTO);
 	}
 
-	Lista<RutaPosible> mejoresKRutas(const string& origen, const string& destino, int cantidad) {
-		Lista<RutaPosible> rutas;
-		if (cantidad <= 0) return rutas;
+	Lista<RutaPosible> mejoresKRutas(const string& origen,
+			const string& destino,
+			int cantidad)
+	{
+		Lista<RutaPosible> resultado;                    // ← lo que devolveremos
+		if (cantidad <= 0) return resultado;
 
-		RutaPosible rutaInicial = rutaMasCorta(origen, destino);
-		if (rutaInicial.indicesAeropuertos.esVacia()) return rutas;
+		// tabla hash para no repetir la misma secuencia de aeropuertos
+		HashTable<string, bool> vistos(200, hashString);
 
-		rutas.agregaFinal(rutaInicial);
+		// 1. Ruta base (la más corta, puede ser directa)
+		RutaPosible base = rutaMasCorta(origen, destino);
+		if (base.indicesAeropuertos.esVacia()) return resultado;
 
-		for (int i = 1; i < cantidad; i++) {
-			const RutaPosible& rutaAnterior = rutas.obtenerFinal();
-			int longitud = rutaAnterior.indicesAeropuertos.longitud();
-			if (longitud < 2) break;
+		// Lista de rutas exploradas (incluye directas)
+		Lista<RutaPosible> exploradas;
+		exploradas.agregaFinal(base);
+		vistos.insertar(hashRuta(base), true);
 
-			int penultimo = rutaAnterior.indicesAeropuertos.obtenerPos(longitud - 2);
-			int ultimo = rutaAnterior.indicesAeropuertos.obtenerFinal();
+		// Si la base ya tiene ≥2 tramos, la añadimos al resultado
+		if (base.vuelos.longitud() >= 2)
+			resultado.agregaFinal(base);
 
-			int cantidadArcos = grafo.CantidadArcos(penultimo);
-			bool seBloqueo = false;
+		// Índice de la ruta que estamos “expandiendo”
+		int idxRuta = 0;
 
-			for (int j = 0; j < cantidadArcos; j++) {
-				if (grafo.ObtenerVerticeLlegada(penultimo, j) == ultimo) {
-					PesoVuelo pesoOriginal = grafo.ObtenerArco(penultimo, j);
-					PesoVuelo pesoBloqueado = pesoOriginal;
-					pesoBloqueado.distancia = pesoBloqueado.costo = VALOR_INFINITO;
-					grafo.ModificarArco(penultimo, j, pesoBloqueado);
+		// 2. Bucle hasta reunir la cantidad solicitada
+		while (resultado.longitud() < cantidad && idxRuta < exploradas.longitud()) {
 
-					RutaPosible nuevaRuta = rutaMasCorta(origen, destino);
-					if (!nuevaRuta.indicesAeropuertos.esVacia()) rutas.agregaFinal(nuevaRuta);
+			const RutaPosible& ref = exploradas.obtenerPos(idxRuta);
+			int nVerts = ref.indicesAeropuertos.longitud();
 
-					grafo.ModificarArco(penultimo, j, pesoOriginal);
-					seBloqueo = true;
-					break;
+			// Para cada arco del camino ref …
+			for (int pos = 0; pos + 1 < nVerts && resultado.longitud() < cantidad; ++pos) {
+				int u = ref.indicesAeropuertos.obtenerPos(pos);
+				int v = ref.indicesAeropuertos.obtenerPos(pos + 1);
+
+				// Bloqueamos temporalmente el arco u→v
+				int arcos = grafo.CantidadArcos(u);
+				for (int a = 0; a < arcos && resultado.longitud() < cantidad; ++a) {
+					if (grafo.ObtenerVerticeLlegada(u, a) == v) {
+
+						PesoVuelo original = grafo.ObtenerArco(u, a);
+						grafo.ModificarArco(u, a, { VALOR_INFINITO, VALOR_INFINITO });
+
+						RutaPosible nueva = rutaMasCorta(origen, destino);
+
+						// Restaurar el arco
+						grafo.ModificarArco(u, a, original);
+
+						if (nueva.indicesAeropuertos.esVacia()) continue;
+
+						string clave = hashRuta(nueva);
+						if (vistos.obtener(clave)) continue;         // ya la vimos
+
+						// Marcar como explorada
+						exploradas.agregaFinal(nueva);
+						vistos.insertar(clave, true);
+
+						// Solo guardamos las que tienen ≥2 tramos
+						if (nueva.vuelos.longitud() >= 2)
+							resultado.agregaFinal(nueva);
+					}
 				}
 			}
-			if (!seBloqueo) break;
+			++idxRuta;   // pasamos a la siguiente ruta en la lista de exploradas
 		}
-		return rutas;
+
+		return resultado;
 	}
 
 	void pintarRutaEnMatriz(const RutaPosible& ruta,
@@ -250,7 +314,7 @@ public:
 				matrizPeru[y][x] = valorNodo;
 		}
 
-		// 2. Dibujar l�neas entre aeropuertos (algoritmo de Bresenham)
+		// 2. Dibujar líneas entre aeropuertos (algoritmo de Bresenham)
 		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
 			const Aeropuerto& a = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i)];
 			const Aeropuerto& b = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i + 1)];

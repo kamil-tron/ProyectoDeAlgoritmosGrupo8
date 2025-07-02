@@ -273,7 +273,7 @@ void MenuUsuario::opcionBuscarRutaYReservar() {
     cin >> crit;
     cin.ignore(10000, '\n');
 
-    auto rutas = svcRutas.mejoresKRutas(origen, destino, 3);
+    auto rutas = svcRutas.mejoresKRutas(origen, destino, 10);
     if (rutas.esVacia()) {
         cout << "No se encontraron rutas disponibles.\n";
         return;
