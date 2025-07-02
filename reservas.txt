@@ -4,3 +4,9 @@ R-1751220002,mpajes@gmail.com,7,31/12/2025,C,2C;1B,0
 R-1751220026,mpajes@gmail.com,10,31/12/2025,C,3D;3E,0
 R-1751329397,mpajes@gmail.com,40,02/01/2025,C,1E,0
 R-1751329449,mpajes@gmail.com,270,03/01/2025,C,1B,0
+R-1751423161,mpajes@gmail.com,365,03/01/2025,C,7A,0
+R-1751426350,mpajes@gmail.com,232,03/01/2025,C,3E,0
+R-1751426357,mpajes@gmail.com,358,03/01/2025,C,1B,0
+R-1751426872,mpajes@gmail.com,270,03/01/2025,C,3B;7E,0
+R-1751427446,mpajes@gmail.com,224,03/01/2025,C,2F,0
+R-1751427467,mpajes@gmail.com,461,04/01/2025,C,7D,0

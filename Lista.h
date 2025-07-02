@@ -35,6 +35,25 @@ public:
 		return *this;
 	}
 
+	bool operator==(const Lista<T>& otra) const {
+		if (this->lon != otra.lon) return false;
+		Nodo<T>* actual = this->ini;
+		Nodo<T>* otro = otra.ini;
+
+		while (actual && otro) {
+			if (!(actual->get_Elem() == otro->get_Elem()))
+				return false;
+			actual = actual->get_Sgte();
+			otro = otro->get_Sgte();
+		}
+		return true;
+	}
+
+	bool operator!=(const Lista<T>& otra) const {
+		return !(*this == otra);
+	}
+
+
 	Lista() = default;
 	explicit Lista(Nodo<T>* pNodo) : ini(pNodo), lon(pNodo ? 1 : 0) {}
 	~Lista();

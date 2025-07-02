@@ -10,8 +10,33 @@
 #include "Usuario.h"
 #include "AuthService.h"
 #include "Ordenamientos.h"
+#include "MatrizMapa.h"
+#include <algorithm>
 
 using namespace std;
+
+
+static void imprimirMapaRuta(const RutaPosible& ruta, ServicioRutas& svcRutas)
+{
+    // 1. Respaldar matrizPeru sin memcpy
+    int backup[50][101];
+    for (int f = 0; f < 50; ++f)
+        for (int c = 0; c < 101; ++c)
+            backup[f][c] = matrizPeru[f][c];
+
+    // 2. Pintar la ruta y mostrar el mapa
+    svcRutas.pintarRutaEnMatriz(ruta, /*valorLinea*/ 4, /*valorNodo*/ 9);
+    std::cout << "\n======== MAPA DE LA RUTA ========\n";
+    imprimirMapaPeru();
+    std::cout << "\nPresiona ENTER para continuar...";
+    std::cin.ignore(10000, '\n');   // descartar resto de línea
+    std::cin.get();                 // esperar ENTER
+
+    // 3. Restaurar matrizPeru sin memcpy
+    for (int f = 0; f < 50; ++f)
+        for (int c = 0; c < 101; ++c)
+            matrizPeru[f][c] = backup[f][c];
+}
 
 void cuentaRegresiva(int n) {
     if (n < 1) return;
@@ -69,96 +94,113 @@ int MenuUsuario::contarConfirmadasRec(const Lista<Reserva>& lista, int i) {
     return suma + contarConfirmadasRec(lista, i + 1);
 }
 
-void MenuUsuario::opcionBuscarYReservar() {
+void MenuUsuario::opcionBuscarYReservar()
+{
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     WORD defaultAttrs = csbi.wAttributes;
 
-    cout << "\n--- BUSCAR VUELOS O RUTAS ---\n";
+    std::cout << "\n--- BUSCAR VUELOS O RUTAS ---\n";
 
     auto aeropuertos = svcVuelos.listarAeropuertos();
     if (aeropuertos.esVacia()) {
-        cout << "No hay aeropuertos registrados.\n";
+        std::cout << "No hay aeropuertos registrados.\n";
         return;
     }
 
-    cout << "\n📍 AEROPUERTOS DISPONIBLES:\n";
+    std::cout << "\nAEROPUERTOS DISPONIBLES:\n";
     for (int i = 0; i < aeropuertos.longitud(); ++i) {
         const Aeropuerto& a = aeropuertos.obtenerPos(i);
-        cout << "- " << a.getCodigo() << "  (X: " << a.getX() << ", Y: " << a.getY() << ")\n";
+        std::cout << "- " << a.getCodigo()
+            << "  (X: " << a.getX() << ", Y: " << a.getY() << ")\n";
     }
 
-    string origen, destino;
-    cout << "\nIngrese el código IATA de origen  : "; cin >> origen;
-    cout << "Ingrese el código IATA de destino : "; cin >> destino;
+    std::string origen, destino;
+    std::cout << "\nIngrese el codigo IATA de origen  : "; std::cin >> origen;
+    std::cout << "Ingrese el codigo IATA de destino : "; std::cin >> destino;
 
-    Lista<Vuelo> vuelosDirectos;
-    auto todos = svcVuelos.listarVuelosPorFecha();
-    for (int i = 0; i < todos.longitud(); ++i) {
-        const Vuelo& v = todos.obtenerPos(i);
-        if (v.getOrigen() == origen && v.getDestino() == destino) {
-            vuelosDirectos.agregaFinal(v);
-        }
-    }
+    auto rutasDistancia = svcRutas.todasLasRutasMasCortas(origen, destino);
+    auto rutasCosto = svcRutas.todasLasRutasMasBaratas(origen, destino);
 
-    auto rutas = svcRutas.mejoresKRutas(origen, destino, 3);
-
-    if (vuelosDirectos.esVacia() && rutas.esVacia()) {
-        cout << "\nNo se encontraron vuelos ni rutas entre los aeropuertos.\n";
+    if (rutasDistancia.esVacia() && rutasCosto.esVacia()) {
+        std::cout << "\nNo se encontraron rutas entre los aeropuertos.\n";
         return;
     }
 
-    cout << "\nOpciones disponibles:\n";
-
-    int opcionActual = 1;
-    int totalOpciones = 0;
+    // ---- nueva estructura ----
     struct OpcionRuta {
-        bool esDirecto;
-        int index;
+        RutaPosible ruta;        // la ruta exacta mostrada
+        CriterioPeso criterio;   // solo informativo
     };
     Lista<OpcionRuta> opciones;
+    int opcionActual = 1;
 
-    if (!vuelosDirectos.esVacia()) {
-        cout << "\n✈️ VUELOS DIRECTOS:\n";
-        for (int i = 0; i < vuelosDirectos.longitud(); ++i) {
-            const Vuelo& v = vuelosDirectos.obtenerPos(i);
-            cout << "[" << opcionActual << "] "
-                << v.getOrigen() << "->" << v.getDestino()
-                << " " << v.getFecha()
-                << " S/" << fixed << setprecision(2) << v.getPrecio() << '\n';
-            opciones.agregaFinal({ true, v.getId() });
-            ++opcionActual;
-        }
-    }
+    // ---- lambda para listar rutas y llenar 'opciones' ----
+    auto mostrarRutas = [&](const Lista<RutaPosible>& rutas,
+        CriterioPeso criterio,
+        const std::string& titulo)
+        {
+            bool mostroDirectos = false;
+            bool mostroEscalas = false;
 
-    if (!rutas.esVacia()) {
-        cout << "\n🔀 RUTAS CON ESCALAS:\n";
-        for (int i = 0; i < rutas.longitud(); ++i) {
-            const RutaPosible& r = rutas.obtenerPos(i);
-            const auto& inicio = r.vuelos.obtenerPos(0);
-            const auto& fin = r.vuelos.obtenerFinal();
-            cout << "[" << opcionActual << "] " << r.vuelos.longitud() << " tramos "
-                << inicio.getFecha() << "->" << fin.getFecha()
-                << " S/" << fixed << setprecision(2) << r.costoTotal << '\n';
-            opciones.agregaFinal({ false, i });
-            ++opcionActual;
-        }
-    }
+            for (int i = 0; i < rutas.longitud(); ++i) {
+                const RutaPosible& r = rutas.obtenerPos(i);
+                int n = r.vuelos.longitud();
+                if (n == 0) continue;          // ruta invalida
 
-    cout << "\nSeleccione una opción para reservar (0=Cancelar): ";
-    int sel; cin >> sel; cin.ignore(10000, '\n');
+                if (n == 1) {                  // vuelo directo
+                    if (!mostroDirectos) {
+                        std::cout << "\n" << titulo << " - VUELOS DIRECTOS:\n";
+                        mostroDirectos = true;
+                    }
+                    const Vuelo& v = r.vuelos.obtenerPos(0);
+                    std::cout << "[" << opcionActual << "] "
+                        << v.getOrigen() << "->" << v.getDestino()
+                        << " " << v.getFecha()
+                        << "  S/" << std::fixed << std::setprecision(2)
+                        << v.getPrecio() << '\n';
+                }
+                else {                         // con escalas
+                    if (!mostroEscalas) {
+                        std::cout << "\n" << titulo << " - RUTAS CON ESCALAS:\n";
+                        mostroEscalas = true;
+                    }
+                    const Vuelo& inicio = r.vuelos.obtenerPos(0);
+                    const Vuelo& fin = r.vuelos.obtenerFinal();
+                    std::cout << "[" << opcionActual << "] "
+                        << n << " tramos  "
+                        << inicio.getFecha() << " -> " << fin.getFecha()
+                        << "  S/" << std::fixed << std::setprecision(2)
+                        << r.costoTotal << '\n';
+                }
+
+                opciones.agregaFinal({ r, criterio });
+                ++opcionActual;
+            }
+        };
+
+    mostrarRutas(rutasDistancia, CriterioPeso::DISTANCIA, "SEGUN DISTANCIA");
+    mostrarRutas(rutasCosto, CriterioPeso::COSTO, "SEGUN COSTO");
+
+    std::cout << "\nSeleccione una opcion para reservar (0 = Cancelar): ";
+    int sel; std::cin >> sel; std::cin.ignore(10000, '\n');
     if (sel < 1 || sel > opciones.longitud()) return;
 
-    OpcionRuta elegida = opciones.obtenerPos(sel - 1);
-    if (elegida.esDirecto) {
-        reservarVuelo(elegida.index);
+    const RutaPosible& rutaElegida = opciones.obtenerPos(sel - 1).ruta;
+
+    // Mostrar mapa exacto
+    imprimirMapaRuta(rutaElegida, svcRutas);
+
+    // Delegar a reservarVuelo() o reservarRuta()
+    if (rutaElegida.vuelos.longitud() == 1) {
+        const Vuelo& v = rutaElegida.vuelos.obtenerPos(0);
+        reservarVuelo(v.getId());
     }
     else {
-        reservarRuta(rutas.obtenerPos(elegida.index));
+        reservarRuta(rutaElegida);
     }
 }
-
 void MenuUsuario::reservarVuelo(int vueloId) {
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
     string metodo = elegirMetodoPago();
@@ -230,40 +272,6 @@ void MenuUsuario::reservarVuelo(int vueloId) {
     else {
         cout << "Pago fallido para la reserva.\n";
     }
-}
-void MenuUsuario::opcionBuscarRutaYReservar() {
-    string origen, destino;
-    cout << "\n--- BUSCAR RUTA CON ESCALAS ---\n";
-    cout << "Codigo IATA origen  : "; cin >> origen;
-    cout << "Codigo IATA destino : "; cin >> destino;
-
-    cout << "\nCriterio (1=Mas barata, 2=Mas corta): ";
-    int crit;
-    cin >> crit;
-    cin.ignore(10000, '\n');
-
-    auto rutas = svcRutas.mejoresKRutas(origen, destino, 3);
-    if (rutas.esVacia()) {
-        cout << "No se encontraron rutas disponibles.\n";
-        return;
-    }
-
-    cout << "\nRUTAS DISPONIBLES:\n";
-    for (int i = 0; i < rutas.longitud(); ++i) {
-        const auto& r = rutas.obtenerPos(i);
-        const auto& inicio = r.vuelos.obtenerPos(0);
-        const auto& fin = r.vuelos.obtenerFinal();
-        cout << "[" << i + 1 << "] " << r.vuelos.longitud() << " tramos"
-            << " " << inicio.getFecha() << "->" << fin.getFecha()
-            << " S/" << fixed << setprecision(2) << r.costoTotal << '\n';
-    }
-    cout << "Seleccione ruta a reservar (1-" << rutas.longitud() << ", 0=Cancelar): ";
-    int sel;
-    cin >> sel;
-    cin.ignore(10000, '\n');
-    if (sel < 1 || sel > rutas.longitud()) return;
-
-    reservarRuta(rutas.obtenerPos(sel - 1));
 }
 void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());

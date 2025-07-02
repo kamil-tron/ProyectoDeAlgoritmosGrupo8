@@ -8,6 +8,10 @@
 #include "RepoAeropuertos.h"
 #include "HashTable.h"
 #include "FuncionesHash.h"
+#include "MatrizMapa.h"
+
+#include <Windows.h>
+#include <conio.h>
 
 using namespace std;
 
@@ -137,7 +141,7 @@ private:
 						found = true;
 					}
 					else if (conexionValida(elegido, v)) {
-						elegido = v;            // cumple ventana -> lo acepto
+						elegido = v;            // cumple ventana - lo acepto
 					}
 				}
 			}
@@ -150,6 +154,74 @@ private:
 		}
 		return ruta;
 	}
+
+	Lista<RutaPosible> obtenerTodasLasRutas(const string& origen,
+		const string& destino,
+		CriterioPeso criterio)
+	{
+		const int MAX_RUTAS = 100;      // tope de seguridad
+		Lista<RutaPosible> rutas;
+
+		int* idxO = mapaCodigosAeropuerto->obtener(origen);
+		int* idxD = mapaCodigosAeropuerto->obtener(destino);
+		if (!idxO || !idxD) return rutas;
+
+		// 1) Mejor ruta inicial
+		RutaPosible base = calcularRutaDijkstra(*idxO, *idxD, criterio);
+		if (base.indicesAeropuertos.esVacia()) return rutas;
+
+		rutas.agregaFinal(base);
+
+		// 2) Explorar rutas adicionales
+		for (int idxRuta = 0; idxRuta < rutas.longitud() && rutas.longitud() < MAX_RUTAS; ++idxRuta)
+		{
+			const RutaPosible& rutaActual = rutas.obtenerPos(idxRuta);
+			int nArcos = rutaActual.indicesAeropuertos.longitud() - 1;
+
+			for (int posArco = 0; posArco < nArcos && rutas.longitud() < MAX_RUTAS; ++posArco)
+			{
+				int u = rutaActual.indicesAeropuertos.obtenerPos(posArco);
+				int v = rutaActual.indicesAeropuertos.obtenerPos(posArco + 1);
+
+				for (int j = 0; j < grafo.CantidadArcos(u) && rutas.longitud() < MAX_RUTAS; ++j)
+				{
+					if (grafo.ObtenerVerticeLlegada(u, j) != v) continue;
+
+					// Copia y bloqueo temporal
+					PesoVuelo original = grafo.ObtenerArco(u, j);
+					PesoVuelo bloqueado = original;
+					if (criterio == CriterioPeso::DISTANCIA)
+						bloqueado.distancia = VALOR_INFINITO;
+					else
+						bloqueado.costo = VALOR_INFINITO;
+
+					grafo.ModificarArco(u, j, bloqueado);
+
+					// Nueva ruta
+					RutaPosible nueva = calcularRutaDijkstra(*idxO, *idxD, criterio);
+
+					// Restaurar arco
+					grafo.ModificarArco(u, j, original);
+
+					if (nueva.indicesAeropuertos.esVacia()) continue;
+
+					bool duplicada = false;
+					for (int k = 0; k < rutas.longitud(); ++k)
+					{
+						if (rutas.obtenerPos(k).indicesAeropuertos == nueva.indicesAeropuertos)
+						{
+							duplicada = true;
+							break;
+						}
+					}
+					if (!duplicada) rutas.agregaFinal(nueva);
+				}
+			}
+		}
+		return rutas;   // ya ordenadas desde la más óptima
+	}
+
+
 public:
 	ServicioRutas()
 		: mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
@@ -192,43 +264,61 @@ public:
 		return calcularRutaDijkstra(*idxOrigen, *idxDestino, CriterioPeso::COSTO);
 	}
 
-	Lista<RutaPosible> mejoresKRutas(const string& origen, const string& destino, int cantidad) {
-		Lista<RutaPosible> rutas;
-		if (cantidad <= 0) return rutas;
-
-		RutaPosible rutaInicial = rutaMasCorta(origen, destino);
-		if (rutaInicial.indicesAeropuertos.esVacia()) return rutas;
-
-		rutas.agregaFinal(rutaInicial);
-
-		for (int i = 1; i < cantidad; i++) {
-			const RutaPosible& rutaAnterior = rutas.obtenerFinal();
-			int longitud = rutaAnterior.indicesAeropuertos.longitud();
-			if (longitud < 2) break;
-
-			int penultimo = rutaAnterior.indicesAeropuertos.obtenerPos(longitud - 2);
-			int ultimo = rutaAnterior.indicesAeropuertos.obtenerFinal();
-
-			int cantidadArcos = grafo.CantidadArcos(penultimo);
-			bool seBloqueo = false;
-
-			for (int j = 0; j < cantidadArcos; j++) {
-				if (grafo.ObtenerVerticeLlegada(penultimo, j) == ultimo) {
-					PesoVuelo pesoOriginal = grafo.ObtenerArco(penultimo, j);
-					PesoVuelo pesoBloqueado = pesoOriginal;
-					pesoBloqueado.distancia = pesoBloqueado.costo = VALOR_INFINITO;
-					grafo.ModificarArco(penultimo, j, pesoBloqueado);
-
-					RutaPosible nuevaRuta = rutaMasCorta(origen, destino);
-					if (!nuevaRuta.indicesAeropuertos.esVacia()) rutas.agregaFinal(nuevaRuta);
-
-					grafo.ModificarArco(penultimo, j, pesoOriginal);
-					seBloqueo = true;
-					break;
-				}
-			}
-			if (!seBloqueo) break;
-		}
-		return rutas;
+	Lista<RutaPosible> todasLasRutasMasCortas(const string& origen, const string& destino) {
+		return obtenerTodasLasRutas(origen, destino, CriterioPeso::DISTANCIA);
 	}
+
+	Lista<RutaPosible> todasLasRutasMasBaratas(const string& origen, const string& destino) {
+		return obtenerTodasLasRutas(origen, destino, CriterioPeso::COSTO);
+	}
+
+	void pintarRutaEnMatriz(const RutaPosible& ruta,
+		int valorLinea = 4,
+		int valorNodo = 9)
+	{
+		if (ruta.indicesAeropuertos.esVacia()) return;
+
+		// 1. Marcar aeropuertos
+		for (int i = 0; i < ruta.indicesAeropuertos.longitud(); ++i) {
+			int idx = ruta.indicesAeropuertos.obtenerPos(i);
+			if (idx < 0 || idx >= (int)listaAeropuertos.size()) continue;
+
+			int y = listaAeropuertos[idx].getY();  // fila
+			int x = listaAeropuertos[idx].getX();  // columna
+
+			if (y >= 0 && y < 50 && x >= 0 && x < 101)
+				matrizPeru[y][x] = valorNodo;
+		}
+
+		// 2. Dibujar lineas entre aeropuertos (Bresenham)
+		for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
+			const Aeropuerto& a = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i)];
+			const Aeropuerto& b = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i + 1)];
+
+			int x0 = a.getX(), y0 = a.getY();
+			int x1 = b.getX(), y1 = b.getY();
+
+			int dx = std::abs(x1 - x0);
+			int dy = -std::abs(y1 - y0);
+			int sx = (x0 < x1) ? 1 : -1;
+			int sy = (y0 < y1) ? 1 : -1;
+			int err = dx + dy;
+
+			while (true) {
+				// No sobreescribir el nodo si ya esta marcado
+				if (y0 >= 0 && y0 < 50 && x0 >= 0 && x0 < 101 &&
+					matrizPeru[y0][x0] != valorNodo)
+				{
+					matrizPeru[y0][x0] = valorLinea;
+				}
+
+				if (x0 == x1 && y0 == y1) break;
+
+				int e2 = 2 * err;
+				if (e2 >= dy) { err += dy; x0 += sx; }
+				if (e2 <= dx) { err += dx; y0 += sy; }
+			}
+		}
+	}
+
 };

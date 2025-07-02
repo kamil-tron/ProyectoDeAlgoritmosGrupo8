@@ -23,7 +23,6 @@ private:
     void imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index);
     int contarConfirmadasRec(const Lista<Reserva>& lista, int i);
     void opcionBuscarYReservar();
-    void opcionBuscarRutaYReservar();
     void opcionVerReservas();
 	void opcionHacerCheckIn();
     void opcionVerPerfil();
