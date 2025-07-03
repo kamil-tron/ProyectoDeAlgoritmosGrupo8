@@ -5,24 +5,25 @@
 #include <iostream>
 #include <iomanip>
 #include <functional>
-
+#include <conio.h>
 using namespace std;
 
 void MenuAdministrador::opcionRegistrarVuelo() {
+int y=13;
     string origen, destino, fecha;
     double precio;
     int capacidad = 0;
-
-    cout << "Origen: "; getline(cin, origen);
-    cout << "Destino: "; getline(cin, destino);
-    cout << "Fecha (dd/mm/aaaa): "; getline(cin, fecha);
-    cout << "Precio: "; cin >> precio;
+cursor(70,12);
+    cout << "Origen: "; getline(cin, origen); cursor(70, y);y++;
+    cout << "Destino: "; getline(cin, destino); cursor(70, y); y++;
+    cout << "Fecha (dd/mm/aaaa): "; getline(cin, fecha); cursor(70, y); y++;
+    cout << "Precio: "; cin >> precio; cursor(70, y); y++;
 
     while (capacidad < 1 || capacidad > 120) {
-        cout << "Capacidad de asientos: "; cin >> capacidad;
+        cout << "Capacidad de asientos: "; cin >> capacidad; cursor(70, y); y++;
         cin.ignore(10000, '\n');
-        if (capacidad > 120) cout << "Capacidad excedida\n";
-        if (capacidad < 1)  cout << "Capacidad insuficiente\n";
+        if (capacidad > 120) cout << "Capacidad excedida"; cursor(70, y); y++;
+        if (capacidad < 1)  cout << "Capacidad insuficiente"; cursor(70, y); y++;
     }
 
     int id = svcVuelos.listarVuelos().longitud() + 1;
@@ -32,82 +33,106 @@ void MenuAdministrador::opcionRegistrarVuelo() {
 }
 
 void MenuAdministrador::opcionModificarVuelo() {
+int Y=13;
+    cursor(70, Y); Y++;
     int id; cout << "Ingrese ID del vuelo a modificar: "; cin >> id; cin.ignore(10000, '\n');
     Vuelo v;
+    cursor(70, Y); Y++;
     if (!svcVuelos.buscarVuelo(id, v)) {
+        cursor(70, Y); Y++;
         cout << "Vuelo no encontrado.\n";
         return;
     }
-    cout << "Nuevo precio: "; double nuevoPrecio; cin >> nuevoPrecio;
-    cout << "Nueva capacidad: "; int nuevaCap; cin >> nuevaCap; cin.ignore(10000, '\n');
+   
+    cout << "Nuevo precio: "; double nuevoPrecio; cin >> nuevoPrecio;   cursor(70, Y); Y++;
+    cout << "Nueva capacidad: "; int nuevaCap; cin >> nuevaCap; cin.ignore(10000, '\n');   cursor(70, Y); Y++;
     v.setPrecio(nuevoPrecio);
     v.setCapacidad(nuevaCap);
     cout << (svcVuelos.modificarVuelo(v) ? "Vuelo actualizado.\n" : "Error al actualizar el vuelo.\n");
+    _getch();
+
 }
 
 void MenuAdministrador::opcionEliminarVuelo() {
-    int id; cout << "Ingrese ID del vuelo a eliminar: "; cin >> id; cin.ignore(10000, '\n');
-    cout << "Seguro que desea eliminar este vuelo? (s/n): "; char resp; cin >> resp; cin.ignore(10000, '\n');
+    int Y = 13;
+    cursor(70, Y); Y++;
+    int id; cout << "Ingrese ID del vuelo a eliminar: "; cin >> id; cin.ignore(10000, '\n');  cursor(70, Y); Y++;
+    cout << "Seguro que desea eliminar este vuelo? (s/n): "; char resp; cin >> resp; cin.ignore(10000, '\n');  cursor(70, Y); Y++;
     if (resp == 's' || resp == 'S')
         cout << (svcVuelos.eliminarVuelo(id) ? "Vuelo eliminado correctamente.\n" : "Error al eliminar vuelo.\n");
+    _getch();
+
 }
 
 void MenuAdministrador::opcionHistorialReservas() {
+int Y =13;
+    cursor(70, Y); Y++;
     auto lista = svcReservas.listarReservasUsuario("");
     cout << "Codigo | Usuario | Vuelo ID | Fecha | Asientos\n";
     function<void(int)> imprimir = [&](int i) {
         if (i >= lista.longitud()) return;
         const auto& r = lista.obtenerPos(i);
+        cursor(70, Y); Y++;
         cout << r.getCodigo() << " | " << r.getUserEmail() << " | " << r.getVueloId() << " | " << r.getFecha() << " | " << r.getAsientos().toPrint(";") << "\n";
         imprimir(i + 1);
         };
     imprimir(0);
+_getch();
 }
 
 void MenuAdministrador::opcionVerUsuarios() {
+    int Y=13;
     RepoUsuarios repo;
     auto lista = repo.cargarTodos();
+    cursor(70, Y); Y++;
     cout << "Usuarios registrados:\n";
     function<void(int)> imprimir = [&](int i) {
         if (i >= lista.longitud()) return;
         const auto& u = lista.obtenerPos(i);
+        cursor(70, Y); Y++;
         cout << (i + 1) << ". " << u.getNombre() << ' ' << u.getApellido() << " - " << u.getCorreo() << "\n";
         imprimir(i + 1);
         };
     imprimir(0);
+_getch();
 }
 
 void MenuAdministrador::opcionVuelosMasCaros() {
+int Y=13;
     Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
     mergeSortPorPrecioDesc(ordenados);
+    cursor(70, Y); Y++;
     cout << "\nVUELOS MAS CAROS (precio descendente)\nID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
     function<void(int)> imprimir = [&](int i) {
         if (i >= ordenados.longitud()) return;
         const auto& v = ordenados.obtenerPos(i);
         int disp = svcReservas.listarAsientosDisponibles(v.getId()).longitud();
+        cursor(70, Y); Y++;
         cout << v.getId() << " | " << v.getOrigen() << " | " << v.getDestino() << " | " << v.getFecha() << " | " << fixed << setprecision(2) << v.getPrecio() << " | " << disp << "\n";
         imprimir(i + 1);
         };
     imprimir(0);
+_getch();
 }
 
 void MenuAdministrador::opcionVerTodosVuelos() {
     Lista<Vuelo> vuelos = svcVuelos.listarVuelosPorFecha(); // cambio aqui (AVL)
-
+int Y=4;
+    cursor(70, Y); Y++;
     if (vuelos.esVacia()) {
         cout << "\nNo hay vuelos próximos registrados.\n";
         return;
     }
-
-    cout << "\nVUELOS PROXIMOS (orden cronologico - AVL)\n";
-    cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.\n";
-    cout << "---------------------------------------------------------------\n";
+    cursor(70, Y); Y++;
+    cout << "VUELOS PROXIMOS (orden cronologico - AVL)";   cursor(70, Y); Y++;
+    cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.\n";   cursor(70, Y); Y++;
+    cout << "---------------------------------------------------------------";   cursor(70, Y); Y++;
 
     function<void(int)> imprimir = [&](int i) {
         if (i >= vuelos.longitud()) return;
         const auto& v = vuelos.obtenerPos(i);
         int disp = svcReservas.listarAsientosDisponibles(v.getId()).longitud();
-
+        cursor(70, Y); Y++;
         cout << setw(2) << v.getId() << " | "
             << setw(6) << v.getOrigen() << " | "
             << setw(7) << v.getDestino() << " | "
@@ -119,61 +144,91 @@ void MenuAdministrador::opcionVerTodosVuelos() {
         };
 
     imprimir(0);
+_getch();
 }
 
 
 void MenuAdministrador::opcionProcesarCheckIn() {
+int Y=13;
+
     CheckIn c;
     if (!svcCheckIn.procesarSiguiente(c)) {
+        cursor(70, Y); Y++;
         cout << "No hay pasajeros en la cola de check-in.\n";
         return;
     }
+    cursor(70, Y); Y++;
     cout << "Check-in procesado: "
         << c.getEmail() << "  (reserva " << c.getReservaCod() << ")\n";
+_getch();
 }
 
 void MenuAdministrador::opcionVerPendientesCheckIn() {
-    Cola<CheckIn> cola = svcCheckIn.pendientes();
-    if (cola.esVacia()) {
-        cout << "La cola de check-in esta vacia.\n";
+    int Y = 13;
+    const Cola<CheckIn>& cola = svcCheckIn.pendientes();
+
+    if (cola.size() == 0) {
+        cursor(70, Y++);
+        cout << "La cola de check-in esta vacia.";
+        _getch();
         return;
     }
-    cout << "Pasajeros esperando check-in:\n";
-    int pos = 1;
-    while (!cola.esVacia()) {
-        CheckIn c = cola.frente();
-        cola.desencolar();
-        cout << pos++ << ") "
-            << c.getEmail() << " (reserva " << c.getReservaCod() << ")\n";
+
+    cursor(70, Y++);
+    cout << "Pasajeros esperando check-in:";
+
+    for (int i = 0; i < cola.size(); ++i) {
+        const CheckIn& c = cola.at(i);
+        cursor(70, Y++);
+        cout << (i + 1) << ") "
+            << c.getEmail()
+            << " (reserva " << c.getReservaCod() << ")";
     }
+
+    _getch();
 }
+
+
 
 void MenuAdministrador::opcionVerHistorialCheckIn() {
-    Pila<CheckIn> pila = svcCheckIn.ultimos();
-    if (pila.esVacia()) {
-        cout << "No hay historial de check-in en esta sesion.\n";
+    int Y = 13;
+    const Pila<CheckIn>& pila = svcCheckIn.ultimos();
+    int n = pila.size();
+
+    if (n == 0) {
+        cursor(70, Y++);
+        cout << "No hay historial de check-in en esta sesion.";
+        _getch();
         return;
     }
-    cout << "Ultimos check-in procesados (mas reciente primero):\n";
-    while (!pila.esVacia()) {
-        CheckIn c = pila.cima();
-        pila.desapilar();
+
+    cursor(70, Y++);
+    cout << "Ultimos check-in procesados (mas reciente primero):";
+
+    for (int i = 0; i < n; ++i) {
+        const CheckIn& c = pila.at(i);
+        cursor(70, Y++);
         cout << "* " << c.getEmail()
-            << "  (reserva " << c.getReservaCod() << ")\n";
+            << "  (reserva " << c.getReservaCod() << ")";
     }
+
+    _getch();
 }
 
+
 void MenuAdministrador::opcionRegistrarAeropuerto() {
+    int Y = 13;
     string cod; int x, y;
-    cout << "Código IATA: ";   cin >> cod;
-    cout << "Coordenada X : "; cin >> x;
-    cout << "Coordenada Y : "; cin >> y;
+    cursor(70, 12);
+    cout << "Código IATA: ";   cin >> cod; cursor(70, Y);Y++;
+    cout << "Coordenada X : "; cin >> x; cursor(70, Y); Y++;
+    cout << "Coordenada Y : "; cin >> y; cursor(70, Y); Y++;
 
     if (svcAeropuertos.existe(cod)) {
-        cout << "Ya existe un aeropuerto con ese código.\n";
+        cout << "Ya existe un aeropuerto con ese código.\n"; cursor(70, Y); Y++;
     }
     else if (svcAeropuertos.crear(Aeropuerto(cod, x, y))) {
-        cout << "Aeropuerto registrado.\n";
+        cout << "Aeropuerto registrado.\n"; cursor(70, Y); Y++;
     }
     else {
         cout << "No se pudo registrar el aeropuerto.\n";
@@ -182,13 +237,16 @@ void MenuAdministrador::opcionRegistrarAeropuerto() {
 }
 
 void MenuAdministrador::opcionVerAeropuertos() {
+    int Y = 13;
+    cursor(70, Y); Y++;
     auto lista = svcAeropuertos.listar();
     if (lista.esVacia()) {
-        cout << "No hay aeropuertos registrados.\n";
+        cout << "No hay aeropuertos registrados"; cursor(70, Y); Y++;
     }
     else {
-        cout << "COD  X   Y\n";
+        cout << "COD  X   Y"; 
         for (int i = 0; i < lista.longitud(); ++i) {
+            cursor(70, Y); Y++;
             const Aeropuerto& a = lista.obtenerPos(i);
             cout << a.getCodigo() << "  "
                 << a.getX() << "   "

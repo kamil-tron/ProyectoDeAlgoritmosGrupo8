@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "MatrizColor.h"
 
 using namespace std;
 
@@ -38,9 +39,11 @@ public:
 	void setPassword(const string& p) { contrasena = p; }
 
 	void mostrarPerfil() const override {
-		cout << "Nombre : " << nombre << ' ' << apellido << '\n'
-			<< "DNI    : " << dni << '\n'
-			<< "Correo : " << correo << '\n';
+	int Y=13;
+		cursor(70, Y); Y++;
+		cout << "Nombre : " << nombre << ' ' << apellido; cursor(70, Y); Y++;
+		cout<< "DNI    : " << dni ; cursor(70, Y); Y++;
+		cout<< "Correo : " << correo;
 	}
 
 	string serialize() const {

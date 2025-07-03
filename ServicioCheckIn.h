@@ -43,7 +43,10 @@ public:
         if (!r || r->getEstado() != EstadoReserva::CONFIRMADA || r->isCheckedIn())
             return false;
 
-        CheckIn c(repoCheck.cargarTodos().longitud() + 1, r->getVueloId(), reservaCod, r->getUserEmail());
+        CheckIn c(repoCheck.cargarTodos().longitud() + 1,
+            r->getVueloId(),
+            reservaCod,
+            r->getUserEmail());
         colaPend.encolar(c);
         repoCheck.registrarCheckIn(c);
         return true;
@@ -64,6 +67,11 @@ public:
         return true;
     }
 
-    Cola<CheckIn> pendientes() const { return colaPend; }
-    Pila<CheckIn> ultimos() const { return hist; }
+    // Devuelven referencias const: NO copian la cola ni la pila
+    const Cola<CheckIn>& pendientes() const {
+        return colaPend;
+    }
+    const Pila<CheckIn>& ultimos() const {
+        return hist;
+    }
 };

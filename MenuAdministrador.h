@@ -6,6 +6,7 @@
 #include "ServicioCheckIn.h"
 #include "ServicioAeropuertos.h"
 #include "RepoUsuarios.h"
+#include "MatrizColor.h"
 #include <iostream>
 
 using namespace std;
@@ -36,6 +37,7 @@ private:
 
 public:
     MenuAdministrador(Sesion& s) : MenuBase(s) {
+
         agregarOpcion(new MenuOpcionTexto(
             "Registrar aeropuerto", [this] { opcionRegistrarAeropuerto(); }));
         agregarOpcion(new MenuOpcionTexto(
@@ -62,9 +64,16 @@ public:
         agregarOpcion(new MenuOpcionTexto("Cerrar sesion", [this] { opcionCerrarSesion(); }));
     }
 
-
     void mostrar() const override {
-        cout << "\n--- MENU DE ADMINISTRADOR AIR PACIFIC ---\n";
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        // bitmask de fondo gris claro:
+        const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        system("cls");
+        menuAdmin();
+        SetConsoleTextAttribute(hConsole, BG_GRAY);
+        cursor(6, 12);
+        cout << "--- MENU DE ADMINISTRADOR AIR PACIFIC ---";    cursor(8, 13);
         MenuBase::mostrar();
     }
 };

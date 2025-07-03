@@ -31,6 +31,8 @@ static string elegirMetodoPago() {
     return (op == 1 ? "TC" : op == 2 ? "TD" : "YP");
 }
 
+
+ 
 static void imprimirMapaRuta(const RutaPosible& ruta, ServicioRutas& svcRutas)
 {
     // 1. Respaldar matrizPeru sin memcpy
@@ -54,9 +56,10 @@ static void imprimirMapaRuta(const RutaPosible& ruta, ServicioRutas& svcRutas)
 }
 
 
-void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index) {
-    if (index >= reservas.longitud()) return;
+void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int index, int Y) {
 
+    if (index >= reservas.longitud()) return;
+   
     const auto& r = reservas.obtenerPos(index);
     Vuelo v;
     svcVuelos.buscarVuelo(r.getVueloId(), v);
@@ -76,6 +79,7 @@ void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int 
         }
     }
 
+    cursor(70, Y); Y++;
     cout << r.getCodigo() << " | "
         << r.getVueloId() << " | "
         << r.getFecha() << " | "
@@ -84,7 +88,7 @@ void MenuUsuario::imprimirReservasRecursivo(const Lista<Reserva>& reservas, int 
             r.getEstado() == EstadoReserva::PENDIENTE ? "PEND" : "CANC")
         << " | S/ " << fixed << setprecision(2) << total << "\n";
 
-    imprimirReservasRecursivo(reservas, index + 1);
+    imprimirReservasRecursivo(reservas, index + 1,Y);
 }
 
 int MenuUsuario::contarConfirmadasRec(const Lista<Reserva>& lista, int i) {
@@ -98,7 +102,7 @@ void MenuUsuario::opcionBuscarYReservar() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     WORD defaultAttrs = csbi.wAttributes;
-
+int Y=10;
     cout << "\n--- BUSCAR VUELOS O RUTAS ---\n";
 
     auto aeropuertos = svcVuelos.listarAeropuertos();
@@ -378,48 +382,64 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
 
 
 void MenuUsuario::opcionVerReservas() {
+    int Y = 12;
+
     auto reservas = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
     if (reservas.esVacia()) {
+        cursor(70, Y); Y++;
         cout << "\nNo tienes reservas.\n";
         return;
     }
+    cursor(70, Y); Y++;
+    cout << "MIS RESERVAS";
+    cursor(70, Y); 
+    cout<< "Codigo | Vuelo | Fecha | Asientos | Estado | Total";
 
-    cout << "\nMIS RESERVAS\n"
-        << "Codigo | Vuelo | Fecha | Asientos | Estado | Total\n";
-
-    imprimirReservasRecursivo(reservas, 0);
-
-    cout << "\nDeseas cancelar alguna reserva? (1=Si, 2=No): ";
+    imprimirReservasRecursivo  (reservas, 0,Y);
+    int n = reservas.longitud();
+    Y += n;
+    cursor(70, Y); Y++;
+    cout << "Deseas cancelar alguna reserva? (1=Si, 2=No): ";
     int opc; cin >> opc; cin.ignore(10000, '\n');
     if (opc != 1) return;
-
+    cursor(70, Y); Y++;
     cout << "Codigo de la reserva a cancelar: ";
     string codigo;
     getline(cin, codigo);
 
-    if (svcReservas.cancelarReserva(codigo))
-        cout << "Reserva cancelada.\n";
-    else
-        cout << "No se encontro o ya estaba cancelada.\n";
+    if (svcReservas.cancelarReserva(codigo)){
+        cursor(70, Y); Y++;
+        cout << "Reserva cancelada";
+        _getch();
+    }else
+        cursor(70, Y); Y++;
+        cout << "No se encontro o ya estaba cancelada.";
+        _getch();
 }
 
 void MenuUsuario::opcionVerPerfil() {
-    cout << "\nMI PERFIL\n";
+    int Y = 12;
+    cursor(70, Y); Y+=4;
+    cout << "MI PERFIL";
     sesion.getUsuarioActual().mostrarPerfil();
 
     auto lista = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
     int activas = contarConfirmadasRec(lista, 0);
-    cout << "Reservas confirmadas: " << activas << '\n';
-
-    cout << "\nDeseas actualizar tu perfil?\n";
-    cout << "1. Si\n2. No\nOpcion: ";
+    cursor(70, Y); Y++;
+    cout << "Reservas confirmadas: " << activas;
+    cursor(70, Y); Y++;
+    cout << "Deseas actualizar tu perfil?"; cursor(70, Y); Y++;
+    cout << "1. Si"; cursor(70, Y); Y++;
+    cout<<"2. No"; cursor(70, Y); Y++;
+    cout<<"Opcion: "; 
     int opc; cin >> opc; cin.ignore(10000, '\n');
     if (opc != 1) return;
 
     string nuevoNombre, nuevoApellido, nuevaContrasena;
-    cout << "Nuevo nombre: "; getline(cin, nuevoNombre);
-    cout << "Nuevo apellido: "; getline(cin, nuevoApellido);
-    cout << "Nueva contrasena: "; getline(cin, nuevaContrasena);
+    cursor(70, Y); Y++;
+    cout << "Nuevo nombre: "; getline(cin, nuevoNombre); 
+    cursor(70, Y); Y++; cout << "Nuevo apellido: "; getline(cin, nuevoApellido);
+    cursor(70, Y); Y++; cout << "Nueva contrasena: "; getline(cin, nuevaContrasena);
 
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
     u.setNombre(nuevoNombre);
@@ -428,22 +448,29 @@ void MenuUsuario::opcionVerPerfil() {
 
     AuthService auth;
     auth.getRepoUsuarios().actualizar(u);
-
+    cursor(70, Y); Y++;
     cout << "Perfil actualizado correctamente.\n";
+_getch();
 }
 
 void MenuUsuario::opcionHacerCheckIn() {
+    int Y=13;
     string codigo;
+    cursor(70, Y); Y++;
     cout << "Ingrese codigo de reserva confirmada: ";
     cin >> codigo;
 
     if (svcCheckIn.registrarEnCola(codigo)) {
-        cout << "Te uniste a la cola de check-in. ¡Gracias!\n";
+        cursor(70, Y); Y++;
+        cout << "Te uniste a la cola de check-in. ¡Gracias!";
     }
     else {
-        cout << "No se pudo registrar el check-in. "
-            "Verifica que la reserva este confirmada y no hayas hecho check-in antes.\n";
+        cursor(70, Y); Y++;
+        cout << "No se pudo registrar el check-in. ";
+        cursor(70, Y); Y++;
+            "Verifica que la reserva este confirmada y no hayas hecho check-in antes.";
     }
+    _getch();
 }
 
 void MenuUsuario::opcionCerrarSesion() {
