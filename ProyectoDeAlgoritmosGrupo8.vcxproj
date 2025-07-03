@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="JetSmartApp.cpp" />
     <ClCompile Include="MatrizColor.cpp" />
+    <ClCompile Include="MatrizMapa.cpp" />
     <ClCompile Include="MenuAdministrador.cpp" />
     <ClCompile Include="MenuInicio.cpp" />
     <ClCompile Include="MenuUsuario.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="HashEntidad.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="MatrizColor.h" />
+    <ClInclude Include="MatrizMapa.h" />
     <ClInclude Include="Ordenamientos.h" />
     <ClInclude Include="Pila.h" />
     <ClInclude Include="JetSmartApp.h" />
