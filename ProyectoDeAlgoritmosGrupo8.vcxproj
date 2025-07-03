@@ -178,6 +178,7 @@
     <ClInclude Include="RepoVuelos.h" />
     <ClInclude Include="Reserva.h" />
     <ClInclude Include="Roles.h" />
+    <ClInclude Include="RutaPosible.h" />
     <ClInclude Include="ServicioAeropuertos.h" />
     <ClInclude Include="ServicioAsientos.h" />
     <ClInclude Include="ServicioCheckIn.h" />
