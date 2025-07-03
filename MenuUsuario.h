@@ -44,6 +44,7 @@ public:
 
         // bitmask de fondo gris claro:
         WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        
         system("cls");
         menuUsuario();
         SetConsoleTextAttribute(hConsole, BG_GRAY);

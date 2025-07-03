@@ -15,10 +15,12 @@ void MenuInicio::mostrar() const {
 	// bitmask de fondo gris claro:
 	const WORD BG_GRAY = BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE;
 	system("cls");
+	SetConsoleTextAttribute(hConsole, BG_GRAY);
 	generarmatriz();
+
 	logo(29,5);
 	cursor(60, 29);
-	SetConsoleTextAttribute(hConsole, BG_GRAY);
+
 	cout << "SISTEMA DE TICKETS - AIR PACIFIC";
 
 

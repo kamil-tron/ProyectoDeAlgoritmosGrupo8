@@ -21,14 +21,25 @@ void cuentaRegresiva(int n) {
     cuentaRegresiva(n - 1);
 }
 
-static string elegirMetodoPago() {
-    cout << "\nMetodo de pago:\n"
-        << "1. Tarjeta de credito\n"
-        << "2. Tarjeta de debito\n"
-        << "3. Yape / Plin\n"
-        << "Opcion: ";
+static string elegirMetodoPago(int ESdirecto) {
+int Y=10;
+if (ESdirecto == 1) {
+    cout << "Metodo de pago:"<<" \n"
+    << "1. Tarjeta de credito" << " \n"
+    << "2. Tarjeta de debito" << " \n"
+    << "3. Yape / Plin" << " \n"
+    << "Opcion: ";
+}else{
+cursor(60,Y);Y++;
+    cout << "Metodo de pago:"; cursor(60, Y); Y++;
+    cout << "1. Tarjeta de credito"; cursor(60, Y); Y++;
+    cout << "2. Tarjeta de debito"; cursor(60, Y); Y++;
+    cout << "3. Yape / Plin"; cursor(60, Y); Y++;
+    cout << "Opcion: ";
+}
     int op; cin >> op; cin.ignore(10000, '\n');
     return (op == 1 ? "TC" : op == 2 ? "TD" : "YP");
+
 }
 
 
@@ -105,13 +116,18 @@ void MenuUsuario::opcionBuscarYReservar()
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     WORD defaultAttrs = csbi.wAttributes;
 
-    cout << "\n--- BUSCAR VUELOS O RUTAS ---\n";
+    int Y=5;
+    cursor(60,Y);Y++;
+    cout << "--- BUSCAR VUELOS O RUTAS ---";
+
 
     auto aeropuertos = svcVuelos.listarAeropuertos();
     if (aeropuertos.esVacia()) {
-        cout << "No hay aeropuertos registrados.\n";
+        cursor(60, Y); Y++;
+        cout << "No hay aeropuertos registrados.";
         return;
     }
+
     cout << "\nAEROPUERTOS DISPONIBLES:\n";
     for (int i = 0; i < aeropuertos.longitud(); ++i) {
         const Aeropuerto& a = aeropuertos.obtenerPos(i);
@@ -130,6 +146,7 @@ void MenuUsuario::opcionBuscarYReservar()
     int crit;  cin >> crit;  cin.ignore(10000, '\n');
     bool porCosto = (crit == 1);
 
+
     Lista<Vuelo> vuelosDirectos;
     auto todos = svcVuelos.listarVuelosPorFecha();
     for (int i = 0; i < todos.longitud(); ++i) {
@@ -146,39 +163,46 @@ void MenuUsuario::opcionBuscarYReservar()
     mergeSortRutas(rutas, porCosto);
 
     if (vuelosDirectos.esVacia() && rutas.esVacia()) {
-        cout << "\nNo se encontraron vuelos ni rutas entre los aeropuertos.\n";
+        cursor(60, Y); Y++;
+        cout << "No se encontraron vuelos ni rutas entre los aeropuertos.";
         return;
     }
-
-    cout << "\nOpciones disponibles:\n";
+    cursor(60, Y); Y++;
+    cout << "Opciones disponibles:";
 
     struct OpcionRuta { bool esDirecto; int index; };
     Lista<OpcionRuta> opciones;
     int opcionActual = 1;
 
     if (!vuelosDirectos.esVacia()) {
-        cout << "\nVUELOS DIRECTOS:\n";
+        cursor(60, Y); Y++;
+        cout << "VUELOS DIRECTOS:";
         for (int i = 0; i < vuelosDirectos.longitud(); ++i) {
             const Vuelo& v = vuelosDirectos.obtenerPos(i);
+            cursor(60, Y); Y++;
             cout << "[" << opcionActual << "] "
                 << v.getOrigen() << "->" << v.getDestino() << ' '
                 << v.getFecha() << "  S/"
                 << fixed << setprecision(2) << v.getPrecio() << '\n';
+
             opciones.agregaFinal({ true, v.getId() });
             ++opcionActual;
         }
     }
 
     if (!rutas.esVacia()) {
-        cout << "\nRUTAS CON ESCALAS:\n";
+        cursor(60, Y); Y++;
+        cout << "RUTAS CON ESCALAS:";
         for (int i = 0; i < rutas.longitud(); ++i) {
             const RutaPosible& r = rutas.obtenerPos(i);
             const auto& inicio = r.vuelos.obtenerPos(0);
             const auto& fin = r.vuelos.obtenerFinal();
+
             cout << "[" << opcionActual << "] "
                 << r.vuelos.longitud() << " tramos  "
                 << inicio.getFecha() << "->" << fin.getFecha()
                 << "  S/" << fixed << setprecision(2) << r.costoTotal << '\n';
+
             opciones.agregaFinal({ false, i });
             ++opcionActual;
         }
@@ -186,6 +210,7 @@ void MenuUsuario::opcionBuscarYReservar()
 
     cout << "\nSeleccione una opcion para reservar (0=Cancelar): ";
     int sel;  cin >> sel;  cin.ignore(10000, '\n');
+
     if (sel < 1 || sel > opciones.longitud()) return;
 
     OpcionRuta elegida = opciones.obtenerPos(sel - 1);
@@ -209,8 +234,18 @@ void MenuUsuario::opcionBuscarYReservar()
 
 
 void MenuUsuario::reservarVuelo(int vueloId) {
+    int Y=15;
+  HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
+  WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+    // bitmask de fondo gris claro:
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
-    string metodo = elegirMetodoPago();
+    system("cls");
+    menuUsuario();
+    SetConsoleTextAttribute(con, BG_GRAY);
+    cursor(6, 12);
+    cout << "MENU DE USUARIO - AIR PACIFIC" << endl; cursor(8, 13);
+    MenuBase::mostrar();
+    string metodo = elegirMetodoPago(0);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
@@ -219,32 +254,38 @@ void MenuUsuario::reservarVuelo(int vueloId) {
     // Obtener asientos disponibles para el vuelo
     auto libres = svcReservas.listarAsientosDisponibles(vueloId);
     if (libres.esVacia()) {
+        cursor(60, Y);Y++;
         cout << "No hay asientos disponibles en el vuelo " << vueloId << ".\n";
         return;
     }
 
     // Mostrar asientos libres
-    cout << "Asientos libres para vuelo " << vueloId << ":\n";
+    cursor(60, Y); Y++;
+    cout << "Asientos libres para vuelo " << libres.longitud() << ":\n";   cursor(60, Y); Y++;
     string filaAnt;
     for (int i = 0; i < libres.longitud(); ++i) {
         const Asiento& a = libres.obtenerPos(i);
         string cod = a.getCodigo();
 
         string fila;
+      
         for (char c : cod) if (isdigit(c)) fila += c; else break;
-        if (!filaAnt.empty() && fila != filaAnt) cout << "\n";
+        if (!filaAnt.empty() && fila != filaAnt){ cursor(60, Y); Y++;}
         if (a.isVip()) {
+       
             SetConsoleTextAttribute(hConsole, BACKGROUND_RED | BACKGROUND_GREEN);
-            cout << cod;
+            cout << cod; 
             SetConsoleTextAttribute(hConsole, defaultAttrs);
             cout << ' ';
         }
         else {
+            
             cout << cod << ' ';
         }
         filaAnt = fila;
     }
-    cout << "\nCantidad de asientos a reservar: ";
+    cursor(60, Y); Y++;
+    cout << "Cantidad de asientos a reservar: ";    cursor(60, Y); Y++;
     int cantidad;
     cin >> cantidad;
     cin.ignore(10000, '\n');
@@ -255,7 +296,8 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 
     // Selección de códigos
     Lista<string> seleccionados;
-    cout << "Ingrese los codigos de asiento separados por espacio:\n";
+    cursor(60, Y); Y++;
+    cout << "Ingrese los codigos de asiento separados por espacio: ";
     for (int i = 0; i < cantidad; ++i) {
         string codigo;
         cin >> codigo;
@@ -266,19 +308,22 @@ void MenuUsuario::reservarVuelo(int vueloId) {
     // Crear reserva y procesar pago
     Reserva reserva;
     if (!svcReservas.crearReservaConAsientos(u, vueloId, seleccionados, reserva)) {
-        cout << "No se pudo crear la reserva.\n";
+        cursor(60, Y); Y++; cout << "No se pudo crear la reserva.";
         return;
     }
 
     double total = svcReservas.calcularTotal(vueloId, seleccionados);
     Pago pago;
     if (svcPagos.procesarPagoReserva(reserva, total, metodo, pago)) {
+        cursor(60, Y); Y++;
         cout << "Reserva confirmada: " << reserva.getCodigo()
             << " (S/" << fixed << setprecision(2) << total << ")\n";
     }
     else {
+        cursor(60, Y); Y++;
         cout << "Pago fallido para la reserva.\n";
     }
+_getch();
 }
 void MenuUsuario::opcionBuscarRutaYReservar() {
     string origen, destino;
@@ -316,7 +361,7 @@ void MenuUsuario::opcionBuscarRutaYReservar() {
 }
 void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
-    string metodo = elegirMetodoPago();
+    string metodo = elegirMetodoPago(1);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
