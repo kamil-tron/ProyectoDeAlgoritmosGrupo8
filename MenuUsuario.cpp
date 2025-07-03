@@ -21,22 +21,16 @@ void cuentaRegresiva(int n) {
     cuentaRegresiva(n - 1);
 }
 
-static string elegirMetodoPago(int ESdirecto) {
+static string elegirMetodoPago() {
 int Y=10;
-if (ESdirecto == 1) {
-    cout << "Metodo de pago:"<<" \n"
-    << "1. Tarjeta de credito" << " \n"
-    << "2. Tarjeta de debito" << " \n"
-    << "3. Yape / Plin" << " \n"
-    << "Opcion: ";
-}else{
+
 cursor(60,Y);Y++;
     cout << "Metodo de pago:"; cursor(60, Y); Y++;
     cout << "1. Tarjeta de credito"; cursor(60, Y); Y++;
     cout << "2. Tarjeta de debito"; cursor(60, Y); Y++;
     cout << "3. Yape / Plin"; cursor(60, Y); Y++;
     cout << "Opcion: ";
-}
+
     int op; cin >> op; cin.ignore(10000, '\n');
     return (op == 1 ? "TC" : op == 2 ? "TD" : "YP");
 
@@ -117,9 +111,8 @@ void MenuUsuario::opcionBuscarYReservar()
     WORD defaultAttrs = csbi.wAttributes;
 
     int Y=5;
-    cursor(60,Y);Y++;
+    cursor(60, Y); Y++;
     cout << "--- BUSCAR VUELOS O RUTAS ---";
-
 
     auto aeropuertos = svcVuelos.listarAeropuertos();
     if (aeropuertos.esVacia()) {
@@ -127,22 +120,25 @@ void MenuUsuario::opcionBuscarYReservar()
         cout << "No hay aeropuertos registrados.";
         return;
     }
-
-    cout << "\nAEROPUERTOS DISPONIBLES:\n";
+    cursor(60, Y); Y++;
+    cout << "AEROPUERTOS DISPONIBLES:";
     for (int i = 0; i < aeropuertos.longitud(); ++i) {
         const Aeropuerto& a = aeropuertos.obtenerPos(i);
-        cout << "- " << a.getCodigo()
-            << "  (X: " << a.getX() << ", Y: " << a.getY() << ")\n";
+        cursor(60, Y); Y++;
+        cout << "- " << a.getCodigo() << "  (X: " << a.getX() << ", Y: " << a.getY() << ")";
     }
 
-    string origen, destino;
-    cout << "\nIngrese el codigo IATA de origen  : ";  cin >> origen;
-    cout << "Ingrese el codigo IATA de destino : ";  cin >> destino;
 
-    cout << "\nOrdenar las rutas con escalas por:\n"
-        << "  1. Costo total (mas baratas primero)\n"
-        << "  2. Distancia total (mas cortas primero)\n"
-        << "Opcion: ";
+    string origen, destino; cursor(60, Y); Y++;
+    cout << "Ingrese el codigo IATA de origen  : "; cin >> origen; cursor(60, Y); Y++;
+    cout << "Ingrese el codigo IATA de destino : "; cin >> destino;
+
+
+    cursor(60, Y); Y++;
+    cout << "Ordenar las rutas con escalas por:"; cursor(60, Y); Y++;
+    cout<< "  1. Costo total (mas baratas primero)"; cursor(60, Y); Y++;
+    cout<< "  2. Distancia total (mas cortas primero)"; cursor(60, Y); Y++;
+    cout<< "Opcion: ";
     int crit;  cin >> crit;  cin.ignore(10000, '\n');
     bool porCosto = (crit == 1);
 
@@ -197,7 +193,7 @@ void MenuUsuario::opcionBuscarYReservar()
             const RutaPosible& r = rutas.obtenerPos(i);
             const auto& inicio = r.vuelos.obtenerPos(0);
             const auto& fin = r.vuelos.obtenerFinal();
-
+            cursor(60, Y); Y++;
             cout << "[" << opcionActual << "] "
                 << r.vuelos.longitud() << " tramos  "
                 << inicio.getFecha() << "->" << fin.getFecha()
@@ -207,8 +203,8 @@ void MenuUsuario::opcionBuscarYReservar()
             ++opcionActual;
         }
     }
-
-    cout << "\nSeleccione una opcion para reservar (0=Cancelar): ";
+    cursor(60, Y); Y++;
+    cout << "Seleccione una opcion para reservar (0=Cancelar): ";
     int sel;  cin >> sel;  cin.ignore(10000, '\n');
 
     if (sel < 1 || sel > opciones.longitud()) return;
@@ -245,7 +241,7 @@ void MenuUsuario::reservarVuelo(int vueloId) {
     cursor(6, 12);
     cout << "MENU DE USUARIO - AIR PACIFIC" << endl; cursor(8, 13);
     MenuBase::mostrar();
-    string metodo = elegirMetodoPago(0);
+    string metodo = elegirMetodoPago();
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
@@ -361,38 +357,51 @@ void MenuUsuario::opcionBuscarRutaYReservar() {
 }
 void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
     Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
-    string metodo = elegirMetodoPago(1);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hConsole, &csbi);
     WORD defaultAttrs = csbi.wAttributes;
-
+    int Y=14;
+  HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
+  WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+    system("cls");
+    menuUsuario();
+    SetConsoleTextAttribute(con, BG_GRAY);
+    cursor(6, 12);
+    cout << "MENU DE USUARIO - AIR PACIFIC" << endl; cursor(8, 13);
+    MenuBase::mostrar();
+    string metodo = elegirMetodoPago();
     double totalRuta = 0.0;
     int exitosas = 0;
 
     for (int i = 0; i < ruta.vuelos.longitud(); ++i) {
         const Vuelo& v = ruta.vuelos.obtenerPos(i);
-        cout << "\n--- Vuelo " << v.getId()
+        SetConsoleTextAttribute(con, BG_GRAY);
+        cursor(60, Y);Y++;
+        cout << "--- Vuelo " << v.getId()
             << " (" << v.getOrigen() << "->" << v.getDestino() << ") ---\n";
 
         auto libres = svcReservas.listarAsientosDisponibles(v.getId());
         if (libres.esVacia()) {
+            cursor(60, Y); Y++;
             cout << "No hay asientos disponibles en este tramo.\n";
             continue;
         }
-
-        cout << "Asientos libres:\n";
+        cursor(60, Y); Y++;
+        cout << "Asientos libres para vuelo " << libres.longitud() << ":\n";   cursor(60, Y); Y++;
         string filaAnt;
-        for (int j = 0; j < libres.longitud(); ++j) {
-            const Asiento& a = libres.obtenerPos(j);
+        for (int i = 0; i < libres.longitud(); ++i) {
+            const Asiento& a = libres.obtenerPos(i);
             string cod = a.getCodigo();
             string fila;
             for (char c : cod) if (isdigit(c)) fila += c; else break;
-            if (!filaAnt.empty() && fila != filaAnt) cout << '\n';
+            if (!filaAnt.empty() && fila != filaAnt) { cursor(60, Y); Y++; }
             if (a.isVip()) {
                 SetConsoleTextAttribute(hConsole, BACKGROUND_RED | BACKGROUND_GREEN);
+               
                 cout << cod;
                 SetConsoleTextAttribute(hConsole, defaultAttrs);
+                SetConsoleTextAttribute(con, BG_GRAY);
                 cout << ' ';
             }
             else {
@@ -400,12 +409,14 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
             }
             filaAnt = fila;
         }
-        cout << "\nCantidad a reservar: ";
+        cursor(60, Y); Y++;
+        cout << "Cantidad a reservar: ";
         int cnt; cin >> cnt; cin.ignore(10000, '\n');
         if (cnt < 1 || cnt > libres.longitud()) { --i; continue; }
 
         Lista<string> sel;
-        cout << "Ingrese codigos separados por espacio:\n";
+        cursor(60, Y); Y++;
+        cout << "Ingrese codigos separados por espacio:";
         for (int k = 0; k < cnt; ++k) {
             string code; cin >> code; sel.agregaFinal(code);
         }
@@ -413,7 +424,8 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
 
         Reserva nueva;
         if (!svcReservas.crearReservaConAsientos(u, v.getId(), sel, nueva)) {
-            cout << "No se pudo reservar estos asientos.\n";
+            cursor(60, Y); Y++;
+            cout << "No se pudo reservar estos asientos.";
             continue;
         }
 
@@ -422,20 +434,22 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
         if (svcPagos.procesarPagoReserva(nueva, totalVuelo, metodo, pago)) {
             exitosas++;
             totalRuta += totalVuelo;
+            cursor(60, Y); Y++;
             cout << "Reserva confirmada: " << nueva.getCodigo()
                 << " (S/" << fixed << setprecision(2) << totalVuelo << ")\n";
         }
         else {
+            cursor(60, Y); Y++;
             cout << "Pago fallido para este tramo.\n";
         }
     }
 
     if (exitosas) {
-        cout << "\nRuta reservada exitosamente.";
-        cout << " Total pagado: S/" << fixed << setprecision(2) << totalRuta << "\n";
+        cursor(60, Y); Y++; cout << "Ruta reservada exitosamente.";
+        cursor(60, Y); Y++; cout << " Total pagado: S/" << fixed << setprecision(2) << totalRuta;
     }
     else {
-        cout << "\nNo se concretaron reservas en la ruta.\n";
+        cursor(60, Y); Y++;cout << "No se concretaron reservas en la ruta.";
     }
 }
 
@@ -451,7 +465,7 @@ void MenuUsuario::opcionVerReservas() {
     }
     cursor(70, Y); Y++;
     cout << "MIS RESERVAS";
-    cursor(70, Y); 
+    cursor(70, Y); Y++;
     cout<< "Codigo | Vuelo | Fecha | Asientos | Estado | Total";
 
     imprimirReservasRecursivo  (reservas, 0,Y);
@@ -518,7 +532,7 @@ void MenuUsuario::opcionHacerCheckIn() {
     string codigo; 
 cursor(70, Y); Y++;
     cout << "MIS RESERVAS";
-    cursor(70, Y);
+    cursor(70, Y); Y++;
     cout << "Codigo | Vuelo | Fecha | Asientos | Estado | Total";
 
     imprimirReservasRecursivo(reservas, 0, Y);
