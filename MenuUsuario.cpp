@@ -40,11 +40,12 @@ static void imprimirMapaRuta(const RutaPosible& ruta, ServicioRutas& svcRutas)
     for (int f = 0; f < 50; ++f)
         for (int c = 0; c < 101; ++c)
             backup[f][c] = matrizPeru[f][c];
-
+    system("cls");
     // 2. Pintar la ruta y mostrar el mapa
     svcRutas.pintarRutaEnMatriz(ruta, /*valorLinea*/ 4, /*valorNodo*/ 9);
-    std::cout << "\n======== MAPA DE LA RUTA ========\n";
-    imprimirMapaPeru();
+    cursor(0, 50);
+    std::cout << "\n==== MAPA DE LA RUTA ====\n";
+    imprimirMapaPeru(25,0);
     std::cout << "\nPresiona ENTER para continuar...";
     std::cin.ignore(10000, '\n');
     std::cin.get();
@@ -455,7 +456,16 @@ _getch();
 
 void MenuUsuario::opcionHacerCheckIn() {
     int Y=13;
-    string codigo;
+    auto reservas = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
+    string codigo; 
+cursor(70, Y); Y++;
+    cout << "MIS RESERVAS";
+    cursor(70, Y);
+    cout << "Codigo | Vuelo | Fecha | Asientos | Estado | Total";
+
+    imprimirReservasRecursivo(reservas, 0, Y);
+    int n = reservas.longitud();
+    Y += n;
     cursor(70, Y); Y++;
     cout << "Ingrese codigo de reserva confirmada: ";
     cin >> codigo;
