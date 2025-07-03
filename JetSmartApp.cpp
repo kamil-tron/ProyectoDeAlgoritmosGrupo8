@@ -28,7 +28,7 @@ void JetSmartApp::run() {
 			MenuUsuario menu(*ses);
 			do {
 				menu.mostrar();
-				cout << "\nIngrese una opcion: ";
+				cout << "Ingrese una opcion: ";
 				cin >> op;
 				cin.ignore(10000, '\n');
 				menu.ejecutar(op);

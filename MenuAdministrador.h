@@ -65,9 +65,14 @@ public:
     }
 
     void mostrar() const override {
-      
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        // bitmask de fondo gris claro:
+        const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         system("cls");
-        cursor(8, 12);
+        menuAdmin();
+        SetConsoleTextAttribute(hConsole, BG_GRAY);
+        cursor(6, 12);
         cout << "--- MENU DE ADMINISTRADOR AIR PACIFIC ---";    cursor(8, 13);
         MenuBase::mostrar();
     }

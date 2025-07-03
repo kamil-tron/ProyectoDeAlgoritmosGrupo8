@@ -9,16 +9,15 @@ MenuInicio::MenuInicio() {
 }
 
 void MenuInicio::mostrar() const {
-	int y = 26;
+	int y = 30;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	// bitmask de fondo gris claro:
-	const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
-
+	const WORD BG_GRAY = BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE;
+	system("cls");
 	generarmatriz();
-	logo(29,0);
-
-	cursor(60, 24);
+	logo(29,5);
+	cursor(60, 29);
 	SetConsoleTextAttribute(hConsole, BG_GRAY);
 	cout << "SISTEMA DE TICKETS - AIR PACIFIC";
 
@@ -29,15 +28,14 @@ void MenuInicio::mostrar() const {
 
 
 	for (int i = 0; i < opciones_.longitud(); ++i) {
-		cursor(60, y);  y++;
+		cursor(60, y);y++;
 		SetConsoleTextAttribute(hConsole, BG_GRAY);
-		cout << (i + 1) << ". " << opciones_.obtenerPos(i);
+		cout << (i + 1)<< ". " <<opciones_.obtenerPos(i);
 	}
 
 	cursor(60, y);
 	SetConsoleTextAttribute(hConsole, BG_GRAY);
 	cout << "Seleccione opcion: ";
-
 }
 
 void MenuInicio::ejecutar() {
@@ -48,15 +46,18 @@ void MenuInicio::ejecutar() {
 		cin.ignore(10000, '\n');
 		switch (op) {
 		case 1:
+			system("cls");
 			generarmatriz();
 			opcionRegistrarse();
 			break;
 		case 2:
+			system("cls");
 			generarmatriz();
 			opcionIniciarSesion();
 			if (sesion) return;
 			break;
 		case 3:
+			system("cls");
 			generarmatriz();
 			opcionSalir();
 			return;
@@ -66,7 +67,7 @@ void MenuInicio::ejecutar() {
 	}
 }
 
-void MenuInicio::opcionRegistrarse() {
+void MenuInicio::opcionRegistrarse(){
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	const WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
 	string nombre, apellido, dni, correo, pass; int y = 6;

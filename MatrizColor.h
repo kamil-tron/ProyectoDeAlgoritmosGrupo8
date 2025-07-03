@@ -12,4 +12,5 @@ void cursor(int x, int y);
 void aplicarColorPorOpcion(int opcion);
 void logo(int x,int y);
 void generarmatriz();
-
+void menuAdmin();
+void menuUsuario();
