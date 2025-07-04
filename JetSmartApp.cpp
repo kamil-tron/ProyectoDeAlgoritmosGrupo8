@@ -19,7 +19,10 @@ void JetSmartApp::run() {
 			do {
 				menu.mostrar();
 				cout << " Ingrese una opcion: ";
-				cin >> op;
+				while (!(cin >> op)) {
+					cursor(29, 26);
+					cin.clear(); cin.ignore();
+				}
 				cin.ignore(10000, '\n');
 				menu.ejecutar(op);
 			} while (op != 13);
@@ -29,13 +32,15 @@ void JetSmartApp::run() {
 			do {
 				menu.mostrar();
 				cout << "Ingrese una opcion: ";
-				cin >> op;
+				while (!(cin >> op)) {
+					cursor(27, 18);
+					cin.clear(); cin.ignore();
+				}
 				cin.ignore(10000, '\n');
 				menu.ejecutar(op);
 			} while (op != 5);
 		}
-
 		delete ses;
-		cout << "\nSesion cerrada. Volviendo al menu de inicio...\n\n";
+		cout << "   Sesion cerrada. Volviendo al menu de inicio...";
 	}
 }

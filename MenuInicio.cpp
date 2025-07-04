@@ -1,6 +1,7 @@
 ﻿#include "MenuInicio.h"
 #include "MatrizColor.h"
 #include "ContadorDeDias.h"
+#include <limits>
 
 MenuInicio::MenuInicio() {
 	opciones_.agregaFinal("Registrarse");
@@ -44,7 +45,10 @@ void MenuInicio::ejecutar() {
 	int op = 0;
 	while (true) {
 		mostrar();
-		cin >> op;
+		while (!(cin >> op)) {
+			cursor(79,34);
+			cin.clear(); cin.ignore();
+		}
 		cin.ignore(10000, '\n');
 		switch (op) {
 		case 1:
