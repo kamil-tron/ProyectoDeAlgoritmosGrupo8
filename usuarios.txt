@@ -1,9 +1,2 @@
 70528151,Mauricio,Pajes,mpajes@gmail.com,1234
-1,kamil,diaz,k,k
-2121,fas,fas,kamil@gmail.com,1234
-,ka,,,
-696969,ElGranVaron,Simon,verano86,orgullo
-99999,waldo,waldo,3,ciclo
-asa,kamils,kasas,sasa,sasa
-777,true,love,f,f
-j,j,j,j,j
+8535551,kamil,diaz,poder,k

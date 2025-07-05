@@ -455,7 +455,7 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
 
 
 void MenuUsuario::opcionVerReservas() {
-    int Y = 10;
+    int Y =8 ;
     int elegir=0;
     auto reservas = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
     if (reservas.esVacia()) {

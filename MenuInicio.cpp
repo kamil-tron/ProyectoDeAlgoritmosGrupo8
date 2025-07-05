@@ -64,7 +64,6 @@ void MenuInicio::ejecutar() {
 			break;
 		case 3:
 			system("cls");
-			generarmatriz();
 			opcionSalir();
 			return;
 		default:
@@ -113,8 +112,9 @@ void MenuInicio::opcionIniciarSesion() {
 	else {
 		delete nueva;
 		cout << "Credenciales invalidas.\n";
+		_getch();
 	}
-_getch();
+
 }
 
 void MenuInicio::opcionSalir() {

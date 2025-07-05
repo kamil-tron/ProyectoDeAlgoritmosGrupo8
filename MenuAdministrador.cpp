@@ -99,55 +99,130 @@ _getch();
 }
 
 void MenuAdministrador::opcionVuelosMasCaros() {
-int Y=13;
+    // 1) Obtiene y ordena los vuelos
     Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
     mergeSortPorPrecioDesc(ordenados);
-    cursor(70, Y); Y++;
-    cout << "VUELOS MAS CAROS (precio descendente)";
-    cursor(70, Y); Y++;
-    cout<<"ID | Origen | Destino | Fecha | Precio | Asientos disp.";
-    function<void(int)> imprimir = [&](int i) {
-        if (i >= ordenados.longitud()) return;
-        const auto& v = ordenados.obtenerPos(i);
-        int disp = svcReservas.listarAsientosDisponibles(v.getId()).longitud();
-        cursor(70, Y); Y++;
-        cout << v.getId() << " | " << v.getOrigen() << " | " << v.getDestino() << " | " << v.getFecha() << " | " << fixed << setprecision(2) << v.getPrecio() << " | " << disp << "\n";
-        imprimir(i + 1);
-        };
-    imprimir(0);
-_getch();
+
+    if (ordenados.esVacia()) {
+        cout << "No hay vuelos registrados.";
+        _getch();
+        return;
+    }
+
+    const int pageSize = 30;
+    int total = ordenados.longitud();
+    int page = 0;
+    char tecla;
+
+    do {
+        // 2) Limpia la pantalla
+        HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
+        WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        system("cls");
+        menuAdmin();
+        SetConsoleTextAttribute(con, BG_GRAY);
+        cursor(6, 12);
+        cout << "MENU DE ADMINISTRADOR - AIR PACIFIC" << endl; cursor(8, 13);
+        MenuBase::mostrar();
+        // 3) Cabecera
+        int Y = 4;
+        cursor(70, Y++); cout << "VUELOS MAS CAROS (precio descendente)";
+        cursor(70, Y++); cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.";
+        cursor(70, Y++); cout << "---------------------------------------------------------------";
+
+        // 4) Imprime la página actual
+        int start = page * pageSize;
+        int end = min(start + pageSize, total);
+        for (int i = start; i < end; ++i) {
+            const auto& v = ordenados.obtenerPos(i);
+            int disp = svcReservas
+                .listarAsientosDisponibles(v.getId())
+                .longitud();
+            cursor(70, Y++);
+            cout
+                << setw(2) << v.getId() << " | "
+                << setw(6) << v.getOrigen() << " | "
+                << setw(7) << v.getDestino() << " | "
+                << setw(10) << v.getFecha() << " | S/"
+                << fixed << setprecision(2)
+                << setw(7) << v.getPrecio() << " | "
+                << setw(5) << disp << "\n";
+        }
+
+        // 5) Pie con info de paginación
+        cursor(70, Y += 1);
+        cout << "Mostrando " << (start + 1) << "--" << end << " DE " << total;
+        cursor(70, Y += 1);
+        cout << "[L] Siguiente  [J] Anterior  [Q] Salir";
+
+        // 6) Lee tecla y ajusta página
+        tecla = toupper(_getch());
+        if (tecla == 'L' && page < (total - 1) / pageSize) ++page;
+        else if (tecla == 'J' && page > 0) --page;
+
+    } while (tecla != 'Q');
 }
 
 void MenuAdministrador::opcionVerTodosVuelos() {
-    Lista<Vuelo> vuelos = svcVuelos.listarVuelosPorFecha(); // cambio aqui (AVL)
-int Y=4;
-    cursor(70, Y); Y++;
+    Lista<Vuelo> vuelos = svcVuelos.listarVuelosPorFecha();
     if (vuelos.esVacia()) {
-        cout << "\nNo hay vuelos próximos registrados.\n";
+        cout << "No hay vuelos próximos registrados.";
+        _getch();
         return;
     }
-    cursor(70, Y); Y++;
-    cout << "VUELOS PROXIMOS (orden cronologico - AVL)";   cursor(70, Y); Y++;
-    cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.\n";   cursor(70, Y); Y++;
-    cout << "---------------------------------------------------------------";   cursor(70, Y); Y++;
 
-    function<void(int)> imprimir = [&](int i) {
-        if (i >= vuelos.longitud()) return;
-        const auto& v = vuelos.obtenerPos(i);
-        int disp = svcReservas.listarAsientosDisponibles(v.getId()).longitud();
-        cursor(70, Y); Y++;
-        cout << setw(2) << v.getId() << " | "
-            << setw(6) << v.getOrigen() << " | "
-            << setw(7) << v.getDestino() << " | "
-            << setw(10) << v.getFecha() << " | S/"
-            << fixed << setprecision(2) << setw(7) << v.getPrecio() << " | "
-            << setw(5) << disp << "\n";
+    const int pageSize = 30;
+    int total = vuelos.longitud();
+    int page = 0;
+    char tecla;
 
-        imprimir(i + 1);
-        };
+    do {
+        // 1) Limpiar pantalla
+        HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
+        WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
+        system("cls");
+        menuAdmin();
+        SetConsoleTextAttribute(con, BG_GRAY);
+        cursor(6, 12);
+        cout << "MENU DE ADMINISTRADOR - AIR PACIFIC" << endl; cursor(8, 13);
+        MenuBase::mostrar();
+        // 2) Dibujar cabecera
+        int Y = 4;
+        cursor(70, Y++); cout << "VUELOS PROXIMOS (orden cronologico - AVL)";
+        cursor(70, Y++); cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.";
+        cursor(70, Y++); cout << "---------------------------------------------------------------";
 
-    imprimir(0);
-_getch();
+        // 3) Imprimir vuelos de la página actual
+        int start = page * pageSize;
+        int end = min(start + pageSize, total);
+        for (int i = start; i < end; ++i) {
+            const auto& v = vuelos.obtenerPos(i);
+            int disp = svcReservas
+                .listarAsientosDisponibles(v.getId())
+                .longitud();
+            cursor(70, Y++);
+            cout
+                << setw(2) << v.getId() << " | "
+                << setw(6) << v.getOrigen() << " | "
+                << setw(7) << v.getDestino() << " | "
+                << setw(10) << v.getFecha() << " | S/"
+                << fixed << setprecision(2)
+                << setw(7) << v.getPrecio() << " | "
+                << setw(5) << disp << "\n";
+        }
+
+        // 5) Pie con info de paginación
+        cursor(70, Y += 1);
+        cout << "Mostrando " << (start + 1) << "--" << end << " DE " << total;
+        cursor(70, Y += 1);
+        cout << "[L] Siguiente  [J] Anterior  [Q] Salir";
+
+        // 6) Lee tecla y ajusta página
+        tecla = toupper(_getch());
+        if (tecla == 'L' && page < (total - 1) / pageSize) ++page;
+        else if (tecla == 'J' && page > 0) --page;
+
+    } while (tecla != 'Q');
 }
 
 
