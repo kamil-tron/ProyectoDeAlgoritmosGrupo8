@@ -114,8 +114,10 @@ void MenuInicio::opcionIniciarSesion() {
 		delete nueva;
 		cout << "Credenciales invalidas.\n";
 	}
+_getch();
 }
 
 void MenuInicio::opcionSalir() {
-	cout << "Gracias por usar JetSmart. ¡Buen viaje!\n";
+system("cls");
+adios();
 }

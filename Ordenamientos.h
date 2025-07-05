@@ -43,44 +43,47 @@ inline void mergeSortPorPrecioDesc(Lista<Vuelo>& lista) {
 	mergeSortAux(lista, 0, lista.longitud() - 1);
 }
 
-inline int particion(Lista<PrecioReserva>& lista, int p, int r) {
-	PrecioReserva pivote = lista.obtenerPos(r);
+inline int particionReservas(Lista<Reserva>& lista,
+	int p, int r,
+	ServicioReservas& svc) {
+	// pivot = total de la última reserva
+	Reserva pivRes = lista.obtenerPos(r);
+	double piv = svc.calcularTotal(pivRes.getVueloId(), pivRes.getAsientos());
+
 	int i = p - 1;
 	for (int j = p; j < r; ++j) {
-		if (lista.obtenerPos(j).precio <= pivote.precio) {
+		Reserva curr = lista.obtenerPos(j);
+		double currPrecio = svc.calcularTotal(curr.getVueloId(), curr.getAsientos());
+		if (currPrecio <= piv) {
 			++i;
-			PrecioReserva temp = lista.obtenerPos(i);
-			lista.modificarPos(lista.obtenerPos(j), i);
-			lista.modificarPos(temp, j);
+			// swap lista[i] <–> lista[j]
+			Reserva tmp = lista.obtenerPos(i);
+			lista.modificarPos(curr, i);
+			lista.modificarPos(tmp, j);
 		}
 	}
-	PrecioReserva temp = lista.obtenerPos(i + 1);
-	lista.modificarPos(lista.obtenerPos(r), i + 1);
-	lista.modificarPos(temp, r);
+	// swap pivot en su posición final
+	Reserva tmp = lista.obtenerPos(i + 1);
+	lista.modificarPos(pivRes, i + 1);
+	lista.modificarPos(tmp, r);
 	return i + 1;
 }
 
-inline void quickSortAux(Lista<PrecioReserva>& lista, int p, int r) {
+inline void quickSortReservasAux(Lista<Reserva>& lista,
+	int p, int r,
+	ServicioReservas& svc) {
 	if (p < r) {
-		int q = particion(lista, p, r);
-		quickSortAux(lista, p, q - 1);
-		quickSortAux(lista, q + 1, r);
+		int q = particionReservas(lista, p, r, svc);
+		quickSortReservasAux(lista, p, q - 1, svc);
+		quickSortReservasAux(lista, q + 1, r, svc);
 	}
 }
 
-inline void quickSortPorPrecioAsc(Lista<PrecioReserva>& lista) {
-	quickSortAux(lista, 0, lista.longitud() - 1);
+inline void quickSortReservasPorPrecioAsc(Lista<Reserva>& lista,
+	ServicioReservas& svc) {
+	if (lista.longitud() > 1)
+		quickSortReservasAux(lista, 0, lista.longitud() - 1, svc);
 }
-
-// ejemplo para un ordenamiento con quicksort
-/*
-* Debes definir lo primero en el .h
-void quickSortPorPrecioAsc(Lista<PrecioReserva>& lista) {
-	quickSortAux(lista, 0, lista.longitud() - 1);
-}
-*/
-
-
 
 inline void mergeIds(Lista<int>& lista,
 	int l, int m, int r,
@@ -205,4 +208,64 @@ inline void mergeSortPorPrecioAsc(Lista<Vuelo>& L)
 {
 	if (L.longitud() > 1)
 		mergeSortPrecioAscAux(L, 0, L.longitud() - 1);
+}
+inline void heapifyMin(Lista<Reserva>& lista, int n, int i, ServicioReservas& svc) {
+	int smallest = i;
+	int l = 2 * i + 1;
+	int r = 2 * i + 2;
+
+	// precio de i
+	Reserva ri = lista.obtenerPos(i);
+	double pi = svc.calcularTotal(ri.getVueloId(), ri.getAsientos());
+
+	// hijo izquierdo
+	if (l < n) {
+		Reserva rl = lista.obtenerPos(l);
+		double pl = svc.calcularTotal(rl.getVueloId(), rl.getAsientos());
+		if (pl < pi) {
+			smallest = l;
+			pi = pl;
+		}
+	}
+
+	// hijo derecho
+	if (r < n) {
+		Reserva rr = lista.obtenerPos(r);
+		double pr = svc.calcularTotal(rr.getVueloId(), rr.getAsientos());
+		if (pr < pi) {
+			smallest = r;
+			// pi = pr;  // no es necesario luego
+		}
+	}
+
+	if (smallest != i) {
+		// intercambia lista[i] <-> lista[smallest]
+		Reserva tmp = lista.obtenerPos(i);
+		lista.modificarPos(lista.obtenerPos(smallest), i);
+		lista.modificarPos(tmp, smallest);
+
+		// recursión en el hijo donde cayó el valor
+		heapifyMin(lista, n, smallest, svc);
+	}
+}
+
+inline void heapSortDesc(Lista<Reserva>& lista, ServicioReservas& svc) {
+	int n = lista.longitud();
+	if (n < 2) return;
+
+	// 1) Construir min-heap
+	for (int i = n / 2 - 1; i >= 0; --i)
+		heapifyMin(lista, n, i, svc);
+
+	// 2) Extraer elementos uno a uno desde el final
+	for (int i = n - 1; i > 0; --i) {
+		// swap raíz (menor) con lista[i]
+		Reserva tmp = lista.obtenerPos(0);
+		lista.modificarPos(lista.obtenerPos(i), 0);
+		lista.modificarPos(tmp, i);
+
+		// reconstruir heap en rango [0…i)
+		heapifyMin(lista, i, 0, svc);
+	}
+	// al terminar, `lista` queda de mayor a menor
 }

@@ -57,6 +57,15 @@
     <ClCompile Include="ServicioReservas.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="MatrizColor.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrizMapa.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="ServicioVuelos.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asiento.h">
@@ -204,6 +213,12 @@
       <Filter>Archivos de encabezado\servicios</Filter>
     </ClInclude>
     <ClInclude Include="StringUtils.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrizMapa.h">
+      <Filter>Archivos de encabezado\auxiliares</Filter>
+    </ClInclude>
+    <ClInclude Include="RutaPosible.h">
       <Filter>Archivos de encabezado\auxiliares</Filter>
     </ClInclude>
   </ItemGroup>

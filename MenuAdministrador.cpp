@@ -9,7 +9,7 @@
 using namespace std;
 
 void MenuAdministrador::opcionRegistrarVuelo() {
-int y=13;
+    int y=13;
     string origen, destino, fecha;
     double precio;
     int capacidad = 0;
@@ -30,6 +30,7 @@ cursor(70,12);
     Vuelo v(id, origen, destino, fecha, precio, capacidad);
 
     cout << (svcVuelos.crearVuelo(v) ? "Vuelo registrado exitosamente con ID: " : "Error al registrar el vuelo. ID: ") << id << "\n";
+    _getch();
 }
 
 void MenuAdministrador::opcionModificarVuelo() {
@@ -102,7 +103,9 @@ int Y=13;
     Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
     mergeSortPorPrecioDesc(ordenados);
     cursor(70, Y); Y++;
-    cout << "\nVUELOS MAS CAROS (precio descendente)\nID | Origen | Destino | Fecha | Precio | Asientos disp.\n";
+    cout << "VUELOS MAS CAROS (precio descendente)";
+    cursor(70, Y); Y++;
+    cout<<"ID | Origen | Destino | Fecha | Precio | Asientos disp.";
     function<void(int)> imprimir = [&](int i) {
         if (i >= ordenados.longitud()) return;
         const auto& v = ordenados.obtenerPos(i);

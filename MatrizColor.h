@@ -14,3 +14,4 @@ void logo(int x,int y);
 void generarmatriz();
 void menuAdmin();
 void menuUsuario();
+void adios();

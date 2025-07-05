@@ -9,7 +9,7 @@ void JetSmartApp::run() {
 
 		Sesion* ses = inicio.getSesion();
 		if (!ses) {
-			cout << "Saliendo del sistema...\n";
+			
 			break;
 		}
 

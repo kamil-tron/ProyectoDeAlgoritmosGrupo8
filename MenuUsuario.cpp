@@ -455,14 +455,32 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
 
 
 void MenuUsuario::opcionVerReservas() {
-    int Y = 12;
-
+    int Y = 10;
+    int elegir=0;
     auto reservas = svcReservas.listarReservasUsuario(sesion.getUsuarioActual().getCorreo());
     if (reservas.esVacia()) {
         cursor(70, Y); Y++;
-        cout << "\nNo tienes reservas.\n";
+        cout << "No tienes reservas";
         return;
+        _getch();
     }
+do{
+    cursor(70, Y); Y++;
+    cout<<"COMO VER SUS RESERVAS";   cursor(70, Y); Y++;
+    cout<<"[1] precio ascendente";   cursor(70, Y); Y++;
+    cout<<"[2] precio desendente";   cursor(70, Y); Y++;
+    cout<<"elija una opcion: ";cin>>elegir;
+    if (elegir > 2 || elegir < 1) {
+        cursor(70, Y); Y++; cout<<"opcion incorrecta";
+}
+}while(elegir>2||elegir<1);
+
+if (elegir == 1) {
+    quickSortReservasPorPrecioAsc(reservas,svcReservas);
+}
+else {
+ heapSortDesc(reservas, svcReservas);
+}
     cursor(70, Y); Y++;
     cout << "MIS RESERVAS";
     cursor(70, Y); Y++;
@@ -483,11 +501,12 @@ void MenuUsuario::opcionVerReservas() {
     if (svcReservas.cancelarReserva(codigo)){
         cursor(70, Y); Y++;
         cout << "Reserva cancelada";
-        _getch();
-    }else
+        
+    }else{
         cursor(70, Y); Y++;
         cout << "No se encontro o ya estaba cancelada.";
-        _getch();
+     }
+    _getch();
 }
 
 void MenuUsuario::opcionVerPerfil() {
