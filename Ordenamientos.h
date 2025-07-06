@@ -86,6 +86,7 @@ inline void timSortAeropuertos(Lista<Aeropuerto>& L) {
 		}
 	}
 }
+
 struct PrecioReserva {
 	double precio;
 	Reserva res;

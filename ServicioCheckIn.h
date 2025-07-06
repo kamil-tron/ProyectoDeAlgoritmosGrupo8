@@ -39,6 +39,7 @@ public:
     ~ServicioCheckIn() { delete idxRes; }
 
     bool registrarEnCola(const string& reservaCod) {
+        cargarIndice();
         Reserva* r = idxRes->obtener(reservaCod);
         if (!r || r->getEstado() != EstadoReserva::CONFIRMADA || r->isCheckedIn())
             return false;

@@ -34,7 +34,7 @@ private:
     int  MAX_DIAS_ESCALA = 2;
 
     Grafo<ArcoVuelo> grafo;                       // ← antes Grafo<PesoVuelo>
-    vector<Aeropuerto> listaAeropuertos;
+    Lista<Aeropuerto> listaAeropuertos;
     ServicioVuelos     servicioVuelos;
     HashTable<string, int>* mapaCodigosAeropuerto;
     RepoAeropuertos    repoAeropuertos;
@@ -48,7 +48,8 @@ private:
         if (indice) return *indice;
 
         int nuevo = grafo.AdicionarVertice(ArcoVuelo{ 0,0 });
-        listaAeropuertos.push_back(Aeropuerto(codigo, 0, 0));
+        // antes: listaAeropuertos.push_back(Aeropuerto(codigo,0,0));
+        listaAeropuertos.agregaFinal(Aeropuerto(codigo, 0, 0));
         mapaCodigosAeropuerto->insertar(codigo, nuevo);
         return nuevo;
     }
@@ -178,25 +179,29 @@ private:
     string hashRuta(const RutaPosible& r) const {
         string k;
         for (int i = 0; i < r.indicesAeropuertos.longitud(); ++i) {
-            k += listaAeropuertos[r.indicesAeropuertos.obtenerPos(i)].getCodigo();
+            int idx = r.indicesAeropuertos.obtenerPos(i);
+            // antes: listaAeropuertos[idx].getCodigo()
+            k += listaAeropuertos.obtenerPos(idx).getCodigo();
             if (i + 1 < r.indicesAeropuertos.longitud()) k += '-';
         }
         return k;
     }
 
 public:
-    // ────────────────────────── constructor / dtor ───────────────────────
-    ServicioRutas()
-        : mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
+    // ───────────────────────── constructor ─────────────────────────
+ ServicioRutas(): mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
     {
+        // 1) cargar todos los aeropuertos
         Lista<Aeropuerto> aps = repoAeropuertos.cargarTodos();
         for (int i = 0; i < aps.longitud(); ++i) {
             const Aeropuerto& a = aps.obtenerPos(i);
             int idx = grafo.AdicionarVertice(ArcoVuelo{ 0,0 });
-            listaAeropuertos.push_back(a);
+            // antes: listaAeropuertos.push_back(a);
+            listaAeropuertos.agregaFinal(a);
             mapaCodigosAeropuerto->insertar(a.getCodigo(), idx);
         }
 
+        // 2) cargar todos los vuelos y crear las aristas
         Lista<Vuelo> vuelos = servicioVuelos.listarVuelos();
         for (int i = 0; i < vuelos.longitud(); ++i) {
             const Vuelo& v = vuelos.obtenerPos(i);
@@ -204,12 +209,13 @@ public:
             int* d = mapaCodigosAeropuerto->obtener(v.getDestino());
             if (!o || !d) continue;
             double dist = calcularDistanciaEuclidiana(
-                listaAeropuertos[*o], listaAeropuertos[*d]);
+                // antes: listaAeropuertos[*o], listaAeropuertos[*d]
+                listaAeropuertos.obtenerPos(*o),
+                listaAeropuertos.obtenerPos(*d)
+            );
             upsertArista(*o, *d, dist, v.getPrecio(), v.getId());
         }
     }
-    ~ServicioRutas() { delete mapaCodigosAeropuerto; }
-
     // ────────────────────── rutas más corta / barata ─────────────────────
     RutaPosible rutaMasCorta(const string& o, const string& d) {
         int* io = mapaCodigosAeropuerto->obtener(o);
@@ -327,35 +333,46 @@ public:
         }
         return res;
     }
-
-
-
-
     // ──────────────────────── utilidades de dibujo ───────────────────────
     void pintarRutaEnMatriz(const RutaPosible& ruta,
-        int valorLinea = 4, int valorNodo = 9)
+        int valorLinea,
+        int valorNodo,
+        int nodoFinal)
     {
         if (ruta.indicesAeropuertos.esVacia()) return;
 
-        for (int i = 0; i < ruta.indicesAeropuertos.longitud(); ++i) {
+        int len = ruta.indicesAeropuertos.longitud();
+        // ─── marcamos nodos ─────────────────────────────────────────────────
+        for (int i = 0; i < len; ++i) {
             int idx = ruta.indicesAeropuertos.obtenerPos(i);
-            int y = listaAeropuertos[idx].getY();
-            int x = listaAeropuertos[idx].getX();
-            if (y >= 0 && y < 50 && x >= 0 && x < 101) matrizPeru[y][x] = valorNodo;
+            const Aeropuerto& A = listaAeropuertos.obtenerPos(idx);
+            int y = A.getY(), x = A.getX();
+            if (y >= 0 && y < 50 && x >= 0 && x < 101) {
+                // si es el último nodo, usa nodoFinal; si no, valorNodo
+                matrizPeru[y][x] = (i == len - 1 ? nodoFinal : valorNodo);
+            }
         }
 
-        for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
-            const Aeropuerto& A = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i)];
-            const Aeropuerto& B = listaAeropuertos[ruta.indicesAeropuertos.obtenerPos(i + 1)];
+        // ─── dibujamos líneas ────────────────────────────────────────────────
+        for (int i = 0; i + 1 < len; ++i) {
+            const Aeropuerto& A = listaAeropuertos
+                .obtenerPos(ruta.indicesAeropuertos.obtenerPos(i));
+            const Aeropuerto& B = listaAeropuertos
+                .obtenerPos(ruta.indicesAeropuertos.obtenerPos(i + 1));
 
             int x0 = A.getX(), y0 = A.getY();
             int x1 = B.getX(), y1 = B.getY();
             int dx = abs(x1 - x0), dy = -abs(y1 - y0);
-            int sx = (x0 < x1) ? 1 : -1, sy = (y0 < y1) ? 1 : -1, err = dx + dy;
+            int sx = (x0 < x1) ? 1 : -1, sy = (y0 < y1) ? 1 : -1;
+            int err = dx + dy;
 
             while (true) {
-                if (y0 >= 0 && y0 < 50 && x0 >= 0 && x0 < 101 && matrizPeru[y0][x0] != valorNodo)
+                if (y0 >= 0 && y0 < 50 && x0 >= 0 && x0 < 101 &&
+                    matrizPeru[y0][x0] != valorNodo &&
+                    matrizPeru[y0][x0] != nodoFinal)
+                {
                     matrizPeru[y0][x0] = valorLinea;
+                }
                 if (x0 == x1 && y0 == y1) break;
                 int e2 = 2 * err;
                 if (e2 >= dy) { err += dy; x0 += sx; }

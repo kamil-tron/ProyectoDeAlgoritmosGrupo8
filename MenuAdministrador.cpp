@@ -313,6 +313,43 @@ void MenuAdministrador::opcionRegistrarAeropuerto() {
     }
     cin.ignore(); cin.get();
 }
+    
+void MenuAdministrador::generarUsuarios() {
+    int Y = 13;
+    int cantidad = 0;
+    cursor(70, Y++);
+    cout << "Cuantos usuarios desea generar ";
+    cin >> cantidad;
+    if (cantidad <= 0) return;
+
+    // 1) Instanciamos el repositorio y vemos cuántos ya hay
+    RepoUsuarios repo;
+    auto existentes = repo.cargarTodos();
+    int inicio = existentes.longitud();  // si hay 5, inicio=5
+
+    // 2) Generamos y agregamos cada uno
+    for (int i = 1; i <= cantidad; ++i) {
+        int idx = inicio + i;  // si inicio=5 y i=1, idx=6
+
+        // Para DNI usamos el índice (o puedes customizar)
+        string dni = to_string(idx);
+
+        // Campos fijos con el número idx
+        string nom = "nombre" + to_string(idx);
+        string ape = "apellido" + to_string(idx);
+        string mail = "correo" + to_string(idx);
+        string pass = "contrasena" + to_string(idx);
+
+        Usuario u(dni, nom, ape, mail, pass);
+        repo.agregar(u);
+    }
+    cursor(70, Y++);
+    cout << "Se agregaron " << cantidad
+        << " usuarios (del " << (inicio + 1)
+        << " al " << (inicio + cantidad)
+        << ") en usuarios.txt\n";
+_getch();   
+}
 
 void MenuAdministrador::opcionVerAeropuertos() {
     int Y = 13;

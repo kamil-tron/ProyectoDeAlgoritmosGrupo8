@@ -47,7 +47,7 @@ static void imprimirMapaRuta(const RutaPosible& ruta, ServicioRutas& svcRutas)
 			backup[f][c] = matrizPeru[f][c];
 	system("cls");
 	// 2. Pintar la ruta y mostrar el mapa
-	svcRutas.pintarRutaEnMatriz(ruta, /*valorLinea*/ 4, /*valorNodo*/ 9);
+	svcRutas.pintarRutaEnMatriz(ruta, /*valorLinea*/ 4, /*valorNodo*/ 9,5);
 	cursor(0, 50);
 	std::cout << "\n==== MAPA DE LA RUTA ====\n";
 	imprimirMapaPeru(25, 0);
@@ -191,13 +191,25 @@ void MenuUsuario::opcionBuscarYReservar()
 		cout << "RUTAS CON ESCALAS:";
 		for (int i = 0; i < rutas.longitud(); ++i) {
 			const RutaPosible& r = rutas.obtenerPos(i);
-			const auto& inicio = r.vuelos.obtenerPos(0);
-			const auto& fin = r.vuelos.obtenerFinal();
 			cursor(60, Y); Y++;
-			cout << "[" << opcionActual << "] "
+
+			cout << "[" << opcionActual << "] ";
+
+			// 1) imprimimos el código del aeropuerto de partida
+			cout << r.vuelos.obtenerPos(0).getOrigen();
+			// 2) para cada tramo, añadimos "->" + código de destino
+			for (int j = 0; j < r.vuelos.longitud(); ++j) {
+				cout << "->" << r.vuelos.obtenerPos(j).getDestino();
+			}
+
+			// 3) luego resto de datos: nº tramos, fechas y coste
+			cout << "  "
 				<< r.vuelos.longitud() << " tramos  "
-				<< inicio.getFecha() << "->" << fin.getFecha()
-				<< "  S/" << fixed << setprecision(2) << r.costoTotal << '\n';
+				<< r.vuelos.obtenerPos(0).getFecha() << "->"
+				<< r.vuelos.obtenerFinal().getFecha()
+				<< "  S/" << fixed << setprecision(2)
+				<< r.costoTotal
+				<< '\n';
 
 			opciones.agregaFinal({ false, i });
 			++opcionActual;
@@ -321,40 +333,7 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 	}
 	_getch();
 }
-void MenuUsuario::opcionBuscarRutaYReservar() {
-	string origen, destino;
-	cout << "\n--- BUSCAR RUTA CON ESCALAS ---\n";
-	cout << "Codigo IATA origen  : "; cin >> origen;
-	cout << "Codigo IATA destino : "; cin >> destino;
 
-	cout << "\nCriterio (1=Mas barata, 2=Mas corta): ";
-	int crit;
-	cin >> crit;
-	cin.ignore(10000, '\n');
-
-	auto rutas = svcRutas.mejoresKRutas(origen, destino, 10);
-	if (rutas.esVacia()) {
-		cout << "No se encontraron rutas disponibles.\n";
-		return;
-	}
-
-	cout << "\nRUTAS DISPONIBLES:\n";
-	for (int i = 0; i < rutas.longitud(); ++i) {
-		const auto& r = rutas.obtenerPos(i);
-		const auto& inicio = r.vuelos.obtenerPos(0);
-		const auto& fin = r.vuelos.obtenerFinal();
-		cout << "[" << i + 1 << "] " << r.vuelos.longitud() << " tramos"
-			<< " " << inicio.getFecha() << "->" << fin.getFecha()
-			<< " S/" << fixed << setprecision(2) << r.costoTotal << '\n';
-	}
-	cout << "Seleccione ruta a reservar (1-" << rutas.longitud() << ", 0=Cancelar): ";
-	int sel;
-	cin >> sel;
-	cin.ignore(10000, '\n');
-	if (sel < 1 || sel > rutas.longitud()) return;
-
-	reservarRuta(rutas.obtenerPos(sel - 1));
-}
 void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
 	Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
