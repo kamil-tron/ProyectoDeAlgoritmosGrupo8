@@ -43,7 +43,7 @@ public:
             step++;
         }
 
-        tabla[hash] = new HashEntidad<K, T>(clave, valor);
+        tabla[hash] = new HashEntidad   <K, T>(clave, valor);
         numElementos++;
     }
 

@@ -143,6 +143,7 @@
     <ClInclude Include="Administrador.h" />
     <ClInclude Include="Aeropuerto.h" />
     <ClInclude Include="ArbolAVL.h" />
+    <ClInclude Include="ArbolB.h" />
     <ClInclude Include="Asiento.h" />
     <ClInclude Include="AuthService.h" />
     <ClInclude Include="CheckIn.h" />

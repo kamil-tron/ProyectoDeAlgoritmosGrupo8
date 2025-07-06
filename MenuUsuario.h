@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "MenuBase.h"
+#include "ArbolB.h"
 #include "MenuOpcionTexto.h"
 #include "ServicioVuelos.h"
 #include "ServicioReservas.h"

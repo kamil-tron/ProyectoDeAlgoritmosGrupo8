@@ -316,22 +316,31 @@ void MenuAdministrador::opcionRegistrarAeropuerto() {
 
 void MenuAdministrador::opcionVerAeropuertos() {
     int Y = 13;
-    cursor(70, Y); Y++;
+    cursor(70, Y++);
     auto lista = svcAeropuertos.listar();
+
     if (lista.esVacia()) {
-        cout << "No hay aeropuertos registrados"; cursor(70, Y); Y++;
+        cursor(70, Y++);
+        cout << "No hay aeropuertos registrados\n";
     }
     else {
-        cout << "COD  X   Y"; 
+        // ——— Ordena con Timsort-like ———
+        timSortAeropuertos(lista);
+
+        // ——— Imprime ya en orden alfabético ———
+        cursor(70, Y++);
+        cout << "COD   X    Y\n";
         for (int i = 0; i < lista.longitud(); ++i) {
-            cursor(70, Y); Y++;
             const Aeropuerto& a = lista.obtenerPos(i);
-            cout << a.getCodigo() << "  "
-                << a.getX() << "   "
-                << a.getY() << '\n';
+            cursor(70, Y++);
+            cout << a.getCodigo()
+                << "   " << a.getX()
+                << "    " << a.getY() << "\n";
         }
     }
-    cin.ignore(); cin.get();
+
+    cin.ignore();
+    cin.get();
 }
 
 void MenuAdministrador::opcionCerrarSesion() {

@@ -4,7 +4,88 @@
 #include "Vuelo.h"
 #include "Reserva.h"
 #include "RutaPosible.h"
+#include "Aeropuerto.h"
 
+// 1) Calcula el tamaño mínimo de run (esto es estándar de Timsort)
+inline int minRunLength(int n) {
+	int r = 0;
+	while (n >= 32) {
+		r |= (n & 1);
+		n >>= 1;
+	}
+	return n + r;
+}
+
+// 2) Ordén un tramo [left..right] con Insertion Sort por getCodigo()
+inline void insertionSortAeropuertos(Lista<Aeropuerto>& L, int left, int right) {
+	for (int i = left + 1; i <= right; ++i) {
+		Aeropuerto tmp = L.obtenerPos(i);
+		int j = i - 1;
+		// desplaza elementos mayores
+		while (j >= left &&
+			L.obtenerPos(j).getCodigo() > tmp.getCodigo()) {
+			L.modificarPos(L.obtenerPos(j), j + 1);
+			--j;
+		}
+		L.modificarPos(tmp, j + 1);
+	}
+}
+
+// 3) Fusión estándar (Merge) de dos subarrays L[left..mid] y L[mid+1..right]
+inline void mergeAeropuertos(Lista<Aeropuerto>& L,
+	int left, int mid, int right) {
+	int len1 = mid - left + 1;
+	int len2 = right - mid;
+	Aeropuerto* A = new Aeropuerto[len1];
+	Aeropuerto* B = new Aeropuerto[len2];
+
+	for (int i = 0; i < len1; ++i)
+		A[i] = L.obtenerPos(left + i);
+	for (int j = 0; j < len2; ++j)
+		B[j] = L.obtenerPos(mid + 1 + j);
+
+	int i = 0, j = 0, k = left;
+	while (i < len1 && j < len2) {
+		if (A[i].getCodigo() <= B[j].getCodigo())
+			L.modificarPos(A[i++], k++);
+		else
+			L.modificarPos(B[j++], k++);
+	}
+	while (i < len1)
+		L.modificarPos(A[i++], k++);
+	while (j < len2)
+		L.modificarPos(B[j++], k++);
+
+	delete[] A;
+	delete[] B;
+}
+
+// 4) Función Timsort-like que mezcla Insertion + Merge
+inline void timSortAeropuertos(Lista<Aeropuerto>& L) {
+	int n = L.longitud();
+	if (n < 2) return;
+
+	int minRun = minRunLength(n);
+
+	// 4.1) Ordena cada run inicial con Insertion Sort
+	for (int start = 0; start < n; start += minRun) {
+		int end = start + minRun - 1;
+		if (end >= n) end = n - 1;
+		insertionSortAeropuertos(L, start, end);
+	}
+
+	// 4.2) Merge bottom-up: tamaño de run dobla cada pasada
+	for (int size = minRun; size < n; size *= 2) {
+		for (int left = 0; left < n; left += 2 * size) {
+			int mid = left + size - 1;
+			int right = left + 2 * size - 1;
+			if (mid >= n) mid = n - 1;
+			if (right >= n) right = n - 1;
+			if (mid < right)
+				mergeAeropuertos(L, left, mid, right);
+		}
+	}
+}
 struct PrecioReserva {
 	double precio;
 	Reserva res;

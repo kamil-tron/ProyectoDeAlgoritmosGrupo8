@@ -221,5 +221,8 @@
     <ClInclude Include="RutaPosible.h">
       <Filter>Archivos de encabezado\auxiliares</Filter>
     </ClInclude>
+    <ClInclude Include="ArbolB.h">
+      <Filter>Archivos de encabezado\estructuras</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
