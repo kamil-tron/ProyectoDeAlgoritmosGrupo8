@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-// Version con Hash table con templates
+//Hash table con templates
 template<typename K, typename T>
 class HashTable {
 private:

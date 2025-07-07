@@ -35,7 +35,7 @@ void aplicarColorPorOpcion(int opcion) {
 	case 16: bg = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY; // White
 		break;
 	default:
-		bg = 0; // fallback a negro
+		bg = 0; 
 	}
 
 	SetConsoleTextAttribute(hConsole, FG_WHITE | bg);

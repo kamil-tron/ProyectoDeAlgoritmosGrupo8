@@ -16,10 +16,9 @@ public:
     void desapilar();               // pop
     T cima() const;                 // top
     bool esVacia() const;
-    // Mantenemos tu método original por si lo usas en otra parte
     int tamanio() const;
 
-    // Alias en inglés para compatibilidad con size()/at() en el menú:
+    // compatibilidad con size()/at() en el menú:
     int size() const { return tamanio_; }
 
     // Acceso al elemento i-ésimo (0 = cima, 1 = siguiente, …)

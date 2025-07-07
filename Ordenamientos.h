@@ -6,7 +6,7 @@
 #include "RutaPosible.h"
 #include "Aeropuerto.h"
 
-// 1) Calcula el tamaño mínimo de run (esto es estándar de Timsort)
+
 inline int minRunLength(int n) {
 	int r = 0;
 	while (n >= 32) {
@@ -16,7 +16,7 @@ inline int minRunLength(int n) {
 	return n + r;
 }
 
-// 2) Ordén un tramo [left..right] con Insertion Sort por getCodigo()
+// Ordenar un tramo [left..right] con Insertion Sort por getCodigo()
 inline void insertionSortAeropuertos(Lista<Aeropuerto>& L, int left, int right) {
 	for (int i = left + 1; i <= right; ++i) {
 		Aeropuerto tmp = L.obtenerPos(i);
@@ -31,7 +31,7 @@ inline void insertionSortAeropuertos(Lista<Aeropuerto>& L, int left, int right) 
 	}
 }
 
-// 3) Fusión estándar (Merge) de dos subarrays L[left..mid] y L[mid+1..right]
+// Fusión estándar (Merge) de dos subarrays L[left..mid] y L[mid+1..right]
 inline void mergeAeropuertos(Lista<Aeropuerto>& L,
 	int left, int mid, int right) {
 	int len1 = mid - left + 1;
@@ -60,21 +60,21 @@ inline void mergeAeropuertos(Lista<Aeropuerto>& L,
 	delete[] B;
 }
 
-// 4) Función Timsort-like que mezcla Insertion + Merge
+// Función Timsort que mezcla Insertion + Merge
 inline void timSortAeropuertos(Lista<Aeropuerto>& L) {
 	int n = L.longitud();
 	if (n < 2) return;
 
 	int minRun = minRunLength(n);
 
-	// 4.1) Ordena cada run inicial con Insertion Sort
+	//  Ordena cada run inicial con Insertion Sort
 	for (int start = 0; start < n; start += minRun) {
 		int end = start + minRun - 1;
 		if (end >= n) end = n - 1;
 		insertionSortAeropuertos(L, start, end);
 	}
 
-	// 4.2) Merge bottom-up: tamaño de run dobla cada pasada
+	// Merge bottom-up: tamaño de run dobla cada pasada
 	for (int size = minRun; size < n; size *= 2) {
 		for (int left = 0; left < n; left += 2 * size) {
 			int mid = left + size - 1;
@@ -209,7 +209,7 @@ inline void mergeSortIdsAux(Lista<int>& lista,
 	}
 }
 
-// función pública que llamarás desde ServicioRutas
+
 inline void mergeSortIdsPorFechaAsc(Lista<int>& lista,
 	ServicioVuelos& sv)
 {
@@ -296,11 +296,11 @@ inline void heapifyMin(Lista<Reserva>& lista, int n, int i, ServicioReservas& sv
 	int l = 2 * i + 1;
 	int r = 2 * i + 2;
 
-	// precio de i
+	
 	Reserva ri = lista.obtenerPos(i);
 	double pi = svc.calcularTotal(ri.getVueloId(), ri.getAsientos());
 
-	// hijo izquierdo
+	
 	if (l < n) {
 		Reserva rl = lista.obtenerPos(l);
 		double pl = svc.calcularTotal(rl.getVueloId(), rl.getAsientos());
@@ -310,23 +310,21 @@ inline void heapifyMin(Lista<Reserva>& lista, int n, int i, ServicioReservas& sv
 		}
 	}
 
-	// hijo derecho
 	if (r < n) {
 		Reserva rr = lista.obtenerPos(r);
 		double pr = svc.calcularTotal(rr.getVueloId(), rr.getAsientos());
 		if (pr < pi) {
 			smallest = r;
-			// pi = pr;  // no es necesario luego
+			
 		}
 	}
 
 	if (smallest != i) {
-		// intercambia lista[i] <-> lista[smallest]
 		Reserva tmp = lista.obtenerPos(i);
 		lista.modificarPos(lista.obtenerPos(smallest), i);
 		lista.modificarPos(tmp, smallest);
 
-		// recursión en el hijo donde cayó el valor
+
 		heapifyMin(lista, n, smallest, svc);
 	}
 }
@@ -335,19 +333,17 @@ inline void heapSortDesc(Lista<Reserva>& lista, ServicioReservas& svc) {
 	int n = lista.longitud();
 	if (n < 2) return;
 
-	// 1) Construir min-heap
 	for (int i = n / 2 - 1; i >= 0; --i)
 		heapifyMin(lista, n, i, svc);
 
-	// 2) Extraer elementos uno a uno desde el final
+
 	for (int i = n - 1; i > 0; --i) {
-		// swap raíz (menor) con lista[i]
+
 		Reserva tmp = lista.obtenerPos(0);
 		lista.modificarPos(lista.obtenerPos(i), 0);
 		lista.modificarPos(tmp, i);
 
-		// reconstruir heap en rango [0…i)
 		heapifyMin(lista, i, 0, svc);
 	}
-	// al terminar, `lista` queda de mayor a menor
+	
 }

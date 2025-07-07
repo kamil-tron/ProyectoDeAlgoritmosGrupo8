@@ -195,14 +195,11 @@ void MenuUsuario::opcionBuscarYReservar()
 
 			cout << "[" << opcionActual << "] ";
 
-			// 1) imprimimos el código del aeropuerto de partida
 			cout << r.vuelos.obtenerPos(0).getOrigen();
-			// 2) para cada tramo, añadimos "->" + código de destino
+	
 			for (int j = 0; j < r.vuelos.longitud(); ++j) {
 				cout << "->" << r.vuelos.obtenerPos(j).getDestino();
 			}
-
-			// 3) luego resto de datos: nº tramos, fechas y coste
 			cout << "  "
 				<< r.vuelos.longitud() << " tramos  "
 				<< r.vuelos.obtenerPos(0).getFecha() << "->"
@@ -430,6 +427,7 @@ void MenuUsuario::reservarRuta(const RutaPosible& ruta) {
 	else {
 		cursor(60, Y); Y++; cout << "No se concretaron reservas en la ruta.";
 	}
+	_getch();
 }
 
 

@@ -55,7 +55,7 @@ public:
         // Información adicional / reportes
         agregarOpcion(new MenuOpcionTexto("Historial de reservas", [this] { opcionHistorialReservas(); }));
         agregarOpcion(new MenuOpcionTexto("Ver usuarios registrados", [this] { opcionVerUsuarios(); }));
-        agregarOpcion(new MenuOpcionTexto("Generar usuario", [this] { generarUsuarios(); }));
+        agregarOpcion(new MenuOpcionTexto("Generar usuarios", [this] { generarUsuarios(); }));
         agregarOpcion(new MenuOpcionTexto("Vuelos mas caros (precio desc.)", [this] { opcionVuelosMasCaros(); }));
 
         // Check-in

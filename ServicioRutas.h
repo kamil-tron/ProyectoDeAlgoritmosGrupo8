@@ -33,7 +33,7 @@ private:
     int  MIN_DIAS_ESCALA = 0;
     int  MAX_DIAS_ESCALA = 2;
 
-    Grafo<ArcoVuelo> grafo;                       // ← antes Grafo<PesoVuelo>
+    Grafo<ArcoVuelo> grafo;                       
     Lista<Aeropuerto> listaAeropuertos;
     ServicioVuelos     servicioVuelos;
     HashTable<string, int>* mapaCodigosAeropuerto;
@@ -48,7 +48,6 @@ private:
         if (indice) return *indice;
 
         int nuevo = grafo.AdicionarVertice(ArcoVuelo{ 0,0 });
-        // antes: listaAeropuertos.push_back(Aeropuerto(codigo,0,0));
         listaAeropuertos.agregaFinal(Aeropuerto(codigo, 0, 0));
         mapaCodigosAeropuerto->insertar(codigo, nuevo);
         return nuevo;
@@ -196,7 +195,7 @@ public:
         for (int i = 0; i < aps.longitud(); ++i) {
             const Aeropuerto& a = aps.obtenerPos(i);
             int idx = grafo.AdicionarVertice(ArcoVuelo{ 0,0 });
-            // antes: listaAeropuertos.push_back(a);
+         
             listaAeropuertos.agregaFinal(a);
             mapaCodigosAeropuerto->insertar(a.getCodigo(), idx);
         }
@@ -209,7 +208,6 @@ public:
             int* d = mapaCodigosAeropuerto->obtener(v.getDestino());
             if (!o || !d) continue;
             double dist = calcularDistanciaEuclidiana(
-                // antes: listaAeropuertos[*o], listaAeropuertos[*d]
                 listaAeropuertos.obtenerPos(*o),
                 listaAeropuertos.obtenerPos(*d)
             );
@@ -241,7 +239,7 @@ public:
         /* hash para no repetir la misma secuencia de aeropuertos */
         HashTable<string, bool> vistos(600, hashString);
 
-        /* probaremos primero DISTANCIA y luego COSTO */
+ 
         Lista<CriterioPeso> crits;
         crits.agregaFinal(CriterioPeso::DISTANCIA);
         crits.agregaFinal(CriterioPeso::COSTO);

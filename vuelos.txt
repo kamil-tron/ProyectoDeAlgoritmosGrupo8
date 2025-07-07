@@ -499,3 +499,4 @@
 499,PuertoMaldonado,Iquitos,18/01/2025,311,52
 500,Trujillo,PuertoMaldonado,18/01/2025,422,41
 501,Lima,Piura,10/10/2025,500,20
+502,Cuzco,Trujillo,10/10/2025,356,20

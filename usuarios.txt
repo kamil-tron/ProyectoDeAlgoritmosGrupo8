@@ -1,6 +1,7 @@
 25784188,Mauricio,Pajes,yoSoy,elc++
-888888,Kamil,Diaz,k,k
+888888,mauricio,diaz,k,k
 3,nombre3,apellido3,correo3,contrasena3
 4,nombre4,apellido4,correo4,contrasena4
 5,nombre5,apellido5,correo5,contrasena5
 7757}2,kamil,diza,kamsil,contra
+7255982,Mauricio,Pajes,mau,ricio

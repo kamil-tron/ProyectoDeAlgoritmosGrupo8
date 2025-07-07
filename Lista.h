@@ -165,5 +165,5 @@ T& Lista<T>::obtenerRef(uint pos) {
 	if (pos >= lon) return dummy;
 	Nodo<T>* aux = ini;
 	for (uint i = 0; i < pos; ++i) aux = aux->get_Sgte();
-	return const_cast<T&>(aux->get_Elem());   // quita const
+	return const_cast<T&>(aux->get_Elem());
 }

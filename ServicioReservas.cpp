@@ -7,7 +7,16 @@ ServicioReservas::ServicioReservas()
 	cargarIndice();
 }
 ServicioReservas::~ServicioReservas() { delete idx; }
-
+Lista<Reserva> ServicioReservas::listarTodasReservas() const {
+	auto todas = repoReservas.cargarTodos();
+	Lista<Reserva> result;
+	for (int i = 0; i < todas.longitud(); ++i) {
+		const Reserva& r = todas.obtenerPos(i);
+		if (r.getEstado() != EstadoReserva::CANCELADA)
+			result.agregaFinal(r);
+	}
+	return result;
+}
 void ServicioReservas::cargarIndice() {
 	auto lista = repoReservas.cargarTodos();
 	for (int i = 0; i < lista.longitud(); ++i)

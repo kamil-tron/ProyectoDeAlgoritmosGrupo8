@@ -22,7 +22,7 @@ private:
 public:
 	ServicioReservas();
 	~ServicioReservas();
-
+	Lista<Reserva> listarTodasReservas() const;
 	Lista<Reserva> listarReservasUsuario(const string& email) const;
 	Lista<Asiento> listarAsientosDisponibles(int vueloId) const;
 

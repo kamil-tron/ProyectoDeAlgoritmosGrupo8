@@ -45,8 +45,8 @@ public:
     void ModificarVertice(int v, T info) { (vertices->at(v))->info = info; }
 
     int AdicionarArco(int v, int vLlegada) {
-        CVertice* ver = vertices->at(v);   // corregido de "vertice" a "vertices"
-        CArco* arco = new CArco(vLlegada); // se usa la clase CArco como pediste
+        CVertice* ver = vertices->at(v);   
+        CArco* arco = new CArco(vLlegada); 
         ver->ady->push_back(arco);
         return ver->ady->size() - 1;
     }

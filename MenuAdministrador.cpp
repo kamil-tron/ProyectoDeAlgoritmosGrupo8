@@ -68,7 +68,7 @@ void MenuAdministrador::opcionEliminarVuelo() {
 void MenuAdministrador::opcionHistorialReservas() {
 int Y =13;
     cursor(70, Y); Y++;
-    auto lista = svcReservas.listarReservasUsuario("");
+    auto lista = svcReservas.listarTodasReservas();
     cout << "Codigo | Usuario | Vuelo ID | Fecha | Asientos\n";
     function<void(int)> imprimir = [&](int i) {
         if (i >= lista.longitud()) return;
@@ -322,19 +322,16 @@ void MenuAdministrador::generarUsuarios() {
     cin >> cantidad;
     if (cantidad <= 0) return;
 
-    // 1) Instanciamos el repositorio y vemos cuántos ya hay
     RepoUsuarios repo;
     auto existentes = repo.cargarTodos();
-    int inicio = existentes.longitud();  // si hay 5, inicio=5
+    int inicio = existentes.longitud();  
 
-    // 2) Generamos y agregamos cada uno
     for (int i = 1; i <= cantidad; ++i) {
-        int idx = inicio + i;  // si inicio=5 y i=1, idx=6
-
-        // Para DNI usamos el índice (o puedes customizar)
+        int idx = inicio + i;  
+ 
         string dni = to_string(idx);
 
-        // Campos fijos con el número idx
+
         string nom = "nombre" + to_string(idx);
         string ape = "apellido" + to_string(idx);
         string mail = "correo" + to_string(idx);
@@ -361,10 +358,10 @@ void MenuAdministrador::opcionVerAeropuertos() {
         cout << "No hay aeropuertos registrados\n";
     }
     else {
-        // ——— Ordena con Timsort-like ———
+        // ——— Ordena con Timsort ———
         timSortAeropuertos(lista);
 
-        // ——— Imprime ya en orden alfabético ———
+        // ——— Imprime en orden alfabético ———
         cursor(70, Y++);
         cout << "COD   X    Y\n";
         for (int i = 0; i < lista.longitud(); ++i) {

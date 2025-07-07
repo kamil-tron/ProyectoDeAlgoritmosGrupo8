@@ -200,9 +200,6 @@
     <ClInclude Include="Grafo.h">
       <Filter>Archivos de encabezado\estructuras</Filter>
     </ClInclude>
-    <ClInclude Include="p_queue.h">
-      <Filter>Archivos de encabezado\estructuras</Filter>
-    </ClInclude>
     <ClInclude Include="RepoAeropuertos.h">
       <Filter>Archivos de encabezado\repositorios</Filter>
     </ClInclude>

@@ -74,7 +74,7 @@ public:
 
         // 2. Limpio espacios y CR/LF por si llegaron desde el CSV
         std::string f = fecha;
-        trim(f);                           // tu helper de StringUtils.h
+        trim(f);                           // helper de StringUtils.h
 
         // 3. Extraigo día / mes / año ― versión “segura” con sscanf_s
         int d, m, y;
