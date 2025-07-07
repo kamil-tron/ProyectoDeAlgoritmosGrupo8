@@ -16,7 +16,6 @@ inline int minRunLength(int n) {
 	return n + r;
 }
 
-// Ordenar un tramo [left..right] con Insertion Sort por getCodigo()
 inline void insertionSortAeropuertos(Lista<Aeropuerto>& L, int left, int right) {
 	for (int i = left + 1; i <= right; ++i) {
 		Aeropuerto tmp = L.obtenerPos(i);
@@ -31,7 +30,6 @@ inline void insertionSortAeropuertos(Lista<Aeropuerto>& L, int left, int right) 
 	}
 }
 
-// Fusión estándar (Merge) de dos subarrays L[left..mid] y L[mid+1..right]
 inline void mergeAeropuertos(Lista<Aeropuerto>& L,
 	int left, int mid, int right) {
 	int len1 = mid - left + 1;
@@ -60,21 +58,19 @@ inline void mergeAeropuertos(Lista<Aeropuerto>& L,
 	delete[] B;
 }
 
-// Función Timsort que mezcla Insertion + Merge
+
 inline void timSortAeropuertos(Lista<Aeropuerto>& L) {
 	int n = L.longitud();
 	if (n < 2) return;
 
 	int minRun = minRunLength(n);
 
-	//  Ordena cada run inicial con Insertion Sort
 	for (int start = 0; start < n; start += minRun) {
 		int end = start + minRun - 1;
 		if (end >= n) end = n - 1;
 		insertionSortAeropuertos(L, start, end);
 	}
 
-	// Merge bottom-up: tamaño de run dobla cada pasada
 	for (int size = minRun; size < n; size *= 2) {
 		for (int left = 0; left < n; left += 2 * size) {
 			int mid = left + size - 1;
@@ -128,7 +124,6 @@ inline void mergeSortPorPrecioDesc(Lista<Vuelo>& lista) {
 inline int particionReservas(Lista<Reserva>& lista,
 	int p, int r,
 	ServicioReservas& svc) {
-	// pivot = total de la última reserva
 	Reserva pivRes = lista.obtenerPos(r);
 	double piv = svc.calcularTotal(pivRes.getVueloId(), pivRes.getAsientos());
 
@@ -138,13 +133,11 @@ inline int particionReservas(Lista<Reserva>& lista,
 		double currPrecio = svc.calcularTotal(curr.getVueloId(), curr.getAsientos());
 		if (currPrecio <= piv) {
 			++i;
-			// swap lista[i] <–> lista[j]
 			Reserva tmp = lista.obtenerPos(i);
 			lista.modificarPos(curr, i);
 			lista.modificarPos(tmp, j);
 		}
 	}
-	// swap pivot en su posición final
 	Reserva tmp = lista.obtenerPos(i + 1);
 	lista.modificarPos(pivRes, i + 1);
 	lista.modificarPos(tmp, r);

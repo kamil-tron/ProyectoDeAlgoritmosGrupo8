@@ -17,13 +17,10 @@ using namespace std;
 
 enum class CriterioPeso { DISTANCIA, COSTO };
 
-//
-// ───────────────── Arista: ahora guarda TODOS los vuelos ──────────────────
-//
 struct ArcoVuelo {
-    double distMin{ 0 };      // distancia mínima A→B
-    double costoMin{ 0 };     // precio mínimo A→B
-    Lista<int> ids;         // ids de TODOS los vuelos A→B
+    double distMin{ 0 };
+    double costoMin{ 0 };
+    Lista<int> ids;
 };
 
 
@@ -39,9 +36,8 @@ private:
     HashTable<string, int>* mapaCodigosAeropuerto;
     RepoAeropuertos    repoAeropuertos;
 
-    // ───────────────────────── auxiliares internos ────────────────────────
     bool esRutaDirecta(const RutaPosible& r) const {
-        return r.indicesAeropuertos.longitud() == 2;   // un solo tramo
+        return r.indicesAeropuertos.longitud() == 2;
     }
     int obtenerIndiceAeropuerto(const string& codigo) {
         int* indice = mapaCodigosAeropuerto->obtener(codigo);
@@ -63,12 +59,11 @@ private:
                 ArcoVuelo av = grafo.ObtenerArco(idxO, a);
                 if (costo < av.costoMin) av.costoMin = costo;
                 if (dist < av.distMin)  av.distMin = dist;
-                av.ids.agregaFinal(idVuelo);               // agrega el vuelo
+                av.ids.agregaFinal(idVuelo);
                 grafo.ModificarArco(idxO, a, av);
                 return;
             }
         }
-        // arista nueva
         int pos = grafo.AdicionarArco(idxO, idxD);
         ArcoVuelo nuevo{ dist, costo };
         nuevo.ids.agregaFinal(idVuelo);
@@ -84,12 +79,11 @@ private:
     }
 
     bool conexionValida(const Vuelo& prev, const Vuelo& next) {
-        if (prev.getFecha().empty()) return true;      // primer tramo
+        if (prev.getFecha().empty()) return true;
         int delta = next.getFechaSerial() - prev.getFechaSerial();
         return delta >= MIN_DIAS_ESCALA && delta <= MAX_DIAS_ESCALA;
     }
 
-    // ────────────────────────── Dijkstra básico ───────────────────────────
     RutaPosible calcularRutaDijkstra(int idxO, int idxD,
         CriterioPeso criterio)
     {
@@ -99,7 +93,6 @@ private:
         vector<bool>   seen(n, false);
         dist[idxO] = 0;
 
-        // ─── Dijkstra clásico ─────────────────────────────────────
         while (true) {
             int u = -1; double best = VALOR_INFINITO;
             for (int i = 0; i < n; ++i)
@@ -123,17 +116,14 @@ private:
         RutaPosible ruta;
         if (dist[idxD] == VALOR_INFINITO) return ruta;
 
-        // ─── reconstruir la secuencia de índices ─────────────────
         for (int v = idxD; v != -1; v = prev[v])
             ruta.indicesAeropuertos.agregaInicial(v);
 
-        // ─── seleccionar vuelos tramo a tramo ────────────────────
         for (int i = 0; i + 1 < ruta.indicesAeropuertos.longitud(); ++i) {
 
             int iO = ruta.indicesAeropuertos.obtenerPos(i);
             int iD = ruta.indicesAeropuertos.obtenerPos(i + 1);
 
-            // 1. localizar el arco iO→iD y copiarlo
             int mArcos = grafo.CantidadArcos(iO);
             ArcoVuelo arco; bool found = false;
             for (int a = 0; a < mArcos; ++a)
@@ -143,11 +133,9 @@ private:
                 }
             if (!found) { ruta.vuelos.limpiar(); return ruta; }
 
-            // 2. ordenar ids del arco por fecha ascendente
-            Lista<int> idsOrd = arco.ids;               // copia
+            Lista<int> idsOrd = arco.ids;
             mergeSortIdsPorFechaAsc(idsOrd, servicioVuelos);
 
-            // 3. elegir el vuelo que cumple la ventana
             Vuelo elegido; bool ok = false;
             for (int z = 0; z < idsOrd.longitud(); ++z) {
                 int id = idsOrd.obtenerPos(z);
@@ -159,7 +147,6 @@ private:
             }
             if (!ok) { ruta.vuelos.limpiar(); return ruta; }
 
-            // 4. acumular tramo
             ruta.vuelos.agregaFinal(elegido);
             ruta.distanciaTotal += arco.distMin;
             ruta.costoTotal += elegido.getPrecio();
@@ -168,7 +155,6 @@ private:
     }
 
 
-    // ─────────── helpers para deduplicar rutas en mejoresKRutas ───────────
     bool secuenciasIguales(const Lista<int>& a, const Lista<int>& b) const {
         if (a.longitud() != b.longitud())return false;
         for (int i = 0; i < a.longitud(); ++i)
@@ -179,7 +165,6 @@ private:
         string k;
         for (int i = 0; i < r.indicesAeropuertos.longitud(); ++i) {
             int idx = r.indicesAeropuertos.obtenerPos(i);
-            // antes: listaAeropuertos[idx].getCodigo()
             k += listaAeropuertos.obtenerPos(idx).getCodigo();
             if (i + 1 < r.indicesAeropuertos.longitud()) k += '-';
         }
@@ -187,10 +172,8 @@ private:
     }
 
 public:
-    // ───────────────────────── constructor ─────────────────────────
  ServicioRutas(): mapaCodigosAeropuerto(new HashTable<string, int>(1000, hashString))
     {
-        // 1) cargar todos los aeropuertos
         Lista<Aeropuerto> aps = repoAeropuertos.cargarTodos();
         for (int i = 0; i < aps.longitud(); ++i) {
             const Aeropuerto& a = aps.obtenerPos(i);
@@ -200,7 +183,6 @@ public:
             mapaCodigosAeropuerto->insertar(a.getCodigo(), idx);
         }
 
-        // 2) cargar todos los vuelos y crear las aristas
         Lista<Vuelo> vuelos = servicioVuelos.listarVuelos();
         for (int i = 0; i < vuelos.longitud(); ++i) {
             const Vuelo& v = vuelos.obtenerPos(i);
@@ -214,13 +196,14 @@ public:
             upsertArista(*o, *d, dist, v.getPrecio(), v.getId());
         }
     }
-    // ────────────────────── rutas más corta / barata ─────────────────────
+
     RutaPosible rutaMasCorta(const string& o, const string& d) {
         int* io = mapaCodigosAeropuerto->obtener(o);
         int* id = mapaCodigosAeropuerto->obtener(d);
         if (!io || !id) return RutaPosible();
         return calcularRutaDijkstra(*io, *id, CriterioPeso::DISTANCIA);
     }
+
     RutaPosible rutaMasBarata(const string& o, const string& d) {
         int* io = mapaCodigosAeropuerto->obtener(o);
         int* id = mapaCodigosAeropuerto->obtener(d);
@@ -228,7 +211,6 @@ public:
         return calcularRutaDijkstra(*io, *id, CriterioPeso::COSTO);
     }
 
-    // ─────────────────────── mejores K rutas (Yen lite) ──────────────────
     Lista<RutaPosible> mejoresKRutas(const string& o,
         const string& d,
         int k)
@@ -236,7 +218,6 @@ public:
         Lista<RutaPosible> res;
         if (k <= 0) return res;
 
-        /* hash para no repetir la misma secuencia de aeropuertos */
         HashTable<string, bool> vistos(600, hashString);
 
  
@@ -245,14 +226,11 @@ public:
         crits.agregaFinal(CriterioPeso::COSTO);
 
         for (int c = 0; c < crits.longitud() && res.longitud() < k; ++c) {
-
-            /* 1. ruta base según la métrica */
             RutaPosible base =
                 (crits.obtenerPos(c) == CriterioPeso::DISTANCIA)
                 ? rutaMasCorta(o, d)
                 : rutaMasBarata(o, d);
 
-            /* 1-bis. si es directa, bloquear su único arco y recalcular */
             if (!base.indicesAeropuertos.esVacia() &&
                 esRutaDirecta(base))
             {
@@ -278,14 +256,12 @@ public:
 
             if (base.indicesAeropuertos.esVacia()) continue;
 
-            /* listas de trabajo */
             Lista<RutaPosible> explor;
             explor.agregaFinal(base);
             string hBase = hashRuta(base);
             vistos.insertar(hBase, true);
             if (base.vuelos.longitud() >= 2) res.agregaFinal(base);
 
-            /* 2. Yen “lite” */
             for (int idx = 0;
                 idx < explor.longitud() && res.longitud() < k;
                 ++idx)
@@ -331,7 +307,6 @@ public:
         }
         return res;
     }
-    // ──────────────────────── utilidades de dibujo ───────────────────────
     void pintarRutaEnMatriz(const RutaPosible& ruta,
         int valorLinea,
         int valorNodo,
@@ -340,18 +315,15 @@ public:
         if (ruta.indicesAeropuertos.esVacia()) return;
 
         int len = ruta.indicesAeropuertos.longitud();
-        // ─── marcamos nodos ─────────────────────────────────────────────────
         for (int i = 0; i < len; ++i) {
             int idx = ruta.indicesAeropuertos.obtenerPos(i);
             const Aeropuerto& A = listaAeropuertos.obtenerPos(idx);
             int y = A.getY(), x = A.getX();
             if (y >= 0 && y < 50 && x >= 0 && x < 101) {
-                // si es el último nodo, usa nodoFinal; si no, valorNodo
                 matrizPeru[y][x] = (i == len - 1 ? nodoFinal : valorNodo);
             }
         }
 
-        // ─── dibujamos líneas ────────────────────────────────────────────────
         for (int i = 0; i + 1 < len; ++i) {
             const Aeropuerto& A = listaAeropuertos
                 .obtenerPos(ruta.indicesAeropuertos.obtenerPos(i));

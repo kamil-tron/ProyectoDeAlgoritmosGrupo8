@@ -68,7 +68,6 @@ public:
         return true;
     }
 
-    // Devuelven referencias const: NO copian la cola ni la pila
     const Cola<CheckIn>& pendientes() const {
         return colaPend;
     }

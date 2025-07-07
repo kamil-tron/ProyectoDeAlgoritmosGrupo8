@@ -40,22 +40,19 @@ static string elegirMetodoPago() {
 
 static void imprimirMapaRuta(const RutaPosible& ruta, ServicioRutas& svcRutas)
 {
-	// 1. Respaldar matrizPeru sin memcpy
 	int backup[50][101];
 	for (int f = 0; f < 50; ++f)
 		for (int c = 0; c < 101; ++c)
 			backup[f][c] = matrizPeru[f][c];
 	system("cls");
-	// 2. Pintar la ruta y mostrar el mapa
-	svcRutas.pintarRutaEnMatriz(ruta, /*valorLinea*/ 4, /*valorNodo*/ 9,5);
+	svcRutas.pintarRutaEnMatriz(ruta,4,9,5);
 	cursor(0, 50);
-	std::cout << "\n==== MAPA DE LA RUTA ====\n";
+	cout << "\n==== MAPA DE LA RUTA ====\n";
 	imprimirMapaPeru(25, 0);
-	std::cout << "\nPresiona ENTER para continuar...";
-	std::cin.ignore(10000, '\n');
-	std::cin.get();
+	cout << "\nPresiona ENTER para continuar...";
+	cin.ignore(10000, '\n');
+	cin.get();
 
-	// 3. Restaurar matrizPeru
 	for (int f = 0; f < 50; ++f)
 		for (int c = 0; c < 101; ++c)
 			matrizPeru[f][c] = backup[f][c];
@@ -242,7 +239,6 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 	int Y = 15;
 	HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
 	WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
-	// bitmask de fondo gris claro:
 	Usuario& u = static_cast<Usuario&>(sesion.getUsuarioActual());
 	system("cls");
 	menuUsuario();
@@ -256,7 +252,6 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 	GetConsoleScreenBufferInfo(hConsole, &csbi);
 	WORD defaultAttrs = csbi.wAttributes;
 
-	// Obtener asientos disponibles para el vuelo
 	auto libres = svcReservas.listarAsientosDisponibles(vueloId);
 	if (libres.esVacia()) {
 		cursor(60, Y); Y++;
@@ -264,7 +259,6 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 		return;
 	}
 
-	// Mostrar asientos libres
 	cursor(60, Y); Y++;
 	cout << "Asientos libres para vuelo " << libres.longitud() << ":\n";   cursor(60, Y); Y++;
 	string filaAnt;
@@ -299,7 +293,6 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 		return;
 	}
 
-	// Selección de códigos
 	Lista<string> seleccionados;
 	cursor(60, Y); Y++;
 	cout << "Ingrese los codigos de asiento separados por espacio: ";
@@ -310,7 +303,6 @@ void MenuUsuario::reservarVuelo(int vueloId) {
 	}
 	cin.ignore(10000, '\n');
 
-	// Crear reserva y procesar pago
 	Reserva reserva;
 	if (!svcReservas.crearReservaConAsientos(u, vueloId, seleccionados, reserva)) {
 		cursor(60, Y); Y++; cout << "No se pudo crear la reserva.";

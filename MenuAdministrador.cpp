@@ -99,7 +99,6 @@ _getch();
 }
 
 void MenuAdministrador::opcionVuelosMasCaros() {
-    // 1) Obtiene y ordena los vuelos
     Lista<Vuelo> ordenados = svcVuelos.listarVuelos();
     mergeSortPorPrecioDesc(ordenados);
 
@@ -115,7 +114,6 @@ void MenuAdministrador::opcionVuelosMasCaros() {
     char tecla;
 
     do {
-        // 2) Limpia la pantalla
         HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
         WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         system("cls");
@@ -124,13 +122,11 @@ void MenuAdministrador::opcionVuelosMasCaros() {
         cursor(6, 12);
         cout << "MENU DE ADMINISTRADOR - AIR PACIFIC" << endl; cursor(8, 13);
         MenuBase::mostrar();
-        // 3) Cabecera
         int Y = 4;
         cursor(70, Y++); cout << "VUELOS MAS CAROS (precio descendente)";
         cursor(70, Y++); cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.";
         cursor(70, Y++); cout << "---------------------------------------------------------------";
 
-        // 4) Imprime la página actual
         int start = page * pageSize;
         int end = min(start + pageSize, total);
         for (int i = start; i < end; ++i) {
@@ -149,13 +145,11 @@ void MenuAdministrador::opcionVuelosMasCaros() {
                 << setw(5) << disp << "\n";
         }
 
-        // 5) Pie con info de paginación
         cursor(70, Y += 1);
         cout << "Mostrando " << (start + 1) << "--" << end << " DE " << total;
         cursor(70, Y += 1);
         cout << "[L] Siguiente  [J] Anterior  [Q] Salir";
 
-        // 6) Lee tecla y ajusta página
         tecla = toupper(_getch());
         if (tecla == 'L' && page < (total - 1) / pageSize) ++page;
         else if (tecla == 'J' && page > 0) --page;
@@ -177,7 +171,6 @@ void MenuAdministrador::opcionVerTodosVuelos() {
     char tecla;
 
     do {
-        // 1) Limpiar pantalla
         HANDLE con = GetStdHandle(STD_OUTPUT_HANDLE);
         WORD BG_GRAY = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE;
         system("cls");
@@ -186,13 +179,11 @@ void MenuAdministrador::opcionVerTodosVuelos() {
         cursor(6, 12);
         cout << "MENU DE ADMINISTRADOR - AIR PACIFIC" << endl; cursor(8, 13);
         MenuBase::mostrar();
-        // 2) Dibujar cabecera
         int Y = 4;
         cursor(70, Y++); cout << "VUELOS PROXIMOS (orden cronologico - AVL)";
         cursor(70, Y++); cout << "ID | Origen | Destino | Fecha       | Precio   | Asientos disp.";
         cursor(70, Y++); cout << "---------------------------------------------------------------";
 
-        // 3) Imprimir vuelos de la página actual
         int start = page * pageSize;
         int end = min(start + pageSize, total);
         for (int i = start; i < end; ++i) {
@@ -211,13 +202,11 @@ void MenuAdministrador::opcionVerTodosVuelos() {
                 << setw(5) << disp << "\n";
         }
 
-        // 5) Pie con info de paginación
         cursor(70, Y += 1);
         cout << "Mostrando " << (start + 1) << "--" << end << " DE " << total;
         cursor(70, Y += 1);
         cout << "[L] Siguiente  [J] Anterior  [Q] Salir";
 
-        // 6) Lee tecla y ajusta página
         tecla = toupper(_getch());
         if (tecla == 'L' && page < (total - 1) / pageSize) ++page;
         else if (tecla == 'J' && page > 0) --page;
@@ -358,10 +347,8 @@ void MenuAdministrador::opcionVerAeropuertos() {
         cout << "No hay aeropuertos registrados\n";
     }
     else {
-        // ——— Ordena con Timsort ———
         timSortAeropuertos(lista);
 
-        // ——— Imprime en orden alfabético ———
         cursor(70, Y++);
         cout << "COD   X    Y\n";
         for (int i = 0; i < lista.longitud(); ++i) {
